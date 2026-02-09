@@ -1,0 +1,160 @@
+{
+  "common": {
+    "yes": "Так",
+    "no": "Ні",
+    "error": "Помилка",
+    "warning": "Попередження",
+    "info": "Інформація",
+    "success": "Успішно",
+    "ok": "OK",
+    "found": "Знайдено",
+    "not_found": "Не знайдено",
+    "pages": "сторінок",
+    "issues": "проблем",
+    "recommendations": "Рекомендація",
+    "expand_more": "Розгорнути ще",
+    "collapse": "Згорнути"
+  },
+  "report": {
+    "title": "SEO Аудит",
+    "generated_at": "Звіт згенеровано",
+    "overview": "Загальний огляд",
+    "pages_crawled": "Сторінок скановано",
+    "passed_checks": "Перевірок пройдено",
+    "warnings": "Попереджень",
+    "critical_issues": "Критичних проблем",
+    "theory_title": "Теоретична довідка",
+    "examples": "Приклади",
+    "recommendation": "Рекомендація",
+    "no_issues": "Проблем не знайдено",
+    "pagespeed_screenshots": "Скріншоти PageSpeed Insights",
+    "express_title": "Експрес-аудит сайту"
+  },
+  "analyzers": {
+    "cms": {
+      "name": "CMS / Платформа",
+      "description": "Визначення системи керування контентом або платформи сайту.",
+      "detected": "Визначено: {cms}",
+      "probably": "Ймовірно: {cms}",
+      "possibly": "Можливо: {cms}",
+      "not_detected": "CMS не визначено",
+      "confidence": "Впевненість: {percent}%",
+      "multiple_detected": "Також виявлені ознаки: {cms_list}"
+    },
+    "meta_tags": {
+      "name": "Мета-теги",
+      "description": "Мета-теги важливі для SEO та відображення у пошуковій видачі.",
+      "missing_title": "Відсутній title",
+      "missing_description": "Відсутній meta description",
+      "title_too_short": "Title занадто короткий",
+      "title_too_long": "Title занадто довгий",
+      "description_too_short": "Description занадто короткий",
+      "description_too_long": "Description занадто довгий",
+      "duplicate_titles": "Дублікати title",
+      "duplicate_descriptions": "Дублікати description"
+    },
+    "headings": {
+      "name": "Заголовки H1",
+      "description": "Заголовок H1 — головний заголовок сторінки для SEO.",
+      "missing_h1": "Відсутній H1",
+      "multiple_h1": "Декілька H1",
+      "duplicate_h1": "Дублікати H1",
+      "h1_too_long": "H1 занадто довгий"
+    },
+    "page_404": {
+      "name": "Сторінка 404",
+      "description": "Кастомна сторінка 404 покращує користувацький досвід.",
+      "missing": "Відсутня кастомна сторінка 404",
+      "wrong_status": "Неправильний HTTP статус",
+      "no_navigation": "Сторінка 404 без навігації",
+      "no_home_link": "Сторінка 404 без посилання на головну",
+      "no_search": "Сторінка 404 без пошуку"
+    },
+    "speed": {
+      "name": "Швидкість завантаження",
+      "description": "Швидкість завантаження впливає на ранжування та користувацький досвід.",
+      "mobile_score_critical": "Критично низький Mobile Score",
+      "mobile_score_low": "Низький Mobile Score",
+      "desktop_score_critical": "Критично низький Desktop Score",
+      "desktop_score_low": "Низький Desktop Score",
+      "fcp_slow": "{device} FCP повільний",
+      "lcp_slow": "{device} LCP повільний",
+      "cls_high": "{device} CLS високий"
+    },
+    "images": {
+      "name": "Зображення",
+      "description": "Оптимізація зображень важлива для швидкості та SEO.",
+      "missing_alt": "Зображення без alt",
+      "empty_alt": "Зображення з порожнім alt",
+      "large_images": "Великі зображення",
+      "no_webp": "Відсутні WebP зображення"
+    },
+    "content": {
+      "name": "Контент",
+      "description": "Якісний контент — основа успішного SEO.",
+      "thin_content": "Тонкий контент",
+      "no_structured_data": "Відсутня структурована розмітка"
+    },
+    "links": {
+      "name": "Биті посилання",
+      "description": "Биті посилання шкодять SEO та користувацькому досвіду.",
+      "broken_internal": "Биті внутрішні посилання",
+      "broken_external": "Биті зовнішні посилання"
+    },
+    "favicon": {
+      "name": "Фавікон",
+      "description": "Фавікон допомагає впізнавати сайт у браузері.",
+      "missing": "Фавікон відсутній",
+      "no_ico": "Відсутній /favicon.ico",
+      "no_apple_touch": "Відсутній Apple Touch Icon"
+    },
+    "external_links": {
+      "name": "Зовнішні посилання",
+      "description": "Аналіз вихідних посилань на інші сайти.",
+      "commercial_no_nofollow": "Комерційні посилання без nofollow",
+      "many_dofollow": "Багато dofollow посилань"
+    },
+    "robots": {
+      "name": "Індексація",
+      "description": "Налаштування robots.txt та sitemap.xml.",
+      "no_robots": "Файл robots.txt відсутній",
+      "no_sitemap": "Файл sitemap.xml відсутній",
+      "sitemap_errors": "Проблеми з sitemap",
+      "noindex_pages": "Сторінки з noindex",
+      "canonical_issues": "Проблеми з canonical"
+    },
+    "structure": {
+      "name": "Структура сайту",
+      "description": "Структура сайту впливає на індексацію.",
+      "deep_pages": "Глибоко вкладені сторінки",
+      "orphan_pages": "Сирітські сторінки"
+    },
+    "content_sections": {
+      "name": "Інформаційні розділи",
+      "description": "Виявлення блогу, новин, FAQ та довідки.",
+      "blog_detected": "Виявлено блог/новини",
+      "faq_detected": "Виявлено FAQ/довідку",
+      "no_blog": "Блог/новини не виявлено",
+      "no_faq": "FAQ не виявлено",
+      "faq_no_schema": "FAQ без Schema.org розмітки"
+    }
+  },
+  "status": {
+    "crawling": "Сканування сторінок...",
+    "analyzing": "Аналізуємо сторінки...",
+    "generating": "Генеруємо звіт...",
+    "completed": "Аудит завершено!",
+    "failed": "Помилка"
+  },
+  "tables": {
+    "element": "Елемент",
+    "status": "Статус",
+    "details": "Деталі",
+    "url": "URL",
+    "title": "Title",
+    "count": "Кількість",
+    "type": "Тип",
+    "link": "Посилання",
+    "found_on": "Знайдено на"
+  }
+}

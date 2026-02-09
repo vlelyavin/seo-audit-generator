@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Аудит - {{ domain }}</title>
+    <style>
+        /* Reset & Base */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --color-success: #10b981;
+            --color-success-bg: #d1fae5;
+            --color-warning: #f59e0b;
+            --color-warning-bg: #fef3c7;
+            --color-error: #ef4444;
+            --color-error-bg: #fee2e2;
+            --color-info: #3b82f6;
+            --color-info-bg: #dbeafe;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-bg: #f9fafb;
+            --color-white: #ffffff;
+            --color-border: #e5e7eb;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text);
+            background: var(--color-bg);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--color-white);
+            border-right: 1px solid var(--color-border);
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .sidebar-header h1 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-header .domain {
+            color: var(--color-text-light);
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .sidebar-nav {
+            padding: 16px 0;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            color: var(--color-text);
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .sidebar-nav a:hover {
+            background: var(--color-bg);
+        }
+
+        .sidebar-nav .icon {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .sidebar-nav .status {
+            margin-left: auto;
+            font-size: 14px;
+        }
+
+        .sidebar-nav .status.success { color: var(--color-success); }
+        .sidebar-nav .status.warning { color: var(--color-warning); }
+        .sidebar-nav .status.error { color: var(--color-error); }
+        .sidebar-nav .status.info { color: var(--color-info); }
+
+        /* Main Content */
+        .main {
+            margin-left: var(--sidebar-width);
+            padding: 32px;
+            max-width: 1200px;
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .summary-card {
+            background: var(--color-white);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--color-border);
+        }
+
+        .summary-card.success { border-left: 4px solid var(--color-success); }
+        .summary-card.warning { border-left: 4px solid var(--color-warning); }
+        .summary-card.error { border-left: 4px solid var(--color-error); }
+        .summary-card.info { border-left: 4px solid var(--color-info); }
+
+        .summary-card .number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .summary-card .label {
+            color: var(--color-text-light);
+            font-size: 14px;
+        }
+
+        /* Section */
+        .section {
+            background: var(--color-white);
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .section-header .badge {
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge.success { background: var(--color-success-bg); color: var(--color-success); }
+        .badge.warning { background: var(--color-warning-bg); color: var(--color-warning); }
+        .badge.error { background: var(--color-error-bg); color: var(--color-error); }
+        .badge.info { background: var(--color-info-bg); color: var(--color-info); }
+
+        .section-content {
+            padding: 24px;
+        }
+
+        .section-description {
+            color: var(--color-text-light);
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .section-summary {
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            background: var(--color-bg);
+            border-radius: 6px;
+        }
+
+        /* Issues */
+        .issue {
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        .issue.error { background: var(--color-error-bg); }
+        .issue.warning { background: var(--color-warning-bg); }
+        .issue.info { background: var(--color-info-bg); }
+        .issue.success { background: var(--color-success-bg); }
+
+        .issue-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .issue-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .issue-title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .issue-details {
+            font-size: 14px;
+            color: var(--color-text);
+            margin-bottom: 8px;
+            padding-left: 26px;
+        }
+
+        .issue-urls {
+            font-size: 13px;
+            color: var(--color-text-light);
+            padding-left: 26px;
+            margin-bottom: 8px;
+        }
+
+        .issue-urls ul {
+            list-style: none;
+            margin-top: 4px;
+        }
+
+        .issue-urls li {
+            padding: 2px 0;
+            word-break: break-all;
+        }
+
+        .issue-recommendation {
+            font-size: 14px;
+            padding: 12px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 4px;
+            margin-top: 8px;
+            margin-left: 26px;
+        }
+
+        .issue-recommendation strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .data-table th {
+            background: var(--color-bg);
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background: var(--color-bg);
+        }
+
+        .table-title {
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        /* Theory Block */
+        .theory-block {
+            margin-bottom: 20px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            background: #f8fafc;
+        }
+
+        .theory-block summary {
+            padding: 12px 16px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--color-text);
+            user-select: none;
+        }
+
+        .theory-block summary:hover {
+            background: var(--color-bg);
+        }
+
+        .theory-block[open] summary {
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .theory-content {
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--color-text);
+        }
+
+        .theory-content strong {
+            color: var(--color-text);
+        }
+
+        /* Screenshots - vertical layout */
+        .screenshots-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin: 24px 0;
+        }
+
+        .screenshot-card {
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--color-white);
+        }
+
+        .screenshot-card h4 {
+            padding: 12px 16px;
+            background: var(--color-bg);
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .screenshot-card img {
+            width: 100%;
+            display: block;
+        }
+
+        /* Expand URLs Button */
+        .expand-urls-btn {
+            background: var(--color-info-bg);
+            color: var(--color-info);
+            border: 1px solid var(--color-info);
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+
+        .expand-urls-btn:hover {
+            background: var(--color-info);
+            color: var(--color-white);
+        }
+
+        .urls-hidden {
+            margin-top: 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 32px;
+            color: var(--color-text-light);
+            font-size: 14px;
+        }
+
+        /* Print Styles */
+        @media print {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 0;
+            }
+
+            .section {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            body {
+                background: white;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h1>{{ t.report_title if t else 'SEO Аудит' }}</h1>
+            <div class="domain">{{ domain }}</div>
+            <div class="domain" style="margin-top: 8px; font-size: 12px;">{{ generated_at }}</div>
+        </div>
+
+        <div class="sidebar-nav">
+            <a href="#summary">
+                <span class="icon">📊</span>
+                {{ t.overview if t else 'Загальний огляд' }}
+            </a>
+            {% for section in sections %}
+            <a href="#{{ section.id }}">
+                <span class="icon">{{ section.icon }}</span>
+                {{ section.title }}
+                <span class="status {{ section.severity | severity_class }}">
+                    {{ section.severity | status_icon }}
+                </span>
+            </a>
+            {% endfor %}
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Summary Section -->
+        <section id="summary">
+            <h1 style="font-size: 28px; margin-bottom: 8px;">{{ t.report_title if t else 'SEO Аудит' }}: {{ domain }}</h1>
+            <p style="color: var(--color-text-light); margin-bottom: 24px;">{{ audit.url }}</p>
+
+            <div class="summary-grid">
+                <div class="summary-card info">
+                    <div class="number">{{ audit.pages_crawled }}</div>
+                    <div class="label">{{ t.pages_crawled if t else 'Сторінок скановано' }}</div>
+                </div>
+                <div class="summary-card success">
+                    <div class="number">{{ audit.passed_checks }}</div>
+                    <div class="label">{{ t.passed_checks if t else 'Перевірок пройдено' }}</div>
+                </div>
+                <div class="summary-card warning">
+                    <div class="number">{{ audit.warnings }}</div>
+                    <div class="label">{{ t.warnings if t else 'Попереджень' }}</div>
+                </div>
+                <div class="summary-card error">
+                    <div class="number">{{ audit.critical_issues }}</div>
+                    <div class="label">{{ t.critical_issues if t else 'Критичних проблем' }}</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analyzer Sections -->
+        {% for section in sections %}
+        <section class="section" id="{{ section.id }}">
+            <div class="section-header">
+                <span style="font-size: 24px;">{{ section.icon }}</span>
+                <h2>{{ loop.index }}. {{ section.title }}</h2>
+                <span class="badge {{ section.severity | severity_class }}">
+                    {{ section.severity | status_icon }}
+                    {% if section.severity == SeverityLevel.SUCCESS %}OK
+                    {% elif section.severity == SeverityLevel.WARNING %}Попередження
+                    {% elif section.severity == SeverityLevel.ERROR %}Помилка
+                    {% else %}Інфо{% endif %}
+                </span>
+            </div>
+
+            <div class="section-content">
+                {% if section.result.description %}
+                <p class="section-description">{{ section.result.description }}</p>
+                {% endif %}
+
+                {% if section.result.summary %}
+                <div class="section-summary">{{ section.result.summary }}</div>
+                {% endif %}
+
+                <!-- Theory -->
+                {% if section.result.theory %}
+                <details class="theory-block">
+                    <summary>📚 {{ t.theory_title if t else 'Теоретична довідка' }}</summary>
+                    <div class="theory-content">{{ section.result.theory | replace('\n', '<br>') | safe }}</div>
+                </details>
+                {% endif %}
+
+                <!-- Issues -->
+                {% for issue in section.result.issues %}
+                <div class="issue {{ issue.severity | severity_class }}">
+                    <div class="issue-header">
+                        <span class="issue-icon">{{ issue.severity | status_icon }}</span>
+                        <span class="issue-title">{{ issue.message }}</span>
+                    </div>
+
+                    {% if issue.details %}
+                    <div class="issue-details">{{ issue.details }}</div>
+                    {% endif %}
+
+                    {% if issue.affected_urls %}
+                    <div class="issue-urls">
+                        {{ t.examples if t else 'Приклади' }}:
+                        <ul>
+                            {% for url in issue.affected_urls[:3] %}
+                            <li>{{ url }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% if issue.affected_urls|length > 3 %}
+                        <ul class="urls-hidden" style="display: none;">
+                            {% for url in issue.affected_urls[3:] %}
+                            <li>{{ url }}</li>
+                            {% endfor %}
+                        </ul>
+                        <button class="expand-urls-btn" onclick="toggleUrls(this)">
+                            {{ t.expand_more if t else 'Розгорнути ще' }} {{ issue.affected_urls|length - 3 }}
+                        </button>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if issue.recommendation %}
+                    <div class="issue-recommendation">
+                        <strong>💡 {{ t.recommendation if t else 'Рекомендація' }}:</strong>
+                        {{ issue.recommendation }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                {% if not section.result.issues %}
+                <div class="issue success">
+                    <div class="issue-header">
+                        <span class="issue-icon">✓</span>
+                        <span class="issue-title">{{ t.no_issues if t else 'Проблем не знайдено' }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Tables -->
+                {% for table in section.result.tables %}
+                <h3 class="table-title">{{ table.title }}</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            {% for header in table.headers %}
+                            <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in table.rows %}
+                        <tr>
+                            {% for header in table.headers %}
+                            <td>{{ row[header] }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endfor %}
+
+                <!-- PageSpeed Screenshots -->
+                {% if section.id == 'speed' and section.result.data %}
+                    {% if section.result.data.mobile_screenshot or section.result.data.desktop_screenshot %}
+                    <h3 class="table-title">{{ t.pagespeed_screenshots if t else 'Скріншоти PageSpeed Insights' }}</h3>
+                    <div class="screenshots-grid">
+                        {% if section.result.data.mobile_screenshot %}
+                        <div class="screenshot-card">
+                            <h4>📱 Mobile</h4>
+                            <img src="data:image/png;base64,{{ section.result.data.mobile_screenshot }}" alt="PageSpeed Mobile">
+                        </div>
+                        {% endif %}
+                        {% if section.result.data.desktop_screenshot %}
+                        <div class="screenshot-card">
+                            <h4>🖥️ Desktop</h4>
+                            <img src="data:image/png;base64,{{ section.result.data.desktop_screenshot }}" alt="PageSpeed Desktop">
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </section>
+        {% endfor %}
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Звіт згенеровано автоматично • {{ generated_at }}</p>
+            <p style="margin-top: 8px;">SEO Audit Tool</p>
+        </footer>
+    </main>
+
+    <script>
+        function toggleUrls(button) {
+            const container = button.parentElement;
+            const hiddenList = container.querySelector('.urls-hidden');
+
+            if (hiddenList.style.display === 'none') {
+                hiddenList.style.display = 'block';
+                button.textContent = '{{ t.collapse if t else "Згорнути" }}';
+            } else {
+                hiddenList.style.display = 'none';
+                const count = hiddenList.querySelectorAll('li').length;
+                button.textContent = '{{ t.expand_more if t else "Розгорнути ще" }} ' + count;
+            }
+        }
+    </script>
+</body>
+</html>

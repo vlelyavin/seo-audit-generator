@@ -1,0 +1,25 @@
+[Unit]
+Description=SEO Audit Tool
+After=network.target
+
+[Service]
+Type=simple
+User=seo-audit
+Group=seo-audit
+WorkingDirectory=/var/www/seo-audit
+Environment="PATH=/var/www/seo-audit/venv/bin:/usr/bin:/bin"
+Environment="PLAYWRIGHT_BROWSERS_PATH=/var/www/seo-audit/.cache/ms-playwright"
+ExecStart=/var/www/seo-audit/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Limits
+LimitNOFILE=65536
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

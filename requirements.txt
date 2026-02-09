@@ -1,0 +1,34 @@
+# Core Framework
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Async HTTP
+aiohttp
+aiofiles
+
+# HTML Parsing
+beautifulsoup4
+lxml
+
+# Screenshots
+playwright
+
+# Templating
+jinja2
+
+# Configuration
+python-dotenv
+pydantic
+pydantic-settings
+
+# Utilities
+httpx
+validators
+
+# SSE
+sse-starlette
+
+# Export formats
+weasyprint  # PDF export
+python-docx  # Word export
