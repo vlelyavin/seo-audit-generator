@@ -8,7 +8,6 @@ from urllib.parse import quote
 import aiohttp
 
 from ..config import settings
-from ..screenshots import screenshot_capture
 
 logger = logging.getLogger(__name__)
 from ..models import AnalyzerResult, AuditIssue, PageSpeedResult, SpeedMetrics, PageData, SeverityLevel
@@ -189,13 +188,11 @@ class SpeedAnalyzer(BaseAnalyzer):
                 "rows": table_data,
             })
 
-        # Capture PageSpeed screenshots (parallel)
-        logger.info("Capturing PageSpeed screenshots...")
-        mobile_screenshot, desktop_screenshot = await asyncio.gather(
-            screenshot_capture.capture_pagespeed_mobile(base_url),
-            screenshot_capture.capture_pagespeed_desktop(base_url),
-        )
-        logger.info(f"Screenshots captured: mobile={bool(mobile_screenshot)}, desktop={bool(desktop_screenshot)}")
+        # Screenshots removed — navigating to pagespeed.web.dev triggers
+        # additional Lighthouse analyses that consume API quota redundantly.
+        # The metrics table already contains all PageSpeed data.
+        mobile_screenshot = None
+        desktop_screenshot = None
 
         # Summary
         mobile_score = pagespeed_result.mobile.score if pagespeed_result.mobile else 0

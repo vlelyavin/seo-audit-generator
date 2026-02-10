@@ -335,6 +335,8 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
     # Translate tables
     table_titles = translator.translations.get("table_translations", {}).get("titles", {})
     table_headers = translator.translations.get("table_translations", {}).get("headers", {})
+    table_values = translator.translations.get("table_translations", {}).get("values", {})
+    table_patterns = translator.translations.get("table_translations", {}).get("patterns", {})
 
     for table in translated.tables:
         # Translate table title
@@ -347,7 +349,7 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                 table_headers.get(h, h) for h in table["headers"]
             ]
 
-        # Translate row values that are in the headers translation map
+        # Translate row values
         if table.get("rows"):
             new_rows = []
             for row in table["rows"]:
@@ -355,9 +357,20 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                 for key, value in row.items():
                     # Translate key if it's in table_headers
                     new_key = table_headers.get(key, key)
-                    # Translate value if it's a simple string in table_headers
-                    if isinstance(value, str) and value in table_headers:
-                        new_row[new_key] = table_headers[value]
+                    if isinstance(value, str):
+                        # 1. Exact match in values map
+                        if value in table_values:
+                            new_row[new_key] = table_values[value]
+                        # 2. Exact match in headers map
+                        elif value in table_headers:
+                            new_row[new_key] = table_headers[value]
+                        # 3. Pattern-based replacement for dynamic strings
+                        else:
+                            translated_value = value
+                            for pattern, replacement in table_patterns.items():
+                                if pattern in translated_value:
+                                    translated_value = translated_value.replace(pattern, replacement)
+                            new_row[new_key] = translated_value
                     else:
                         new_row[new_key] = value
                 new_rows.append(new_row)
@@ -625,6 +638,20 @@ class ReportGenerator:
         tc_pr.append(borders)
 
     @staticmethod
+    def _docx_set_cell_margins(cell, top=0, right=80, bottom=0, left=80):
+        """Set cell internal margins (padding) in DXA units (1/20 of a point, ~80 DXA = 1.4mm)."""
+        from docx.oxml.ns import qn
+        from docx.oxml import OxmlElement
+        tc_pr = cell._tc.get_or_add_tcPr()
+        tc_mar = OxmlElement('w:tcMar')
+        for side, value in [('w:top', top), ('w:left', left), ('w:bottom', bottom), ('w:right', right)]:
+            el = OxmlElement(side)
+            el.set(qn('w:w'), str(value))
+            el.set(qn('w:type'), 'dxa')
+            tc_mar.append(el)
+        tc_pr.append(tc_mar)
+
+    @staticmethod
     def _docx_set_font(run, font_name: str = 'Inter', size_pt=None, bold=None, color_rgb=None):
         """Configure a run with font settings."""
         from docx.shared import Pt, RGBColor
@@ -771,13 +798,13 @@ class ReportGenerator:
             p = cell.add_paragraph()
             p.paragraph_format.space_before = Pt(4)
             run = p.add_run(f"{examples_label}:")
-            self._docx_set_font(run, size_pt=8, bold=True, color_rgb=(107, 114, 128))
+            self._docx_set_font(run, size_pt=8, bold=True, color_rgb=(75, 85, 99))
             for url in issue.affected_urls[:5]:
                 p = cell.add_paragraph()
                 p.paragraph_format.space_before = Pt(0)
                 p.paragraph_format.space_after = Pt(0)
                 run = p.add_run(f"  • {url}")
-                self._docx_set_font(run, size_pt=8, color_rgb=(107, 114, 128))
+                self._docx_set_font(run, size_pt=8, color_rgb=(55, 65, 81))
 
     async def generate_docx(self, audit: AuditResult) -> str:
         """Generate styled DOCX report and return file path."""
@@ -860,7 +887,8 @@ class ReportGenerator:
         doc.add_paragraph()
 
         # --- Summary Section ---
-        doc.add_heading(f"📊 {t_labels['overview']}", level=1)
+        overview_heading = doc.add_heading(f"📊 {t_labels['overview']}", level=1)
+        overview_heading.paragraph_format.space_after = Pt(16)
 
         summary_table = doc.add_table(rows=2, cols=4)
         summary_table.style = 'Table Grid'
@@ -880,6 +908,7 @@ class ReportGenerator:
             run = p.add_run(label)
             self._docx_set_font(run, size_pt=9, bold=True, color_rgb=(107, 114, 128))
             self._docx_set_cell_left_border(header_cell, color, '24')
+            self._docx_set_cell_margins(header_cell, top=40, right=80, bottom=0, left=80)
 
             # Value cell
             value_cell = summary_table.rows[1].cells[i]
@@ -888,6 +917,7 @@ class ReportGenerator:
             run = p.add_run(value)
             self._docx_set_font(run, size_pt=18, bold=True, color_rgb=(31, 41, 55))
             self._docx_set_cell_left_border(value_cell, color, '24')
+            self._docx_set_cell_margins(value_cell, top=0, right=80, bottom=40, left=80)
 
         doc.add_paragraph()
 
@@ -932,6 +962,7 @@ class ReportGenerator:
 
             # Section heading with emoji
             heading = doc.add_heading(f"{icon} {section_title}", level=1)
+            heading.paragraph_format.keep_with_next = True
 
             # Add severity badge after heading
             badge_text, badge_color = severity_badge_text.get(
@@ -944,6 +975,7 @@ class ReportGenerator:
             if result.summary:
                 p = doc.add_paragraph()
                 p.paragraph_format.space_after = Pt(8)
+                p.paragraph_format.keep_with_next = True
                 run = p.add_run(result.summary)
                 self._docx_set_font(run, size_pt=10, bold=True)
 
@@ -951,6 +983,7 @@ class ReportGenerator:
             if result.theory:
                 p = doc.add_paragraph()
                 p.paragraph_format.space_after = Pt(4)
+                p.paragraph_format.keep_with_next = True
                 run = p.add_run(f"📖 {t_labels['theory_title']}")
                 self._docx_set_font(run, size_pt=10, bold=True, color_rgb=(75, 85, 99))
                 self._docx_parse_theory(doc, result.theory)
@@ -979,6 +1012,7 @@ class ReportGenerator:
                 if table_title:
                     p = doc.add_paragraph()
                     p.paragraph_format.space_before = Pt(8)
+                    p.paragraph_format.keep_with_next = True
                     run = p.add_run(table_title)
                     self._docx_set_font(run, size_pt=10, bold=True)
 
@@ -997,6 +1031,7 @@ class ReportGenerator:
                         run = p.add_run(header)
                         self._docx_set_font(run, size_pt=9, bold=True)
                         self._docx_set_cell_shading(cell, 'F3F4F6')
+                        self._docx_set_cell_margins(cell, top=50, right=80, bottom=50, left=80)
 
                     # Data rows
                     for row_idx, row_data in enumerate(rows):
@@ -1007,6 +1042,7 @@ class ReportGenerator:
                             p = cell.paragraphs[0]
                             run = p.add_run(str(value))
                             self._docx_set_font(run, size_pt=9)
+                            self._docx_set_cell_margins(cell, top=40, right=80, bottom=40, left=80)
                             # Alternating row shading
                             if row_idx % 2 == 1:
                                 self._docx_set_cell_shading(cell, 'F9FAFB')
