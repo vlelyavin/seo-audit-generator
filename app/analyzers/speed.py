@@ -188,11 +188,17 @@ class SpeedAnalyzer(BaseAnalyzer):
                 "rows": table_data,
             })
 
-        # Screenshots removed — navigating to pagespeed.web.dev triggers
-        # additional Lighthouse analyses that consume API quota redundantly.
-        # The metrics table already contains all PageSpeed data.
+        # Capture PageSpeed screenshots (sequential, single browser session).
+        # Called after API results are fetched so pagespeed.web.dev shows cached data.
         mobile_screenshot = None
         desktop_screenshot = None
+        try:
+            from ..screenshots import screenshot_capture
+            logger.info("Capturing PageSpeed screenshots...")
+            mobile_screenshot, desktop_screenshot = await screenshot_capture.capture_pagespeed_both(base_url)
+            logger.info(f"Screenshots captured: mobile={bool(mobile_screenshot)}, desktop={bool(desktop_screenshot)}")
+        except Exception as e:
+            logger.warning(f"Screenshot capture failed (non-fatal): {e}")
 
         # Summary
         mobile_score = pagespeed_result.mobile.score if pagespeed_result.mobile else 0

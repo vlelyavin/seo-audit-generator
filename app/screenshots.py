@@ -1,11 +1,14 @@
 """Screenshot capture module using Playwright."""
 
 import base64
+import logging
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 from urllib.parse import quote
 
 from .config import settings
+
+logger = logging.getLogger(__name__)
 
 
 class ScreenshotCapture:
@@ -65,7 +68,7 @@ class ScreenshotCapture:
                     await browser.close()
 
         except Exception as e:
-            print(f"Screenshot error for {url}: {e}")
+            logger.warning(f"Screenshot error for {url}: {e}")
             return None
 
     async def capture_pagespeed_mobile(self, url: str) -> Optional[str]:
@@ -78,47 +81,134 @@ class ScreenshotCapture:
         pagespeed_url = f"https://pagespeed.web.dev/analysis?url={quote(url, safe='')}&form_factor=desktop"
         return await self._capture_pagespeed(pagespeed_url, f"pagespeed_desktop_{self._url_to_filename(url)}.png")
 
-    async def _capture_pagespeed(self, pagespeed_url: str, filename: str) -> Optional[str]:
-        """Capture PageSpeed Insights page with extended wait for results."""
+    _STEALTH_UA = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/131.0.0.0 Safari/537.36"
+    )
+
+    _BROWSER_ARGS = [
+        "--disable-blink-features=AutomationControlled",
+        "--disable-dev-shm-usage",
+        "--no-sandbox",
+    ]
+
+    async def capture_pagespeed_both(self, url: str) -> Tuple[Optional[str], Optional[str]]:
+        """Capture both mobile and desktop PageSpeed screenshots in a single browser session."""
+        mobile_b64 = None
+        desktop_b64 = None
+
         try:
             from playwright.async_api import async_playwright
 
+            mobile_url = f"https://pagespeed.web.dev/analysis?url={quote(url, safe='')}"
+            desktop_url = f"https://pagespeed.web.dev/analysis?url={quote(url, safe='')}&form_factor=desktop"
+            domain_slug = self._url_to_filename(url)
+
             async with async_playwright() as p:
-                browser = await p.chromium.launch(headless=True)
-                context = await browser.new_context(
-                    viewport=self.DESKTOP_VIEWPORT,
-                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                browser = await p.chromium.launch(
+                    headless=True,
+                    args=self._BROWSER_ARGS,
                 )
-                page = await context.new_page()
-
                 try:
-                    await page.goto(pagespeed_url, wait_until="networkidle", timeout=120000)
-
-                    # Wait for PageSpeed results to render (look for score gauge)
-                    try:
-                        await page.wait_for_selector(".lh-gauge__percentage", timeout=90000)
-                        await page.wait_for_timeout(2000)  # Extra wait for animations
-                    except:
-                        # If selector not found, wait longer and continue
-                        await page.wait_for_timeout(5000)
-
-                    screenshot_bytes = await page.screenshot(
-                        full_page=False,
-                        type="png",
+                    # --- Mobile screenshot ---
+                    mobile_b64 = await self._capture_pagespeed_page(
+                        browser, mobile_url, f"pagespeed_mobile_{domain_slug}.png",
                     )
 
-                    # Save to file
-                    filepath = self.screenshots_dir / filename
-                    with open(filepath, "wb") as f:
-                        f.write(screenshot_bytes)
+                    # Delay between requests
+                    import asyncio
+                    await asyncio.sleep(3)
 
-                    return self.to_base64(screenshot_bytes)
-
+                    # --- Desktop screenshot ---
+                    desktop_b64 = await self._capture_pagespeed_page(
+                        browser, desktop_url, f"pagespeed_desktop_{domain_slug}.png",
+                    )
                 finally:
                     await browser.close()
 
         except Exception as e:
-            print(f"PageSpeed screenshot error: {e}")
+            logger.warning(f"PageSpeed screenshot session error: {e}")
+
+        return mobile_b64, desktop_b64
+
+    async def _capture_pagespeed_page(self, browser, pagespeed_url: str, filename: str) -> Optional[str]:
+        """Capture a single PageSpeed Insights page using an existing browser."""
+        try:
+            context = await browser.new_context(
+                viewport=self.DESKTOP_VIEWPORT,
+                user_agent=self._STEALTH_UA,
+                locale="en-US",
+            )
+            page = await context.new_page()
+
+            # Hide automation markers
+            await page.add_init_script(
+                "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+            )
+
+            try:
+                logger.info(f"Navigating to {pagespeed_url}")
+                await page.goto(pagespeed_url, wait_until="commit", timeout=120000)
+
+                # Dismiss Google cookie consent banner if present
+                try:
+                    consent = page.locator(
+                        'button:has-text("Accept all"), '
+                        'button:has-text("Reject all"), '
+                        '[aria-label="Accept all"]'
+                    ).first
+                    await consent.click(timeout=5000)
+                    await page.wait_for_timeout(1000)
+                except Exception:
+                    pass
+
+                # Wait for results gauge to appear
+                try:
+                    await page.wait_for_selector(
+                        ".lh-gauge__percentage, .lh-exp-gauge__percentage",
+                        timeout=90000,
+                    )
+                    await page.wait_for_timeout(3000)
+                except Exception:
+                    logger.info("Score gauge not found, waiting extra 10s...")
+                    await page.wait_for_timeout(10000)
+
+                screenshot_bytes = await page.screenshot(full_page=False, type="png")
+
+                filepath = self.screenshots_dir / filename
+                with open(filepath, "wb") as f:
+                    f.write(screenshot_bytes)
+
+                logger.info(f"Screenshot saved: {filename}")
+                return self.to_base64(screenshot_bytes)
+
+            finally:
+                await context.close()
+
+        except Exception as e:
+            logger.warning(f"PageSpeed screenshot error for {pagespeed_url}: {e}")
+            return None
+
+    async def _capture_pagespeed(self, pagespeed_url: str, filename: str) -> Optional[str]:
+        """Capture PageSpeed Insights page (legacy, launches own browser)."""
+        try:
+            from playwright.async_api import async_playwright
+
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(
+                    headless=True,
+                    args=self._BROWSER_ARGS,
+                )
+                try:
+                    return await self._capture_pagespeed_page(
+                        browser, pagespeed_url, filename,
+                    )
+                finally:
+                    await browser.close()
+
+        except Exception as e:
+            logger.warning(f"PageSpeed screenshot error: {e}")
             return None
 
     async def capture_404_page(self, url: str) -> Optional[str]:
@@ -158,7 +248,7 @@ class ScreenshotCapture:
                     await browser.close()
 
         except Exception as e:
-            print(f"Image capture error for {image_url}: {e}")
+            logger.warning(f"Image capture error for {image_url}: {e}")
             return None
 
     async def capture_competitor(self, url: str, index: int = 0) -> Optional[str]:

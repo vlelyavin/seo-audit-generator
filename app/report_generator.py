@@ -281,6 +281,27 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                 if translated_summary:
                     translated.summary = translated_summary
 
+        # Post-process: replace remaining Ukrainian words in summary
+        # (injected via {problems}, {broken}, {sections} placeholders)
+        if lang == 'ru' and translated.summary:
+            _summary_word_map = {
+                'декілька H1': 'несколько H1',
+                'дублів H1': 'дублей H1',
+                'завеликі': 'слишком большие',
+                'застарілий формат': 'устаревший формат',
+                'порожніх': 'пустых',
+                'з малим контентом': 'с малым контентом',
+                'внутрішніх': 'внутренних',
+                'зовнішніх': 'внешних',
+                'глибоких сторінок': 'глубоких страниц',
+                'сирітських': 'сиротских',
+                'помилок': 'ошибок',
+                'попереджень': 'предупреждений',
+            }
+            for ukr, rus in _summary_word_map.items():
+                if ukr in translated.summary:
+                    translated.summary = translated.summary.replace(ukr, rus)
+
     # Translate issues
     for issue in translated.issues:
         # Try to translate message by category
@@ -291,25 +312,50 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
             try:
                 # Handle CMS-specific translations with dynamic CMS name
                 if name == "cms" and issue.category == "cms_detected":
-                    # Extract CMS name from original Ukrainian message
                     cms_match = re.search(r'використовується (.+)$', issue.message)
                     if cms_match and "{cms}" in translated_msg:
-                        cms_name = cms_match.group(1)
-                        issue.message = translated_msg.format(cms=cms_name)
+                        issue.message = translated_msg.format(cms=cms_match.group(1))
                 elif name == "cms" and issue.category == "multiple_cms":
-                    # Extract CMS list from original message
                     cms_match = re.search(r'ознаки: (.+)$', issue.message)
                     if cms_match and "{cms_list}" in translated_msg:
-                        cms_list = cms_match.group(1)
-                        issue.message = translated_msg.format(cms_list=cms_list)
+                        issue.message = translated_msg.format(cms_list=cms_match.group(1))
                 # Try to format with count if available
+                elif issue.count is not None and "{count}" in translated_msg and "{" in translated_msg.replace("{count}", ""):
+                    # Has {count} plus other placeholders — skip, handled below
+                    pass
                 elif issue.count is not None and "{count}" in translated_msg:
                     issue.message = translated_msg.format(count=issue.count)
                 elif "{" not in translated_msg:
                     # No placeholders, use as-is
                     issue.message = translated_msg
-                # If has other placeholders, keep original message
-            except (KeyError, ValueError):
+                else:
+                    # General fallback: extract dynamic values from Ukrainian message
+                    format_kwargs = {}
+                    numbers = re.findall(r'\d+', issue.message)
+
+                    if issue.count is not None:
+                        format_kwargs['count'] = issue.count
+                    elif '{count}' in translated_msg:
+                        # Try to extract ratio like (85/100) first
+                        ratio_match = re.search(r'\((\d+/\d+)\)', issue.message)
+                        if ratio_match:
+                            format_kwargs['count'] = ratio_match.group(1)
+                        elif numbers:
+                            format_kwargs['count'] = numbers[0]
+
+                    # Extract domain for external_links many_links_same_domain
+                    if '{domain}' in translated_msg:
+                        domain_match = re.search(r'на (.+?):', issue.message)
+                        if domain_match:
+                            format_kwargs['domain'] = domain_match.group(1)
+                        # Also try to get count from "domain: N шт."
+                        count_match = re.search(r':\s*(\d+)\s*шт', issue.message)
+                        if count_match:
+                            format_kwargs['count'] = count_match.group(1)
+
+                    if format_kwargs:
+                        issue.message = translated_msg.format(**format_kwargs)
+            except (KeyError, ValueError, IndexError):
                 # If formatting fails, keep original message
                 pass
 
@@ -331,6 +377,23 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
         translated_rec = translator.get(rec_key, "")
         if translated_rec and "{" not in translated_rec:
             issue.recommendation = translated_rec
+
+    # Post-process: replace remaining Ukrainian words in issue messages
+    # (speed FCP/LCP/CLS metrics, content_sections missing features, etc.)
+    if lang == 'ru':
+        _issue_word_map = {
+            'повільний': 'медленный',
+            'високий': 'высокий',
+            'ціль': 'цель',
+            'відсутні елементи:': 'отсутствуют элементы:',
+            'дати публікації': 'даты публикации',
+            'категорії': 'категории',
+        }
+        for issue in translated.issues:
+            if issue.message:
+                for ukr, rus in _issue_word_map.items():
+                    if ukr in issue.message:
+                        issue.message = issue.message.replace(ukr, rus)
 
     # Translate tables
     table_titles = translator.translations.get("table_translations", {}).get("titles", {})
@@ -832,6 +895,7 @@ class ReportGenerator:
             "examples": t("report.examples"),
             "recommendation": t("report.recommendation"),
             "no_issues": t("report.no_issues"),
+            "pagespeed_screenshots": t("report.pagespeed_screenshots"),
         }
 
         # Extract domain
@@ -1046,6 +1110,31 @@ class ReportGenerator:
                             # Alternating row shading
                             if row_idx % 2 == 1:
                                 self._docx_set_cell_shading(cell, 'F9FAFB')
+
+            # Embed PageSpeed screenshots if available
+            if name == "speed" and result.data:
+                mobile_ss = result.data.get("mobile_screenshot")
+                desktop_ss = result.data.get("desktop_screenshot")
+                if mobile_ss or desktop_ss:
+                    import base64 as b64
+                    from io import BytesIO
+
+                    p = doc.add_paragraph()
+                    p.paragraph_format.space_before = Pt(8)
+                    p.paragraph_format.keep_with_next = True
+                    run = p.add_run(t_labels.get("pagespeed_screenshots", "PageSpeed Screenshots"))
+                    self._docx_set_font(run, size_pt=10, bold=True)
+
+                    for label, ss_data in [("📱 Mobile", mobile_ss), ("🖥️ Desktop", desktop_ss)]:
+                        if ss_data:
+                            p = doc.add_paragraph()
+                            p.paragraph_format.space_before = Pt(4)
+                            run = p.add_run(label)
+                            self._docx_set_font(run, size_pt=9, bold=True, color_rgb=(75, 85, 99))
+
+                            img_bytes = b64.b64decode(ss_data)
+                            img_stream = BytesIO(img_bytes)
+                            doc.add_picture(img_stream, width=Inches(6.0))
 
             doc.add_paragraph()  # spacing between sections
 
