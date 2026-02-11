@@ -42,6 +42,12 @@ export async function POST(req: Request) {
     );
   }
 
+  // Enforce plan's maxPages limit
+  const effectiveMaxPages = Math.min(
+    maxPages || user.plan.maxPages,
+    user.plan.maxPages
+  );
+
   // Start audit on FastAPI
   const fastapiRes = await fastapiFetch("/api/audit", {
     method: "POST",
@@ -49,6 +55,7 @@ export async function POST(req: Request) {
       url,
       language,
       analyzers,
+      max_pages: effectiveMaxPages,
     }),
   });
 

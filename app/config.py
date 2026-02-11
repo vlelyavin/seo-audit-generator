@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     MAX_CLICK_DEPTH: int = 3
 
     # Localization
-    LANGUAGE: str = "uk"  # Supported: uk, ru
+    LANGUAGE: str = "uk"  # Supported: uk, ru, en
 
     class Config:
         env_file = ".env"

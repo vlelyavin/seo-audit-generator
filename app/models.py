@@ -30,8 +30,9 @@ class AuditRequest(BaseModel):
     """Request to start a new audit."""
     url: HttpUrl
     include_screenshots: bool = True
-    language: str = "uk"  # Report language: uk (Ukrainian), ru (Russian)
+    language: str = "uk"  # Report language: uk (Ukrainian), ru (Russian), en (English)
     analyzers: Optional[List[str]] = None  # None = all analyzers
+    max_pages: Optional[int] = None  # Override MAX_PAGES (plan-enforced limit)
 
 
 class ImageData(BaseModel):

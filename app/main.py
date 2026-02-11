@@ -85,10 +85,14 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS for development (Next.js on port 3000)
+# CORS — allow frontend origins (dev + production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "https://seo-audit.online",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -306,8 +310,10 @@ async def run_audit(audit_id: str, request: AuditRequest):
 
         pages: Dict[str, PageData] = {}
 
+        max_pages = request.max_pages or settings.MAX_PAGES
+
         async def progress_callback(page: PageData):
-            progress = min(len(pages) / settings.MAX_PAGES * 40, 40)
+            progress = min(len(pages) / max_pages * 40, 40)
             await queue.put(ProgressEvent(
                 status=AuditStatus.CRAWLING,
                 progress=progress,
@@ -319,6 +325,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
 
         crawler = WebCrawler(
             str(request.url),
+            max_pages=max_pages,
             progress_callback=progress_callback,
         )
 
