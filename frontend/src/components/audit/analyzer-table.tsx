@@ -19,7 +19,7 @@ export function AnalyzerTable({ table }: AnalyzerTableProps) {
   const rows = rawRows.map((row) => {
     if (Array.isArray(row)) return row;
     // row is an object - convert to array based on headers order
-    return headers.map((header) => (row as Record<string, unknown>)[header]);
+    return headers.map((header) => (row as Record<string, unknown>)[header] as string | number | boolean | null);
   });
 
   function handleSort(colIndex: number) {
