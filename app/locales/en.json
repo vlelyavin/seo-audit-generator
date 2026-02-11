@@ -16,6 +16,16 @@
     "collapse": "Collapse",
     "examples": "Examples:"
   },
+  "progress": {
+    "crawling_start": "Starting site crawl...",
+    "crawling_pages": "Crawled {count} pages",
+    "crawling_complete": "Crawling complete. Found {count} pages.",
+    "analyzing_start": "Analyzing pages...",
+    "analyzing_analyzer": "Analysis: {name}...",
+    "generating_report": "Generating report...",
+    "completed": "Audit complete!",
+    "failed": "Error: {error}"
+  },
   "table_translations": {
     "titles": {
       "Биті посилання": "Broken Links",

@@ -14,7 +14,13 @@ export function AnalyzerTable({ table }: AnalyzerTableProps) {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
   const headers = table.headers || [];
-  const rows = table.rows || [];
+  // Convert dict rows to arrays (backend compatibility)
+  const rawRows = table.rows || [];
+  const rows = rawRows.map((row) => {
+    if (Array.isArray(row)) return row;
+    // row is an object - convert to array based on headers order
+    return headers.map((header) => (row as Record<string, unknown>)[header]);
+  });
 
   function handleSort(colIndex: number) {
     if (sortCol === colIndex) {

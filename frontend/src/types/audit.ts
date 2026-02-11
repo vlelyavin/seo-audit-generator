@@ -41,7 +41,7 @@ export interface AnalyzerResult {
 export interface TableData {
   title?: string;
   headers: string[];
-  rows: (string | number | boolean | null)[][];
+  rows: (string | number | boolean | null)[][] | Record<string, string | number | boolean | null>[];
 }
 
 /** Mirrors Python ProgressEvent */

@@ -16,6 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
 from .crawler import WebCrawler
+from .i18n import t
 from .models import (
     AuditRequest,
     AuditResult,
@@ -298,13 +299,16 @@ async def run_audit(audit_id: str, request: AuditRequest):
     queue = audit_queues[audit_id]
     audit = audits[audit_id]
 
+    # Get language for progress messages
+    lang = audit.language if audit.language else "uk"
+
     try:
         # Phase 1: Crawling
         audit.status = AuditStatus.CRAWLING
         await queue.put(ProgressEvent(
             status=AuditStatus.CRAWLING,
             progress=0,
-            message="Розпочинаємо сканування сайту...",
+            message=t("progress.crawling_start", lang),
             stage="crawling",
         ))
 
@@ -317,7 +321,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
             await queue.put(ProgressEvent(
                 status=AuditStatus.CRAWLING,
                 progress=progress,
-                message=f"Скановано {len(pages)} сторінок",
+                message=t("progress.crawling_pages", lang, count=len(pages)),
                 current_url=page.url,
                 pages_crawled=len(pages),
                 stage="crawling",
@@ -338,7 +342,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         await queue.put(ProgressEvent(
             status=AuditStatus.CRAWLING,
             progress=40,
-            message=f"Сканування завершено. Знайдено {len(pages)} сторінок.",
+            message=t("progress.crawling_complete", lang, count=len(pages)),
             pages_crawled=len(pages),
             stage="crawling",
         ))
@@ -360,7 +364,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         await queue.put(ProgressEvent(
             status=AuditStatus.ANALYZING,
             progress=40,
-            message="Аналізуємо сторінки...",
+            message=t("progress.analyzing_start", lang),
             pages_crawled=len(pages),
             stage="analyzing",
         ))
@@ -374,7 +378,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
             await queue.put(ProgressEvent(
                 status=AuditStatus.ANALYZING,
                 progress=40 + ((i + 1) / len(analyzers) * 40),
-                message=f"Аналіз: {analyzer.display_name}...",
+                message=t("progress.analyzing_analyzer", lang, name=analyzer.display_name),
                 pages_crawled=len(pages),
                 stage="analyzing",
             ))
@@ -406,7 +410,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         await queue.put(ProgressEvent(
             status=AuditStatus.GENERATING_REPORT,
             progress=85,
-            message="Генеруємо звіт...",
+            message=t("progress.generating_report", lang),
             pages_crawled=len(pages),
             stage="report",
         ))
@@ -422,7 +426,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         await queue.put(ProgressEvent(
             status=AuditStatus.COMPLETED,
             progress=100,
-            message="Аудит завершено!",
+            message=t("progress.completed", lang),
             pages_crawled=len(pages),
             stage="complete",
         ))
@@ -434,7 +438,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         await queue.put(ProgressEvent(
             status=AuditStatus.FAILED,
             progress=0,
-            message=f"Помилка: {str(e)}",
+            message=t("progress.failed", lang, error=str(e)),
             stage="error",
         ))
 

@@ -15,6 +15,16 @@
     "expand_more": "Розгорнути ще",
     "collapse": "Згорнути"
   },
+  "progress": {
+    "crawling_start": "Розпочинаємо сканування сайту...",
+    "crawling_pages": "Скановано {count} сторінок",
+    "crawling_complete": "Сканування завершено. Знайдено {count} сторінок.",
+    "analyzing_start": "Аналізуємо сторінки...",
+    "analyzing_analyzer": "Аналіз: {name}...",
+    "generating_report": "Генеруємо звіт...",
+    "completed": "Аудит завершено!",
+    "failed": "Помилка: {error}"
+  },
   "report": {
     "title": "SEO Аудит",
     "generated_at": "Звіт згенеровано",

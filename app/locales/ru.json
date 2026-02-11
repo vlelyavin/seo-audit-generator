@@ -16,6 +16,16 @@
     "collapse": "Свернуть",
     "examples": "Примеры:"
   },
+  "progress": {
+    "crawling_start": "Начинаем сканирование сайта...",
+    "crawling_pages": "Отсканировано {count} страниц",
+    "crawling_complete": "Сканирование завершено. Найдено {count} страниц.",
+    "analyzing_start": "Анализируем страницы...",
+    "analyzing_analyzer": "Анализ: {name}...",
+    "generating_report": "Генерируем отчёт...",
+    "completed": "Аудит завершён!",
+    "failed": "Ошибка: {error}"
+  },
   "table_translations": {
     "titles": {
       "Биті посилання": "Битые ссылки",
