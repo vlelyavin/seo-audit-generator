@@ -23,7 +23,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
     <div className="mx-auto max-w-xl py-16">
       <div className="rounded-xl border bg-white p-8 dark:border-gray-800 dark:bg-gray-900">
         <div className="mb-6 flex items-center justify-center">
-          <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
+          <Loader2 className="h-10 w-10 animate-spin text-white dark:text-white" />
         </div>
 
         <h2 className="mb-2 text-center text-lg font-semibold text-gray-900 dark:text-white">
@@ -42,7 +42,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
             <div
-              className="h-full rounded-full bg-blue-600 transition-all duration-500"
+              className="h-full rounded-full bg-white dark:bg-white transition-all duration-500"
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -60,7 +60,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
                     isPast
                       ? "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400"
                       : isActive
-                        ? "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                        ? "bg-gray-100 text-gray-900 dark:bg-[#1a1a1a] dark:text-white"
                         : "bg-gray-100 text-gray-400 dark:bg-gray-800"
                   }`}
                 >
@@ -69,7 +69,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
                 <span
                   className={`text-xs ${
                     isActive
-                      ? "font-medium text-blue-600 dark:text-blue-400"
+                      ? "font-medium text-gray-900 dark:text-white"
                       : "text-gray-400"
                   }`}
                 >

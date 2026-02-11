@@ -14,13 +14,13 @@
   --color-card-foreground: 17 24 39;
   --color-border: 229 231 235;
   --color-input: 229 231 235;
-  --color-ring: 59 130 246;
+  --color-ring: 160 160 160;
 
   /* Semantic colors - preserved in both modes */
   --color-success: 16 185 129;
   --color-warning: 245 158 11;
   --color-error: 239 68 68;
-  --color-info: 59 130 246;
+  --color-info: 160 160 160;
   --color-critical: 220 38 38;
 }
 
@@ -32,7 +32,7 @@
   --color-card-foreground: 255 255 255; /* Pure white */
   --color-border: 26 26 26;            /* Dark gray #1a1a1a */
   --color-input: 26 26 26;             /* Dark gray */
-  --color-ring: 59 130 246;            /* Blue accent */
+  --color-ring: 160 160 160;            /* Light gray accent */
   --color-accent: 20 20 20;            /* Slightly lighter #141414 */
   --color-accent-foreground: 255 255 255;
   --color-muted: 26 26 26;
@@ -50,7 +50,7 @@
     --color-card-foreground: 255 255 255;
     --color-border: 26 26 26;
     --color-input: 26 26 26;
-    --color-ring: 59 130 246;
+    --color-ring: 160 160 160;
     --color-accent: 20 20 20;
     --color-accent-foreground: 255 255 255;
     --color-muted: 26 26 26;

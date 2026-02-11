@@ -103,7 +103,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
                   result.severity === "error" && "bg-red-500",
                   result.severity === "warning" && "bg-yellow-500",
                   result.severity === "success" && "bg-green-500",
-                  result.severity === "info" && "bg-blue-500"
+                  result.severity === "info" && "bg-gray-500 dark:bg-gray-400"
                 )}
               />
               <span className="truncate">{result.display_name}</span>
@@ -116,7 +116,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
       <div className="min-w-0 flex-1 space-y-6">
         {/* Summary stat cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard icon={BarChart3} label="Pages Crawled" value={pagesCrawled} color="blue" />
+          <StatCard icon={BarChart3} label="Pages Crawled" value={pagesCrawled} color="gray" />
           <StatCard icon={CheckCircle} label="Passed" value={passedChecks} color="green" />
           <StatCard icon={AlertTriangle} label="Warnings" value={warnings} color="yellow" />
           <StatCard icon={XCircle} label="Critical" value={criticalIssues} color="red" />
@@ -149,7 +149,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search issues..."
-              className="w-full rounded-lg border py-1.5 pl-8 pr-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+              className="w-full rounded-lg border py-1.5 pl-8 pr-3 text-sm outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-white dark:focus:ring-white/20"
             />
           </div>
 
@@ -208,10 +208,10 @@ function StatCard({
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: number;
-  color: "blue" | "green" | "yellow" | "red";
+  color: "gray" | "green" | "yellow" | "red";
 }) {
   const colorClasses = {
-    blue: "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400",
+    gray: "bg-gray-100 text-gray-900 dark:bg-[#1a1a1a] dark:text-white",
     green: "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400",
     yellow: "bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400",
     red: "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400",

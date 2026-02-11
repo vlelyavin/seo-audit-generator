@@ -172,8 +172,8 @@ export const SEVERITY_COLORS: Record<SeverityLevel, { bg: string; text: string; 
     border: "border-green-200 dark:border-green-800",
   },
   info: {
-    bg: "bg-blue-50 dark:bg-blue-900/20",
-    text: "text-blue-600 dark:text-blue-400",
-    border: "border-blue-200 dark:border-blue-800",
+    bg: "bg-gray-100 dark:bg-[#1a1a1a]",
+    text: "text-gray-900 dark:text-white",
+    border: "border-gray-200 dark:border-[#333333]",
   },
 };

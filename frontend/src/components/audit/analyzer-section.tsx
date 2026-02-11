@@ -86,15 +86,16 @@ export function AnalyzerSection({ result }: AnalyzerSectionProps) {
             <div className="mb-4">
               <button
                 onClick={() => setShowTheory(!showTheory)}
-                className="flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400"
+                className="flex items-center gap-1.5 text-xs font-medium text-gray-900 underline dark:text-white"
               >
                 <BookOpen className="h-3.5 w-3.5" />
                 {showTheory ? "Hide theory" : "Show theory"}
               </button>
               {showTheory && (
-                <div className="mt-2 rounded-lg bg-blue-50/50 p-3 text-xs leading-relaxed text-gray-700 dark:bg-blue-900/10 dark:text-gray-300 whitespace-pre-line">
-                  {result.theory}
-                </div>
+                <div
+                  className="mt-2 rounded-lg bg-gray-100 p-3 text-xs leading-relaxed text-gray-700 dark:bg-[#1a1a1a] dark:text-gray-300"
+                  dangerouslySetInnerHTML={{ __html: result.theory }}
+                />
               )}
             </div>
           )}

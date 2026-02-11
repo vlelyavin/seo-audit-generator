@@ -121,7 +121,7 @@ function renderCell(val: string | number | boolean | null) {
         href={str}
         target="_blank"
         rel="noopener noreferrer"
-        className="max-w-[300px] truncate text-blue-600 hover:underline dark:text-blue-400 block"
+        className="max-w-[300px] truncate text-gray-900 underline dark:text-white block"
       >
         {str}
       </a>

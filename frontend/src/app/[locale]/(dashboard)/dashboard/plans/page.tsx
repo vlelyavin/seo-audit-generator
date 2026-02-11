@@ -58,7 +58,7 @@ export default function PlansPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-white dark:text-white" />
       </div>
     );
   }
@@ -99,15 +99,15 @@ export default function PlansPage() {
               className={cn(
                 "relative rounded-xl border bg-white p-6 dark:bg-gray-900",
                 isCurrent
-                  ? "border-blue-500 ring-2 ring-blue-500/20 dark:border-blue-400"
+                  ? "border-gray-900 ring-2 ring-gray-900/20 dark:border-white dark:ring-white/20"
                   : "border-gray-200 dark:border-gray-800",
                 isAgency &&
-                  "bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/10 dark:to-blue-900/10"
+                  "bg-gray-50 dark:bg-[#0a0a0a]"
               )}
             >
               {isCurrent && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="rounded-full bg-blue-600 px-3 py-1 text-xs font-medium text-white">
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-black dark:bg-white dark:text-black">
                     {t("current")}
                   </span>
                 </div>
@@ -155,8 +155,8 @@ export default function PlansPage() {
                   isCurrent
                     ? "cursor-not-allowed bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
                     : isAgency
-                    ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
+                    ? "bg-white text-black hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                    : "bg-white text-black hover:bg-gray-200 dark:bg-white dark:hover:bg-gray-200"
                 )}
               >
                 {isSwitching ? (
@@ -179,8 +179,8 @@ export default function PlansPage() {
         })}
       </div>
 
-      <div className="rounded-lg border bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
-        <p className="text-sm text-blue-700 dark:text-blue-300">
+      <div className="rounded-lg border bg-gray-100 p-4 dark:border-[#333333] dark:bg-[#1a1a1a]">
+        <p className="text-sm text-gray-900 dark:text-white">
           {t("noBilling")}
         </p>
       </div>

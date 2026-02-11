@@ -30,7 +30,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
         href={`/${locale}/dashboard`}
         className="flex items-center gap-2 font-semibold"
       >
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white text-sm font-bold">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white dark:bg-white text-black text-sm font-bold">
           SA
         </div>
         <span className="hidden sm:inline text-gray-900 dark:text-white">
@@ -58,7 +58,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
         ) : (
           <Link
             href={`/${locale}/login`}
-            className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
+            className="rounded-md bg-white px-3 py-1.5 text-sm font-medium text-black hover:bg-gray-200 dark:bg-white dark:hover:bg-gray-200"
           >
             {t("login")}
           </Link>

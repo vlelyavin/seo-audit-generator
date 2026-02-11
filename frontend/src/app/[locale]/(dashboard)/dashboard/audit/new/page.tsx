@@ -86,7 +86,7 @@ export default function NewAuditPage() {
                 onChange={(e) => setUrl(e.target.value)}
                 required
                 placeholder={t("urlPlaceholder")}
-                className="w-full rounded-lg border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                className="w-full rounded-lg border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-white dark:focus:ring-white/20"
               />
             </div>
           </div>
@@ -99,7 +99,7 @@ export default function NewAuditPage() {
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+              className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-white dark:focus:ring-white/20"
             >
               <option value="en">English</option>
               <option value="uk">Українська</option>
@@ -130,7 +130,7 @@ export default function NewAuditPage() {
                   <button
                     type="button"
                     onClick={() => setSelectedAnalyzers([...ANALYZER_NAMES])}
-                    className="text-xs text-blue-600 hover:underline dark:text-blue-400"
+                    className="text-xs text-gray-900 underline dark:text-white"
                   >
                     {t("selectAll")}
                   </button>
@@ -138,7 +138,7 @@ export default function NewAuditPage() {
                   <button
                     type="button"
                     onClick={() => setSelectedAnalyzers([])}
-                    className="text-xs text-blue-600 hover:underline dark:text-blue-400"
+                    className="text-xs text-gray-900 underline dark:text-white"
                   >
                     {t("deselectAll")}
                   </button>
@@ -153,7 +153,7 @@ export default function NewAuditPage() {
                         type="checkbox"
                         checked={selectedAnalyzers.includes(name)}
                         onChange={() => toggleAnalyzer(name)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-gray-300 text-gray-900 focus:ring-gray-500 dark:border-gray-600 dark:text-white dark:focus:ring-white"
                       />
                       <span className="text-gray-700 dark:text-gray-300">
                         {ANALYZER_LABELS[name]}
@@ -169,7 +169,7 @@ export default function NewAuditPage() {
         <button
           type="submit"
           disabled={loading || !url || selectedAnalyzers.length === 0}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-black hover:bg-gray-200 dark:bg-white dark:hover:bg-gray-200 disabled:opacity-50 transition-colors"
         >
           <Play className="h-4 w-4" />
           {loading ? "..." : t("startAudit")}

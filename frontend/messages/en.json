@@ -52,7 +52,12 @@
     "auditsUsed": "{used} of {total} audits used this month",
     "unlimited": "Unlimited",
     "startAudit": "Start New Audit",
-    "viewAll": "View All"
+    "viewAll": "View All",
+    "page": "{count, plural, =1 {page} other {pages}}",
+    "deleteAudit": "Delete Audit",
+    "confirmDelete": "Are you sure you want to delete this audit?",
+    "confirmDeleteMessage": "This action cannot be undone. All audit data and results will be permanently deleted.",
+    "deleting": "Deleting..."
   },
   "audit": {
     "title": "SEO Audit",

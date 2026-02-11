@@ -28,7 +28,7 @@ export function IssueCard({ issue }: IssueCardProps) {
           "bg-red-500": issue.severity === "error",
           "bg-yellow-500": issue.severity === "warning",
           "bg-green-500": issue.severity === "success",
-          "bg-blue-500": issue.severity === "info",
+          "bg-gray-500 dark:bg-gray-400": issue.severity === "info",
         })} />
         <span className="flex-1 text-gray-800 dark:text-gray-200">
           {issue.message}
@@ -56,7 +56,7 @@ export function IssueCard({ issue }: IssueCardProps) {
           )}
 
           {issue.recommendation && (
-            <div className="mb-2 rounded bg-blue-50 px-2 py-1.5 text-xs text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
+            <div className="mb-2 rounded bg-gray-100 px-2 py-1.5 text-xs text-gray-900 dark:bg-[#1a1a1a] dark:text-white">
               <span className="font-medium">Recommendation: </span>
               {issue.recommendation}
             </div>
@@ -74,7 +74,7 @@ export function IssueCard({ issue }: IssueCardProps) {
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="truncate text-blue-600 hover:underline dark:text-blue-400"
+                      className="truncate text-gray-900 underline dark:text-white"
                     >
                       {url}
                     </a>

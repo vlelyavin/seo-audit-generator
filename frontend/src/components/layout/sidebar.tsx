@@ -123,7 +123,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                    ? "bg-gray-100 text-gray-900 dark:bg-[#1a1a1a] dark:text-white border-l-4 border-gray-900 dark:border-white"
                     : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
                 )}
               >
@@ -149,7 +149,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                        ? "bg-gray-100 text-gray-900 dark:bg-[#1a1a1a] dark:text-white border-l-4 border-gray-900 dark:border-white"
                         : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
                     )}
                   >

@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useLocale } from "next-intl";
 import { Shield, ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 
 interface UserRow {
   id: string;
@@ -17,6 +18,7 @@ interface UserRow {
 
 export default function AdminUsersPage() {
   const { data: session } = useSession();
+  const locale = useLocale();
   const [users, setUsers] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -65,7 +67,7 @@ export default function AdminUsersPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-white dark:border-white border-t-transparent" />
       </div>
     );
   }
@@ -118,7 +120,7 @@ export default function AdminUsersPage() {
                   {user._count.audits}
                 </td>
                 <td className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">
-                  {new Date(user.createdAt).toLocaleDateString()}
+                  {formatDate(user.createdAt, locale)}
                 </td>
               </tr>
             ))}

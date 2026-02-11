@@ -48,15 +48,15 @@ export function LocaleSwitcher() {
         {localeLabels[locale]}
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1 w-32 rounded-lg border bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-900">
+        <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-lg border bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-900">
           {routing.locales.map((loc) => (
             <button
               key={loc}
               onClick={() => switchLocale(loc)}
               className={cn(
-                "block w-full px-3 py-1.5 text-left text-sm",
+                "block w-full whitespace-nowrap px-3 py-1.5 text-left text-sm",
                 loc === locale
-                  ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                  ? "bg-gray-100 text-gray-900 dark:bg-[#1a1a1a] dark:text-white"
                   : "text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
               )}
             >
