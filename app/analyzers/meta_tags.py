@@ -219,7 +219,7 @@ class MetaTagsAnalyzer(BaseAnalyzer):
 
             if table_data:
                 tables.append({
-                    "title": self.t("analyzer_content.meta_tags.issues.table_title",
+                    "title": self.t("analyzer_content.meta_tags.issues.table_title"),
                     "headers": [h_url, h_problem, h_title, h_description],
                     "rows": table_data,
                 })
