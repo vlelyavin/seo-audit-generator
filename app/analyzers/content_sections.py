@@ -141,8 +141,8 @@ class ContentSectionsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="blog_detected",
                 severity=SeverityLevel.SUCCESS,
-                message=self.t("analyzer_content.content_sections.issues.blog_detected", count=len(blog_pages),
-                details=self.t("analyzer_content.content_sections.issues.blog_detected_details",
+                message=self.t("analyzer_content.content_sections.issues.blog_detected", count=len(blog_pages)),
+                details=self.t("analyzer_content.content_sections.issues.blog_detected_details"),
                 affected_urls=blog_pages[:10],
                 count=len(blog_pages),
             ))
@@ -150,27 +150,27 @@ class ContentSectionsAnalyzer(BaseAnalyzer):
             # Check blog quality indicators
             missing_features = []
             if not blog_indicators['has_dates']:
-                missing_features.append(self.t("analyzer_content.content_sections.issues.feature_dates")
+                missing_features.append(self.t("analyzer_content.content_sections.issues.feature_dates"))
             if not blog_indicators['has_categories']:
-                missing_features.append(self.t("analyzer_content.content_sections.issues.feature_categories")
+                missing_features.append(self.t("analyzer_content.content_sections.issues.feature_categories"))
             if not blog_indicators['has_author']:
-                missing_features.append(self.t("analyzer_content.content_sections.issues.feature_author")
+                missing_features.append(self.t("analyzer_content.content_sections.issues.feature_author"))
 
             if missing_features:
                 issues.append(self.create_issue(
                     category="blog_missing_features",
                     severity=SeverityLevel.INFO,
-                    message=self.t("analyzer_content.content_sections.issues.blog_missing_features", features=", ".join(missing_features),
-                    details=self.t("analyzer_content.content_sections.issues.blog_missing_features_details",
-                    recommendation=self.t("analyzer_content.content_sections.issues.blog_missing_features_recommendation",
+                    message=self.t("analyzer_content.content_sections.issues.blog_missing_features", features=", ".join(missing_features)),
+                    details=self.t("analyzer_content.content_sections.issues.blog_missing_features_details"),
+                    recommendation=self.t("analyzer_content.content_sections.issues.blog_missing_features_recommendation"),
                 ))
         else:
             issues.append(self.create_issue(
                 category="no_blog",
                 severity=SeverityLevel.INFO,
-                message=self.t("analyzer_content.content_sections.issues.no_blog",
-                details=self.t("analyzer_content.content_sections.issues.no_blog_details",
-                recommendation=self.t("analyzer_content.content_sections.issues.no_blog_recommendation",
+                message=self.t("analyzer_content.content_sections.issues.no_blog"),
+                details=self.t("analyzer_content.content_sections.issues.no_blog_details"),
+                recommendation=self.t("analyzer_content.content_sections.issues.no_blog_recommendation"),
             ))
 
         if has_faq:
@@ -178,8 +178,8 @@ class ContentSectionsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="faq_detected",
                 severity=SeverityLevel.SUCCESS,
-                message=self.t("analyzer_content.content_sections.issues.faq_detected", count=faq_count,
-                details=self.t("analyzer_content.content_sections.issues.faq_detected_details",
+                message=self.t("analyzer_content.content_sections.issues.faq_detected", count=faq_count),
+                details=self.t("analyzer_content.content_sections.issues.faq_detected_details"),
                 affected_urls=list(set(faq_pages + pages_with_faq_structure))[:10],
                 count=faq_count,
             ))
@@ -189,25 +189,25 @@ class ContentSectionsAnalyzer(BaseAnalyzer):
                 issues.append(self.create_issue(
                     category="faq_no_schema",
                     severity=SeverityLevel.WARNING,
-                    message=self.t("analyzer_content.content_sections.issues.faq_no_schema",
-                    details=self.t("analyzer_content.content_sections.issues.faq_no_schema_details",
-                    recommendation=self.t("analyzer_content.content_sections.issues.faq_no_schema_recommendation",
+                    message=self.t("analyzer_content.content_sections.issues.faq_no_schema"),
+                    details=self.t("analyzer_content.content_sections.issues.faq_no_schema_details"),
+                    recommendation=self.t("analyzer_content.content_sections.issues.faq_no_schema_recommendation"),
                 ))
             else:
                 issues.append(self.create_issue(
                     category="faq_has_schema",
                     severity=SeverityLevel.SUCCESS,
-                    message=self.t("analyzer_content.content_sections.issues.faq_has_schema", count=len(pages_with_schema_faq),
-                    details=self.t("analyzer_content.content_sections.issues.faq_has_schema_details",
+                    message=self.t("analyzer_content.content_sections.issues.faq_has_schema", count=len(pages_with_schema_faq)),
+                    details=self.t("analyzer_content.content_sections.issues.faq_has_schema_details"),
                     affected_urls=pages_with_schema_faq[:5],
                 ))
         else:
             issues.append(self.create_issue(
                 category="no_faq",
                 severity=SeverityLevel.INFO,
-                message=self.t("analyzer_content.content_sections.issues.no_faq",
-                details=self.t("analyzer_content.content_sections.issues.no_faq_details",
-                recommendation=self.t("analyzer_content.content_sections.issues.no_faq_recommendation",
+                message=self.t("analyzer_content.content_sections.issues.no_faq"),
+                details=self.t("analyzer_content.content_sections.issues.no_faq_details"),
+                recommendation=self.t("analyzer_content.content_sections.issues.no_faq_recommendation"),
             ))
 
         # Create summary table
@@ -217,24 +217,24 @@ class ContentSectionsAnalyzer(BaseAnalyzer):
 
         table_data = [
             {
-                h_section: self.t("analyzer_content.content_sections.issues.section_blog",
-                h_status: self.t("analyzer_content.content_sections.issues.status_present" if has_blog else self.t("analyzer_content.content_sections.issues.status_absent",
+                h_section: self.t("analyzer_content.content_sections.issues.section_blog"),
+                h_status: self.t("analyzer_content.content_sections.issues.status_present" if has_blog else self.t("analyzer_content.content_sections.issues.status_absent")),
                 h_count: len(blog_pages) if has_blog else 0,
             },
             {
-                h_section: self.t("analyzer_content.content_sections.issues.section_faq",
-                h_status: self.t("analyzer_content.content_sections.issues.status_present" if has_faq else self.t("analyzer_content.content_sections.issues.status_absent",
+                h_section: self.t("analyzer_content.content_sections.issues.section_faq"),
+                h_status: self.t("analyzer_content.content_sections.issues.status_present" if has_faq else self.t("analyzer_content.content_sections.issues.status_absent")),
                 h_count: len(set(faq_pages + pages_with_faq_structure)) if has_faq else 0,
             },
             {
-                h_section: self.t("analyzer_content.content_sections.issues.section_faq_schema",
-                h_status: self.t("analyzer_content.content_sections.issues.status_present" if pages_with_schema_faq else self.t("analyzer_content.content_sections.issues.status_absent",
+                h_section: self.t("analyzer_content.content_sections.issues.section_faq_schema"),
+                h_status: self.t("analyzer_content.content_sections.issues.status_present" if pages_with_schema_faq else self.t("analyzer_content.content_sections.issues.status_absent")),
                 h_count: len(pages_with_schema_faq),
             },
         ]
 
         tables.append({
-            "title": self.t("analyzer_content.content_sections.issues.table_title",
+            "title": self.t("analyzer_content.content_sections.issues.table_title"),
             "headers": [h_section, h_status, h_count],
             "rows": table_data,
         })

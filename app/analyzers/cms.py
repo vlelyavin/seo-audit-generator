@@ -253,7 +253,7 @@ class CMSAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="cms_detected",
                 severity=SeverityLevel.SUCCESS,
-                message=self.t("analyzer_content.cms.issues.detected", cms=cms_name,
+                message=self.t("analyzer_content.cms.issues.detected", cms=cms_name),
                 details=self.t("analyzer_content.cms.details.detected", evidence=", ".join(evidence[:3])),
                 recommendation=self._get_cms_recommendation(cms_name),
             ))
@@ -264,14 +264,14 @@ class CMSAnalyzer(BaseAnalyzer):
                 issues.append(self.create_issue(
                     category="multiple_cms",
                     severity=SeverityLevel.INFO,
-                    message=self.t("analyzer_content.cms.issues.multiple_detected", cms=", ".join(other_cms),
-                    details=self.t("analyzer_content.cms.issues.multiple_detected_details",
+                    message=self.t("analyzer_content.cms.issues.multiple_detected", cms=", ".join(other_cms)),
+                    details=self.t("analyzer_content.cms.issues.multiple_detected_details"),
                 ))
         else:
             issues.append(self.create_issue(
                 category="cms_unknown",
                 severity=SeverityLevel.INFO,
-                message=self.t("analyzer_content.cms.issues.unknown",
+                message=self.t("analyzer_content.cms.issues.unknown"),
                 details=self.t("analyzer_content.cms.details.unknown"),
             ))
 
@@ -312,4 +312,4 @@ class CMSAnalyzer(BaseAnalyzer):
         cms_key = cms_key_map.get(cms_name)
         if cms_key:
             return self.t(f"analyzers.cms.recommendation_{cms_key}")
-        return self.t("analyzer_content.cms.issues.recommendation_default"
+        return self.t("analyzer_content.cms.issues.recommendation_default")

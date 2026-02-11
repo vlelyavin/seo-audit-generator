@@ -44,9 +44,9 @@ class SecurityAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="no_https",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.security.issues.no_https",
-                details=self.t("analyzer_content.security.issues.no_https_details",
-                recommendation=self.t("analyzer_content.security.issues.no_https_recommendation",
+                message=self.t("analyzer_content.security.issues.no_https"),
+                details=self.t("analyzer_content.security.issues.no_https_details"),
+                recommendation=self.t("analyzer_content.security.issues.no_https_recommendation"),
             ))
 
         # 2. Check security headers on homepage
@@ -63,35 +63,35 @@ class SecurityAnalyzer(BaseAnalyzer):
                 "name": "Strict-Transport-Security (HSTS)",
                 "category": "missing_hsts",
                 "severity": SeverityLevel.WARNING,
-                "message": self.t("analyzer_content.security.issues.missing_hsts",
-                "details": self.t("analyzer_content.security.issues.missing_hsts_details",
-                "recommendation": self.t("analyzer_content.security.issues.missing_hsts_recommendation",
+                "message": self.t("analyzer_content.security.issues.missing_hsts"),
+                "details": self.t("analyzer_content.security.issues.missing_hsts_details"),
+                "recommendation": self.t("analyzer_content.security.issues.missing_hsts_recommendation"),
             },
             "x-content-type-options": {
                 "name": "X-Content-Type-Options",
                 "category": "missing_x_content_type",
                 "severity": SeverityLevel.INFO,
-                "message": self.t("analyzer_content.security.issues.missing_x_content_type",
-                "details": self.t("analyzer_content.security.issues.missing_x_content_type_details",
-                "recommendation": self.t("analyzer_content.security.issues.missing_x_content_type_recommendation",
+                "message": self.t("analyzer_content.security.issues.missing_x_content_type"),
+                "details": self.t("analyzer_content.security.issues.missing_x_content_type_details"),
+                "recommendation": self.t("analyzer_content.security.issues.missing_x_content_type_recommendation"),
                 "expected_value": "nosniff",
             },
             "x-frame-options": {
                 "name": "X-Frame-Options",
                 "category": "missing_x_frame",
                 "severity": SeverityLevel.INFO,
-                "message": self.t("analyzer_content.security.issues.missing_x_frame",
-                "details": self.t("analyzer_content.security.issues.missing_x_frame_details",
-                "recommendation": self.t("analyzer_content.security.issues.missing_x_frame_recommendation",
+                "message": self.t("analyzer_content.security.issues.missing_x_frame"),
+                "details": self.t("analyzer_content.security.issues.missing_x_frame_details"),
+                "recommendation": self.t("analyzer_content.security.issues.missing_x_frame_recommendation"),
                 "expected_values": ["deny", "sameorigin"],
             },
             "content-security-policy": {
                 "name": "Content-Security-Policy (CSP)",
                 "category": "missing_csp",
                 "severity": SeverityLevel.INFO,
-                "message": self.t("analyzer_content.security.issues.missing_csp",
-                "details": self.t("analyzer_content.security.issues.missing_csp_details",
-                "recommendation": self.t("analyzer_content.security.issues.missing_csp_recommendation",
+                "message": self.t("analyzer_content.security.issues.missing_csp"),
+                "details": self.t("analyzer_content.security.issues.missing_csp_details"),
+                "recommendation": self.t("analyzer_content.security.issues.missing_csp_recommendation"),
             },
         }
 
@@ -103,16 +103,16 @@ class SecurityAnalyzer(BaseAnalyzer):
 
                 if header_value:
                     # Header present — check value if needed
-                    status = self.t("analyzer_content.security.issues.status_present"
+                    status = self.t("analyzer_content.security.issues.status_present")
                     value_display = header_value[:80]
 
                     if "expected_value" in header_info:
                         if header_value.lower().strip() != header_info["expected_value"]:
-                            status = self.t("analyzer_content.security.issues.status_invalid"
+                            status = self.t("analyzer_content.security.issues.status_invalid")
 
                     if "expected_values" in header_info:
                         if header_value.lower().strip() not in header_info["expected_values"]:
-                            status = self.t("analyzer_content.security.issues.status_invalid"
+                            status = self.t("analyzer_content.security.issues.status_invalid")
 
                     headers_status[header_key] = {
                         "name": header_info["name"],
@@ -123,7 +123,7 @@ class SecurityAnalyzer(BaseAnalyzer):
                     # Header missing
                     headers_status[header_key] = {
                         "name": header_info["name"],
-                        "status": self.t("analyzer_content.security.issues.status_missing",
+                        "status": self.t("analyzer_content.security.issues.status_missing"),
                         "value": "-",
                     }
                     issues.append(self.create_issue(
@@ -138,8 +138,8 @@ class SecurityAnalyzer(BaseAnalyzer):
             for header_key, header_info in security_headers.items():
                 headers_status[header_key] = {
                     "name": header_info["name"],
-                    "status": self.t("analyzer_content.security.issues.status_unknown",
-                    "value": self.t("analyzer_content.security.issues.status_check_failed",
+                    "status": self.t("analyzer_content.security.issues.status_unknown"),
+                    "value": self.t("analyzer_content.security.issues.status_check_failed"),
                 }
 
         # 3. Check for mixed content on HTTPS pages
@@ -187,10 +187,10 @@ class SecurityAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="mixed_content",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.security.issues.mixed_content", count=len(pages_with_mixed_content),
-                details=self.t("analyzer_content.security.issues.mixed_content_details",
+                message=self.t("analyzer_content.security.issues.mixed_content", count=len(pages_with_mixed_content)),
+                details=self.t("analyzer_content.security.issues.mixed_content_details"),
                 affected_urls=pages_with_mixed_content[:20],
-                recommendation=self.t("analyzer_content.security.issues.mixed_content_recommendation",
+                recommendation=self.t("analyzer_content.security.issues.mixed_content_recommendation"),
                 count=len(pages_with_mixed_content),
             ))
 
@@ -199,8 +199,8 @@ class SecurityAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="security_ok",
                 severity=SeverityLevel.SUCCESS,
-                message=self.t("analyzer_content.security.issues.security_ok",
-                details=self.t("analyzer_content.security.issues.security_ok_details",
+                message=self.t("analyzer_content.security.issues.security_ok"),
+                details=self.t("analyzer_content.security.issues.security_ok_details"),
             ))
 
         # 5. Build security headers table
@@ -213,12 +213,12 @@ class SecurityAnalyzer(BaseAnalyzer):
             info = headers_status.get(header_key, {})
             table_rows.append({
                 h_header: info.get("name", header_key),
-                h_status: info.get("status", self.t("analyzer_content.security.issues.status_unknown"),
+                h_status: info.get("status", self.t("analyzer_content.security.issues.status_unknown")),
                 h_value: info.get("value", "-"),
             })
 
         tables.append({
-            "title": self.t("analyzer_content.security.issues.table_title",
+            "title": self.t("analyzer_content.security.issues.table_title"),
             "headers": [h_header, h_status, h_value],
             "rows": table_rows[:10],
         })

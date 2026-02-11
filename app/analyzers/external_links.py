@@ -97,10 +97,10 @@ class ExternalLinksAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="commercial_no_nofollow",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.external_links.issues.commercial_no_nofollow", count=len(commercial_domains),
-                details=self.t("analyzer_content.external_links.issues.commercial_no_nofollow_details",
+                message=self.t("analyzer_content.external_links.issues.commercial_no_nofollow", count=len(commercial_domains)),
+                details=self.t("analyzer_content.external_links.issues.commercial_no_nofollow_details"),
                 affected_urls=[link['href'] for link in commercial_domains[:20]],
-                recommendation=self.t("analyzer_content.external_links.issues.commercial_no_nofollow_recommendation",
+                recommendation=self.t("analyzer_content.external_links.issues.commercial_no_nofollow_recommendation"),
                 count=len(commercial_domains),
             ))
 
@@ -110,9 +110,9 @@ class ExternalLinksAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="many_dofollow",
                 severity=SeverityLevel.INFO,
-                message=self.t("analyzer_content.external_links.issues.many_dofollow", dofollow=dofollow_count, total=total_external,
-                details=self.t("analyzer_content.external_links.issues.many_dofollow_details",
-                recommendation=self.t("analyzer_content.external_links.issues.many_dofollow_recommendation",
+                message=self.t("analyzer_content.external_links.issues.many_dofollow", dofollow=dofollow_count, total=total_external),
+                details=self.t("analyzer_content.external_links.issues.many_dofollow_details"),
+                recommendation=self.t("analyzer_content.external_links.issues.many_dofollow_recommendation"),
             ))
 
         # Check for suspicious/many links to same domain
@@ -121,9 +121,9 @@ class ExternalLinksAnalyzer(BaseAnalyzer):
                 issues.append(self.create_issue(
                     category="many_links_same_domain",
                     severity=SeverityLevel.INFO,
-                    message=self.t("analyzer_content.external_links.issues.many_links_same_domain", domain=domain, count=count,
-                    details=self.t("analyzer_content.external_links.issues.many_links_same_domain_details", count=count,
-                    recommendation=self.t("analyzer_content.external_links.issues.many_links_same_domain_recommendation",
+                    message=self.t("analyzer_content.external_links.issues.many_links_same_domain", domain=domain, count=count),
+                    details=self.t("analyzer_content.external_links.issues.many_links_same_domain_details", count=count),
+                    recommendation=self.t("analyzer_content.external_links.issues.many_links_same_domain_recommendation"),
                 ))
 
         # Create table with top domains
@@ -146,7 +146,7 @@ class ExternalLinksAnalyzer(BaseAnalyzer):
                 })
 
             tables.append({
-                "title": self.t("analyzer_content.external_links.issues.table_title",
+                "title": self.t("analyzer_content.external_links.issues.table_title"),
                 "headers": [h_domain, h_count, h_nofollow],
                 "rows": table_data,
             })

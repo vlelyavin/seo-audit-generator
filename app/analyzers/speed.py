@@ -61,17 +61,17 @@ class SpeedAnalyzer(BaseAnalyzer):
         pagespeed_result = await self._get_pagespeed_insights(base_url)
 
         if not pagespeed_result.mobile and not pagespeed_result.desktop:
-            error_details = pagespeed_result.error or self.t("analyzer_content.speed.issues.api_unavailable"
+            error_details = pagespeed_result.error or self.t("analyzer_content.speed.issues.api_unavailable")
             issues.append(self.create_issue(
                 category="pagespeed_unavailable",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.speed.issues.no_data",
+                message=self.t("analyzer_content.speed.issues.no_data"),
                 details=error_details,
-                recommendation=self.t("analyzer_content.speed.issues.check_manually",
+                recommendation=self.t("analyzer_content.speed.issues.check_manually"),
             ))
             return self.create_result(
                 severity=SeverityLevel.WARNING,
-                summary=self.t("analyzer_content.speed.issues.no_speed_data",
+                summary=self.t("analyzer_content.speed.issues.no_speed_data"),
                 issues=issues,
                 data={"error": error_details},
             )
@@ -87,17 +87,17 @@ class SpeedAnalyzer(BaseAnalyzer):
                 issues.append(self.create_issue(
                     category="mobile_score_critical",
                     severity=SeverityLevel.ERROR,
-                    message=self.t("analyzer_content.speed.issues.mobile_critical", score=mobile.score,
-                    details=self.t("analyzer_content.speed.issues.mobile_critical_details",
-                    recommendation=self.t("analyzer_content.speed.issues.mobile_critical_recommendation",
+                    message=self.t("analyzer_content.speed.issues.mobile_critical", score=mobile.score),
+                    details=self.t("analyzer_content.speed.issues.mobile_critical_details"),
+                    recommendation=self.t("analyzer_content.speed.issues.mobile_critical_recommendation"),
                 ))
             elif mobile.score < 70:
                 issues.append(self.create_issue(
                     category="mobile_score_low",
                     severity=SeverityLevel.WARNING,
-                    message=self.t("analyzer_content.speed.issues.mobile_low", score=mobile.score,
-                    details=self.t("analyzer_content.speed.issues.mobile_low_details",
-                    recommendation=self.t("analyzer_content.speed.issues.mobile_low_recommendation",
+                    message=self.t("analyzer_content.speed.issues.mobile_low", score=mobile.score),
+                    details=self.t("analyzer_content.speed.issues.mobile_low_details"),
+                    recommendation=self.t("analyzer_content.speed.issues.mobile_low_recommendation"),
                 ))
 
         # Analyze desktop results
@@ -110,17 +110,17 @@ class SpeedAnalyzer(BaseAnalyzer):
                 issues.append(self.create_issue(
                     category="desktop_score_critical",
                     severity=SeverityLevel.ERROR,
-                    message=self.t("analyzer_content.speed.issues.desktop_critical", score=desktop.score,
-                    details=self.t("analyzer_content.speed.issues.desktop_critical_details",
-                    recommendation=self.t("analyzer_content.speed.issues.desktop_critical_recommendation",
+                    message=self.t("analyzer_content.speed.issues.desktop_critical", score=desktop.score),
+                    details=self.t("analyzer_content.speed.issues.desktop_critical_details"),
+                    recommendation=self.t("analyzer_content.speed.issues.desktop_critical_recommendation"),
                 ))
             elif desktop.score < 70:
                 issues.append(self.create_issue(
                     category="desktop_score_low",
                     severity=SeverityLevel.WARNING,
-                    message=self.t("analyzer_content.speed.issues.desktop_low", score=desktop.score,
-                    details=self.t("analyzer_content.speed.issues.desktop_low_details",
-                    recommendation=self.t("analyzer_content.speed.issues.desktop_low_recommendation",
+                    message=self.t("analyzer_content.speed.issues.desktop_low", score=desktop.score),
+                    details=self.t("analyzer_content.speed.issues.desktop_low_details"),
+                    recommendation=self.t("analyzer_content.speed.issues.desktop_low_recommendation"),
                 ))
 
         # Create metrics table
@@ -181,7 +181,7 @@ class SpeedAnalyzer(BaseAnalyzer):
 
         if table_data:
             tables.append({
-                "title": self.t("analyzer_content.speed.issues.table_title",
+                "title": self.t("analyzer_content.speed.issues.table_title"),
                 "headers": [
                     self.t("tables.metric"),
                     "Mobile",
@@ -244,7 +244,7 @@ class SpeedAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category=f"{device.lower()}_fcp_slow",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.speed.issues.fcp_slow", device=device, value=f"{metrics.fcp:.1f}", target=targets['fcp'],
+                message=self.t("analyzer_content.speed.issues.fcp_slow", device=device, value=f"{metrics.fcp:.1f}", target=targets['fcp']),
                 details=self.t("analyzer_content.speed.details.fcp"),
                 recommendation=self.t("analyzer_content.speed.recommendations.fcp"),
             ))
@@ -253,7 +253,7 @@ class SpeedAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category=f"{device.lower()}_lcp_slow",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.speed.issues.lcp_slow", device=device, value=f"{metrics.lcp:.1f}", target=targets['lcp'],
+                message=self.t("analyzer_content.speed.issues.lcp_slow", device=device, value=f"{metrics.lcp:.1f}", target=targets['lcp']),
                 details=self.t("analyzer_content.speed.details.lcp"),
                 recommendation=self.t("analyzer_content.speed.recommendations.lcp"),
             ))
@@ -262,7 +262,7 @@ class SpeedAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category=f"{device.lower()}_cls_high",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.speed.issues.cls_high", device=device, value=f"{metrics.cls:.3f}",
+                message=self.t("analyzer_content.speed.issues.cls_high", device=device, value=f"{metrics.cls:.3f}"),
                 details=self.t("analyzer_content.speed.details.cls"),
                 recommendation=self.t("analyzer_content.speed.recommendations.cls"),
             ))

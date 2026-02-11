@@ -142,10 +142,10 @@ class ImagesAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="missing_alt",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.images.issues.missing_alt", count=len(missing_alt),
-                details=self.t("analyzer_content.images.issues.missing_alt_details",
+                message=self.t("analyzer_content.images.issues.missing_alt", count=len(missing_alt)),
+                details=self.t("analyzer_content.images.issues.missing_alt_details"),
                 affected_urls=[img['src'] for img in missing_alt[:10]],
-                recommendation=self.t("analyzer_content.images.issues.missing_alt_recommendation",
+                recommendation=self.t("analyzer_content.images.issues.missing_alt_recommendation"),
                 count=len(missing_alt),
             ))
 
@@ -153,10 +153,10 @@ class ImagesAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="empty_alt",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.images.issues.empty_alt", count=len(empty_alt),
-                details=self.t("analyzer_content.images.issues.empty_alt_details",
+                message=self.t("analyzer_content.images.issues.empty_alt", count=len(empty_alt)),
+                details=self.t("analyzer_content.images.issues.empty_alt_details"),
                 affected_urls=[img['src'] for img in empty_alt[:10]],
-                recommendation=self.t("analyzer_content.images.issues.empty_alt_recommendation",
+                recommendation=self.t("analyzer_content.images.issues.empty_alt_recommendation"),
                 count=len(empty_alt),
             ))
 
@@ -164,10 +164,10 @@ class ImagesAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="legacy_format",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.images.issues.legacy_format", count=len(legacy_format),
-                details=self.t("analyzer_content.images.issues.legacy_format_details",
+                message=self.t("analyzer_content.images.issues.legacy_format", count=len(legacy_format)),
+                details=self.t("analyzer_content.images.issues.legacy_format_details"),
                 affected_urls=[img['src'] for img in legacy_format[:10]],
-                recommendation=self.t("analyzer_content.images.issues.legacy_format_recommendation",
+                recommendation=self.t("analyzer_content.images.issues.legacy_format_recommendation"),
                 count=len(legacy_format),
             ))
 
@@ -175,10 +175,10 @@ class ImagesAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="critical_size",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.images.issues.critical_size", count=len(critical_images),
-                details=self.t("analyzer_content.images.issues.critical_size_details",
+                message=self.t("analyzer_content.images.issues.critical_size", count=len(critical_images)),
+                details=self.t("analyzer_content.images.issues.critical_size_details"),
                 affected_urls=[img['src'] for img in critical_images[:10]],
-                recommendation=self.t("analyzer_content.images.issues.critical_size_recommendation",
+                recommendation=self.t("analyzer_content.images.issues.critical_size_recommendation"),
                 count=len(critical_images),
             ))
 
@@ -186,10 +186,10 @@ class ImagesAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="large_size",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.images.issues.large_size", count=len(large_images),
-                details=self.t("analyzer_content.images.issues.large_size_details",
+                message=self.t("analyzer_content.images.issues.large_size", count=len(large_images)),
+                details=self.t("analyzer_content.images.issues.large_size_details"),
                 affected_urls=[img['src'] for img in large_images[:10]],
-                recommendation=self.t("analyzer_content.images.issues.large_size_recommendation",
+                recommendation=self.t("analyzer_content.images.issues.large_size_recommendation"),
                 count=len(large_images),
             ))
 
@@ -210,7 +210,7 @@ class ImagesAnalyzer(BaseAnalyzer):
             table_data.append({
                 h_image_url: img['src'][:80] + "..." if len(img['src']) > 80 else img['src'],
                 h_size: format_size(img['size']),
-                h_problem: self.t("analyzer_content.images.issues.problem_critical_size",
+                h_problem: self.t("analyzer_content.images.issues.problem_critical_size"),
                 h_page: img['pages'][0] if img['pages'] else "-",
             })
 
@@ -218,13 +218,13 @@ class ImagesAnalyzer(BaseAnalyzer):
             table_data.append({
                 h_image_url: img['src'][:80] + "..." if len(img['src']) > 80 else img['src'],
                 h_size: format_size(img['size']),
-                h_problem: self.t("analyzer_content.images.issues.problem_large_size",
+                h_problem: self.t("analyzer_content.images.issues.problem_large_size"),
                 h_page: img['pages'][0] if img['pages'] else "-",
             })
 
         if table_data:
             tables.append({
-                "title": self.t("analyzer_content.images.issues.table_title",
+                "title": self.t("analyzer_content.images.issues.table_title"),
                 "headers": [h_image_url, h_size, h_problem, h_page],
                 "rows": table_data,
             })

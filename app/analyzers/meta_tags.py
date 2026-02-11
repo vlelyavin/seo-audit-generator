@@ -86,10 +86,10 @@ class MetaTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="missing_title",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.meta_tags.issues.missing_title", count=len(missing_titles),
-                details=self.t("analyzer_content.meta_tags.issues.missing_title_details",
+                message=self.t("analyzer_content.meta_tags.issues.missing_title", count=len(missing_titles)),
+                details=self.t("analyzer_content.meta_tags.issues.missing_title_details"),
                 affected_urls=missing_titles[:20],
-                recommendation=self.t("analyzer_content.meta_tags.issues.missing_title_recommendation",
+                recommendation=self.t("analyzer_content.meta_tags.issues.missing_title_recommendation"),
                 count=len(missing_titles),
             ))
 
@@ -98,10 +98,10 @@ class MetaTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="missing_description",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.meta_tags.issues.missing_description", count=len(missing_descriptions),
-                details=self.t("analyzer_content.meta_tags.issues.missing_description_details",
+                message=self.t("analyzer_content.meta_tags.issues.missing_description", count=len(missing_descriptions)),
+                details=self.t("analyzer_content.meta_tags.issues.missing_description_details"),
                 affected_urls=missing_descriptions[:20],
-                recommendation=self.t("analyzer_content.meta_tags.issues.missing_description_recommendation",
+                recommendation=self.t("analyzer_content.meta_tags.issues.missing_description_recommendation"),
                 count=len(missing_descriptions),
             ))
 
@@ -110,10 +110,10 @@ class MetaTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="short_title",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.meta_tags.issues.short_title", count=len(short_titles),
-                details=self.t("analyzer_content.meta_tags.issues.short_title_details", min=settings.TITLE_MIN_LENGTH, max=settings.TITLE_MAX_LENGTH,
+                message=self.t("analyzer_content.meta_tags.issues.short_title", count=len(short_titles)),
+                details=self.t("analyzer_content.meta_tags.issues.short_title_details", min=settings.TITLE_MIN_LENGTH, max=settings.TITLE_MAX_LENGTH),
                 affected_urls=[url for url, _, _ in short_titles[:20]],
-                recommendation=self.t("analyzer_content.meta_tags.issues.short_title_recommendation",
+                recommendation=self.t("analyzer_content.meta_tags.issues.short_title_recommendation"),
                 count=len(short_titles),
             ))
 
@@ -122,10 +122,10 @@ class MetaTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="long_title",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.meta_tags.issues.long_title", count=len(long_titles),
-                details=self.t("analyzer_content.meta_tags.issues.long_title_details", min=settings.TITLE_MIN_LENGTH, max=settings.TITLE_MAX_LENGTH,
+                message=self.t("analyzer_content.meta_tags.issues.long_title", count=len(long_titles)),
+                details=self.t("analyzer_content.meta_tags.issues.long_title_details", min=settings.TITLE_MIN_LENGTH, max=settings.TITLE_MAX_LENGTH),
                 affected_urls=[url for url, _, _ in long_titles[:20]],
-                recommendation=self.t("analyzer_content.meta_tags.issues.long_title_recommendation",
+                recommendation=self.t("analyzer_content.meta_tags.issues.long_title_recommendation"),
                 count=len(long_titles),
             ))
 
@@ -134,10 +134,10 @@ class MetaTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="short_description",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.meta_tags.issues.short_description", count=len(short_descriptions),
-                details=self.t("analyzer_content.meta_tags.issues.short_description_details", min=settings.DESCRIPTION_MIN_LENGTH, max=settings.DESCRIPTION_MAX_LENGTH,
+                message=self.t("analyzer_content.meta_tags.issues.short_description", count=len(short_descriptions)),
+                details=self.t("analyzer_content.meta_tags.issues.short_description_details", min=settings.DESCRIPTION_MIN_LENGTH, max=settings.DESCRIPTION_MAX_LENGTH),
                 affected_urls=[url for url, _, _ in short_descriptions[:20]],
-                recommendation=self.t("analyzer_content.meta_tags.issues.short_description_recommendation",
+                recommendation=self.t("analyzer_content.meta_tags.issues.short_description_recommendation"),
                 count=len(short_descriptions),
             ))
 
@@ -146,10 +146,10 @@ class MetaTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="long_description",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.meta_tags.issues.long_description", count=len(long_descriptions),
-                details=self.t("analyzer_content.meta_tags.issues.long_description_details", min=settings.DESCRIPTION_MIN_LENGTH, max=settings.DESCRIPTION_MAX_LENGTH,
+                message=self.t("analyzer_content.meta_tags.issues.long_description", count=len(long_descriptions)),
+                details=self.t("analyzer_content.meta_tags.issues.long_description_details", min=settings.DESCRIPTION_MIN_LENGTH, max=settings.DESCRIPTION_MAX_LENGTH),
                 affected_urls=[url for url, _, _ in long_descriptions[:20]],
-                recommendation=self.t("analyzer_content.meta_tags.issues.long_description_recommendation",
+                recommendation=self.t("analyzer_content.meta_tags.issues.long_description_recommendation"),
                 count=len(long_descriptions),
             ))
 
@@ -163,10 +163,10 @@ class MetaTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="duplicate_title",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.meta_tags.issues.duplicate_title", count=len(duplicate_titles),
-                details=self.t("analyzer_content.meta_tags.issues.duplicate_title_details",
+                message=self.t("analyzer_content.meta_tags.issues.duplicate_title", count=len(duplicate_titles)),
+                details=self.t("analyzer_content.meta_tags.issues.duplicate_title_details"),
                 affected_urls=dup_urls[:20],
-                recommendation=self.t("analyzer_content.meta_tags.issues.duplicate_title_recommendation",
+                recommendation=self.t("analyzer_content.meta_tags.issues.duplicate_title_recommendation"),
                 count=sum(duplicate_titles.values()),
             ))
 
@@ -180,10 +180,10 @@ class MetaTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="duplicate_description",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.meta_tags.issues.duplicate_description", count=len(duplicate_descriptions),
-                details=self.t("analyzer_content.meta_tags.issues.duplicate_description_details",
+                message=self.t("analyzer_content.meta_tags.issues.duplicate_description", count=len(duplicate_descriptions)),
+                details=self.t("analyzer_content.meta_tags.issues.duplicate_description_details"),
                 affected_urls=dup_urls[:20],
-                recommendation=self.t("analyzer_content.meta_tags.issues.duplicate_description_recommendation",
+                recommendation=self.t("analyzer_content.meta_tags.issues.duplicate_description_recommendation"),
                 count=sum(duplicate_descriptions.values()),
             ))
 

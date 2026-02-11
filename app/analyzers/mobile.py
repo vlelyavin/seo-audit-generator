@@ -97,8 +97,8 @@ class MobileAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="viewport_ok",
                 severity=SeverityLevel.SUCCESS,
-                message=self.t("analyzer_content.mobile.issues.viewport_ok", count=total_ok,
-                details=self.t("analyzer_content.mobile.issues.viewport_ok_details",
+                message=self.t("analyzer_content.mobile.issues.viewport_ok", count=total_ok),
+                details=self.t("analyzer_content.mobile.issues.viewport_ok_details"),
                 count=total_ok,
             ))
 
@@ -106,10 +106,10 @@ class MobileAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="missing_viewport",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.mobile.issues.missing_viewport", count=len(pages_no_viewport),
-                details=self.t("analyzer_content.mobile.issues.missing_viewport_details",
+                message=self.t("analyzer_content.mobile.issues.missing_viewport", count=len(pages_no_viewport)),
+                details=self.t("analyzer_content.mobile.issues.missing_viewport_details"),
                 affected_urls=pages_no_viewport[:20],
-                recommendation=self.t("analyzer_content.mobile.issues.missing_viewport_recommendation",
+                recommendation=self.t("analyzer_content.mobile.issues.missing_viewport_recommendation"),
                 count=len(pages_no_viewport),
             ))
 
@@ -117,10 +117,10 @@ class MobileAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="bad_viewport",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.mobile.issues.bad_viewport", count=len(pages_bad_viewport),
-                details=self.t("analyzer_content.mobile.issues.bad_viewport_details",
+                message=self.t("analyzer_content.mobile.issues.bad_viewport", count=len(pages_bad_viewport)),
+                details=self.t("analyzer_content.mobile.issues.bad_viewport_details"),
                 affected_urls=pages_bad_viewport[:20],
-                recommendation=self.t("analyzer_content.mobile.issues.bad_viewport_recommendation",
+                recommendation=self.t("analyzer_content.mobile.issues.bad_viewport_recommendation"),
                 count=len(pages_bad_viewport),
             ))
 
@@ -128,10 +128,10 @@ class MobileAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="flash_content",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.mobile.issues.flash_content", count=len(pages_with_flash),
-                details=self.t("analyzer_content.mobile.issues.flash_content_details",
+                message=self.t("analyzer_content.mobile.issues.flash_content", count=len(pages_with_flash)),
+                details=self.t("analyzer_content.mobile.issues.flash_content_details"),
                 affected_urls=pages_with_flash[:20],
-                recommendation=self.t("analyzer_content.mobile.issues.flash_content_recommendation",
+                recommendation=self.t("analyzer_content.mobile.issues.flash_content_recommendation"),
                 count=len(pages_with_flash),
             ))
 

@@ -63,10 +63,10 @@ class ContentAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="empty_pages",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.content.issues.empty_pages", count=len(empty_pages),
-                details=self.t("analyzer_content.content.issues.empty_pages_details",
+                message=self.t("analyzer_content.content.issues.empty_pages", count=len(empty_pages)),
+                details=self.t("analyzer_content.content.issues.empty_pages_details"),
                 affected_urls=empty_pages[:20],
-                recommendation=self.t("analyzer_content.content.issues.empty_pages_recommendation",
+                recommendation=self.t("analyzer_content.content.issues.empty_pages_recommendation"),
                 count=len(empty_pages),
             ))
 
@@ -74,10 +74,10 @@ class ContentAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="thin_content",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.content.issues.thin_content", count=len(thin_content),
-                details=self.t("analyzer_content.content.issues.thin_content_details", min_words=settings.MIN_CONTENT_WORDS,
+                message=self.t("analyzer_content.content.issues.thin_content", count=len(thin_content)),
+                details=self.t("analyzer_content.content.issues.thin_content_details", min_words=settings.MIN_CONTENT_WORDS),
                 affected_urls=[url for url, _ in thin_content[:20]],
-                recommendation=self.t("analyzer_content.content.issues.thin_content_recommendation",
+                recommendation=self.t("analyzer_content.content.issues.thin_content_recommendation"),
                 count=len(thin_content),
             ))
 
@@ -92,19 +92,19 @@ class ContentAnalyzer(BaseAnalyzer):
             table_data.append({
                 h_url: url[:70] + "..." if len(url) > 70 else url,
                 h_word_count: 0,
-                h_status: self.t("analyzer_content.content.issues.status_empty",
+                h_status: self.t("analyzer_content.content.issues.status_empty"),
             })
 
         for url, count in thin_content[:15]:
             table_data.append({
                 h_url: url[:70] + "..." if len(url) > 70 else url,
                 h_word_count: count,
-                h_status: self.t("analyzer_content.content.issues.status_thin",
+                h_status: self.t("analyzer_content.content.issues.status_thin"),
             })
 
         if table_data:
             tables.append({
-                "title": self.t("analyzer_content.content.issues.table_title",
+                "title": self.t("analyzer_content.content.issues.table_title"),
                 "headers": [h_url, h_word_count, h_status],
                 "rows": table_data,
             })

@@ -110,19 +110,19 @@ class SocialTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="og_tags_ok",
                 severity=SeverityLevel.SUCCESS,
-                message=self.t("analyzer_content.social_tags.issues.og_tags_ok", count=total_pages,
-                details=self.t("analyzer_content.social_tags.issues.og_tags_ok_details",
-                recommendation=self.t("analyzer_content.social_tags.issues.og_tags_ok_recommendation",
+                message=self.t("analyzer_content.social_tags.issues.og_tags_ok", count=total_pages),
+                details=self.t("analyzer_content.social_tags.issues.og_tags_ok_details"),
+                recommendation=self.t("analyzer_content.social_tags.issues.og_tags_ok_recommendation"),
                 count=total_pages,
             ))
         elif pages_without_og:
             issues.append(self.create_issue(
                 category="missing_og_tags",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.social_tags.issues.missing_og_tags", count=len(pages_without_og),
-                details=self.t("analyzer_content.social_tags.issues.missing_og_tags_details",
+                message=self.t("analyzer_content.social_tags.issues.missing_og_tags", count=len(pages_without_og)),
+                details=self.t("analyzer_content.social_tags.issues.missing_og_tags_details"),
                 affected_urls=pages_without_og[:20],
-                recommendation=self.t("analyzer_content.social_tags.issues.missing_og_tags_recommendation",
+                recommendation=self.t("analyzer_content.social_tags.issues.missing_og_tags_recommendation"),
                 count=len(pages_without_og),
             ))
 
@@ -130,10 +130,10 @@ class SocialTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="missing_og_image",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.social_tags.issues.missing_og_image", count=len(pages_without_og_image),
-                details=self.t("analyzer_content.social_tags.issues.missing_og_image_details",
+                message=self.t("analyzer_content.social_tags.issues.missing_og_image", count=len(pages_without_og_image)),
+                details=self.t("analyzer_content.social_tags.issues.missing_og_image_details"),
                 affected_urls=pages_without_og_image[:20],
-                recommendation=self.t("analyzer_content.social_tags.issues.missing_og_image_recommendation",
+                recommendation=self.t("analyzer_content.social_tags.issues.missing_og_image_recommendation"),
                 count=len(pages_without_og_image),
             ))
 
@@ -141,10 +141,10 @@ class SocialTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="missing_og_description",
                 severity=SeverityLevel.INFO,
-                message=self.t("analyzer_content.social_tags.issues.missing_og_description", count=len(pages_without_og_description),
-                details=self.t("analyzer_content.social_tags.issues.missing_og_description_details",
+                message=self.t("analyzer_content.social_tags.issues.missing_og_description", count=len(pages_without_og_description)),
+                details=self.t("analyzer_content.social_tags.issues.missing_og_description_details"),
                 affected_urls=pages_without_og_description[:20],
-                recommendation=self.t("analyzer_content.social_tags.issues.missing_og_description_recommendation",
+                recommendation=self.t("analyzer_content.social_tags.issues.missing_og_description_recommendation"),
                 count=len(pages_without_og_description),
             ))
 
@@ -152,17 +152,17 @@ class SocialTagsAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="missing_twitter_card",
                 severity=SeverityLevel.INFO,
-                message=self.t("analyzer_content.social_tags.issues.missing_twitter_card", count=len(pages_without_twitter),
-                details=self.t("analyzer_content.social_tags.issues.missing_twitter_card_details",
+                message=self.t("analyzer_content.social_tags.issues.missing_twitter_card", count=len(pages_without_twitter)),
+                details=self.t("analyzer_content.social_tags.issues.missing_twitter_card_details"),
                 affected_urls=pages_without_twitter[:20],
-                recommendation=self.t("analyzer_content.social_tags.issues.missing_twitter_card_recommendation",
+                recommendation=self.t("analyzer_content.social_tags.issues.missing_twitter_card_recommendation"),
                 count=len(pages_without_twitter),
             ))
 
         # Create table with tag status per page
         if page_tag_status:
             tables.append({
-                "title": self.t("analyzer_content.social_tags.issues.table_title",
+                "title": self.t("analyzer_content.social_tags.issues.table_title"),
                 "headers": ["URL", "og:title", "og:image", "twitter:card"],
                 "rows": page_tag_status[:10],
             })
@@ -177,7 +177,7 @@ class SocialTagsAnalyzer(BaseAnalyzer):
             summary = self.t("analyzer_content.social_tags.issues.summary",
                            og=num_og,
                            twitter=num_twitter,
-                           total=total_pages
+                           total=total_pages)
 
         severity = self._determine_overall_severity(issues)
 

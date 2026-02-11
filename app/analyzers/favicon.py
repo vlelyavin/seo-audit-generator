@@ -97,7 +97,7 @@ class FaviconAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="missing_favicon",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.favicon.issues.missing",
+                message=self.t("analyzer_content.favicon.issues.missing"),
                 details=self.t("analyzer_content.favicon.details.missing"),
                 recommendation=self.t("analyzer_content.favicon.recommendations.missing"),
             ))
@@ -105,18 +105,18 @@ class FaviconAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="no_favicon_ico",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.favicon.issues.no_ico",
-                details=self.t("analyzer_content.favicon.issues.no_ico_details",
-                recommendation=self.t("analyzer_content.favicon.issues.no_ico_recommendation",
+                message=self.t("analyzer_content.favicon.issues.no_ico"),
+                details=self.t("analyzer_content.favicon.issues.no_ico_details"),
+                recommendation=self.t("analyzer_content.favicon.issues.no_ico_recommendation"),
             ))
 
         if not has_apple_icon:
             issues.append(self.create_issue(
                 category="no_apple_touch_icon",
                 severity=SeverityLevel.INFO,
-                message=self.t("analyzer_content.favicon.issues.no_apple",
-                details=self.t("analyzer_content.favicon.issues.no_apple_details",
-                recommendation=self.t("analyzer_content.favicon.issues.no_apple_recommendation",
+                message=self.t("analyzer_content.favicon.issues.no_apple"),
+                details=self.t("analyzer_content.favicon.issues.no_apple_details"),
+                recommendation=self.t("analyzer_content.favicon.issues.no_apple_recommendation"),
             ))
 
         # Check favicon format recommendations
@@ -133,9 +133,9 @@ class FaviconAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="old_favicon_format",
                 severity=SeverityLevel.INFO,
-                message=self.t("analyzer_content.favicon.issues.old_format",
-                details=self.t("analyzer_content.favicon.issues.old_format_details",
-                recommendation=self.t("analyzer_content.favicon.issues.old_format_recommendation",
+                message=self.t("analyzer_content.favicon.issues.old_format"),
+                details=self.t("analyzer_content.favicon.issues.old_format_details"),
+                recommendation=self.t("analyzer_content.favicon.issues.old_format_recommendation"),
             ))
 
         # Summary

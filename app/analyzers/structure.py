@@ -96,10 +96,10 @@ class StructureAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="deep_pages",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.structure.issues.deep_pages", count=len(deep_pages),
-                details=self.t("analyzer_content.structure.issues.deep_pages_details", max_depth=settings.MAX_CLICK_DEPTH,
+                message=self.t("analyzer_content.structure.issues.deep_pages", count=len(deep_pages)),
+                details=self.t("analyzer_content.structure.issues.deep_pages_details", max_depth=settings.MAX_CLICK_DEPTH),
                 affected_urls=[url for url, _ in deep_pages[:20]],
-                recommendation=self.t("analyzer_content.structure.issues.deep_pages_recommendation",
+                recommendation=self.t("analyzer_content.structure.issues.deep_pages_recommendation"),
                 count=len(deep_pages),
             ))
 
@@ -107,10 +107,10 @@ class StructureAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="orphan_pages",
                 severity=SeverityLevel.WARNING,
-                message=self.t("analyzer_content.structure.issues.orphan_pages", count=len(orphan_pages),
-                details=self.t("analyzer_content.structure.issues.orphan_pages_details",
+                message=self.t("analyzer_content.structure.issues.orphan_pages", count=len(orphan_pages)),
+                details=self.t("analyzer_content.structure.issues.orphan_pages_details"),
                 affected_urls=orphan_pages[:20],
-                recommendation=self.t("analyzer_content.structure.issues.orphan_pages_recommendation",
+                recommendation=self.t("analyzer_content.structure.issues.orphan_pages_recommendation"),
                 count=len(orphan_pages),
             ))
 
@@ -118,10 +118,10 @@ class StructureAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="few_internal_links",
                 severity=SeverityLevel.INFO,
-                message=self.t("analyzer_content.structure.issues.few_internal_links", count=len(pages_with_few_links),
-                details=self.t("analyzer_content.structure.issues.few_internal_links_details",
+                message=self.t("analyzer_content.structure.issues.few_internal_links", count=len(pages_with_few_links)),
+                details=self.t("analyzer_content.structure.issues.few_internal_links_details"),
                 affected_urls=[url for url, _ in pages_with_few_links[:20]],
-                recommendation=self.t("analyzer_content.structure.issues.few_internal_links_recommendation",
+                recommendation=self.t("analyzer_content.structure.issues.few_internal_links_recommendation"),
                 count=len(pages_with_few_links),
             ))
 
@@ -129,9 +129,9 @@ class StructureAnalyzer(BaseAnalyzer):
             issues.append(self.create_issue(
                 category="very_deep_structure",
                 severity=SeverityLevel.ERROR,
-                message=self.t("analyzer_content.structure.issues.very_deep_structure", max_depth=max_depth,
-                details=self.t("analyzer_content.structure.issues.very_deep_structure_details",
-                recommendation=self.t("analyzer_content.structure.issues.very_deep_structure_recommendation",
+                message=self.t("analyzer_content.structure.issues.very_deep_structure", max_depth=max_depth),
+                details=self.t("analyzer_content.structure.issues.very_deep_structure_details"),
+                recommendation=self.t("analyzer_content.structure.issues.very_deep_structure_recommendation"),
             ))
 
         # Create table with depth distribution
@@ -152,7 +152,7 @@ class StructureAnalyzer(BaseAnalyzer):
 
         if table_data:
             tables.append({
-                "title": self.t("analyzer_content.structure.issues.table_depth_title",
+                "title": self.t("analyzer_content.structure.issues.table_depth_title"),
                 "headers": [h_depth, h_page_count, h_example],
                 "rows": table_data,
             })
@@ -171,7 +171,7 @@ class StructureAnalyzer(BaseAnalyzer):
                     h_title: title,
                 })
             tables.append({
-                "title": self.t("analyzer_content.structure.issues.table_orphan_title",
+                "title": self.t("analyzer_content.structure.issues.table_orphan_title"),
                 "headers": [h_url, h_title],
                 "rows": orphan_table,
             })
