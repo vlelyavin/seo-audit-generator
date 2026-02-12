@@ -486,6 +486,22 @@ async def run_audit(audit_id: str, request: AuditRequest):
             stage="crawling",
         ))
 
+        # Validate that at least one page was crawled
+        if len(pages) == 0:
+            error_msg = "Failed to crawl any pages. The website may be inaccessible, blocking requests, or the homepage failed to load."
+            audit.status = AuditStatus.FAILED
+            audit.error_message = error_msg
+            audit.completed_at = datetime.utcnow()
+
+            await emit_progress(ProgressEvent(
+                status=AuditStatus.FAILED,
+                progress=0,
+                message=error_msg,
+                stage="error",
+            ))
+
+            return  # Stop processing, don't run analyzers
+
         # Start homepage screenshot as background task (non-blocking)
         screenshot_task = None
         try:

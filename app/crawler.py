@@ -210,6 +210,13 @@ class WebCrawler:
                 if response is None:
                     return PageData(url=url, status_code=0, depth=depth)
 
+                # Wait for lazy-loaded scripts to execute (RocketLazyLoadScripts, etc.)
+                # This allows JavaScript-generated navigation links to appear in the DOM
+                try:
+                    await page.wait_for_timeout(1000)  # 1 second delay for lazy scripts
+                except Exception:
+                    pass  # Non-fatal if timeout fails
+
                 load_time = time.time() - start_time
 
                 # Save response headers
