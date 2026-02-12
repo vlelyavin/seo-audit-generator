@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     MAX_EXTERNAL_LINKS: int = 500
     PARALLEL_REQUESTS: int = 5
 
+    # Performance Optimizations
+    ENABLE_PARALLEL_ANALYZERS: bool = True
+
     # Paths
     REPORTS_DIR: str = "./reports"
     SCREENSHOTS_DIR: str = "./screenshots"

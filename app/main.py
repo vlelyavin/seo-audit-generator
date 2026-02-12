@@ -1,11 +1,15 @@
 """FastAPI application for SEO Audit Tool."""
 
 import asyncio
+import logging
 import time
 import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Tuple, List, Set
+
+# Setup logger
+logger = logging.getLogger(__name__)
 
 from fastapi import FastAPI, HTTPException, Request, BackgroundTasks
 from fastapi.responses import FileResponse, HTMLResponse
@@ -509,25 +513,68 @@ async def run_audit(audit_id: str, request: AuditRequest):
         selected = request.analyzers if request.analyzers else list(ALL_ANALYZERS.keys())
         analyzers = [ALL_ANALYZERS[name]() for name in selected if name in ALL_ANALYZERS]
 
-        results = {}
-        for i, analyzer in enumerate(analyzers):
-            # Set analyzer language before execution
+        # Phase 2: Analysis - Run analyzers in parallel
+        analysis_start = time.time()
+
+        async def run_single_analyzer(analyzer, pages: List[PageData], url: str, lang: str, index: int, total: int):
+            """Run a single analyzer and return its name and result.
+
+            Args:
+                analyzer: Analyzer instance
+                pages: List of crawled pages
+                url: Base URL being audited
+                lang: Language code (uk, ru, en)
+                index: Analyzer index for progress reporting
+                total: Total number of analyzers
+
+            Returns:
+                Tuple of (analyzer_name, analyzer_result)
+            """
             analyzer.set_language(lang)
 
+            # Emit progress for this analyzer
             await emit_progress(ProgressEvent(
                 status=AuditStatus.ANALYZING,
-                progress=40 + ((i + 1) / len(analyzers) * 40),
+                progress=40 + ((index + 1) / total * 40),
                 message=t("progress.analyzing_analyzer", lang, name=analyzer.display_name),
                 pages_crawled=len(pages),
                 stage="analyzing",
             ))
 
             try:
-                result = await analyzer.analyze(pages, str(request.url))
-                results[analyzer.name] = result
+                result = await analyzer.analyze(pages, url)
+                return analyzer.name, result
             except Exception as e:
-                # Log error but continue with other analyzers
-                print(f"Error in {analyzer.name}: {e}")
+                # Log error but don't break other analyzers
+                logger.error(f"Error in {analyzer.name}: {e}", exc_info=e)
+                # Return None to indicate failure
+                return analyzer.name, None
+
+        # Create tasks for all analyzers
+        analyzer_tasks = [
+            run_single_analyzer(analyzer, pages, str(request.url), lang, i, len(analyzers))
+            for i, analyzer in enumerate(analyzers)
+        ]
+
+        # Run all analyzers in parallel
+        analyzer_results = await asyncio.gather(*analyzer_tasks, return_exceptions=True)
+
+        # Process results and handle exceptions
+        results = {}
+        for item in analyzer_results:
+            if isinstance(item, Exception):
+                # Unexpected exception from gather
+                logger.error(f"Analyzer task failed unexpectedly: {item}", exc_info=item)
+                continue
+
+            analyzer_name, result = item
+            if result is not None:
+                results[analyzer_name] = result
+            else:
+                logger.warning(f"Analyzer {analyzer_name} returned no result")
+
+        analysis_duration = time.time() - analysis_start
+        logger.info(f"Analysis phase completed in {analysis_duration:.2f}s")
 
         audit.results = results
 
