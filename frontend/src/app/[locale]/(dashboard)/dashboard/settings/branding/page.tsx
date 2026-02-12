@@ -17,6 +17,7 @@ export default function BrandingPage() {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
 
   const isPro = session?.user?.planId === "pro" || session?.user?.planId === "agency";
 
@@ -75,6 +76,7 @@ export default function BrandingPage() {
 
     // Clear previous errors and start upload
     setUploadError("");
+    setImageError(false);
     setUploading(true);
 
     const formData = new FormData();
@@ -151,18 +153,27 @@ export default function BrandingPage() {
             {t("logo")}
           </label>
           <div className="flex items-center gap-3">
-            {(previewUrl || logoUrl) && (
+            {(previewUrl || logoUrl) && !imageError && (
               <div className="relative">
                 <img
                   src={previewUrl || logoUrl}
                   alt="Logo"
                   className="h-16 w-16 rounded border object-contain dark:border-gray-700"
+                  onError={() => {
+                    console.error("Failed to load logo image:", previewUrl || logoUrl);
+                    setImageError(true);
+                  }}
                 />
                 {uploading && (
                   <div className="absolute inset-0 flex items-center justify-center rounded bg-black/50">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white dark:border-white border-t-transparent dark:border-t-transparent" />
                   </div>
                 )}
+              </div>
+            )}
+            {imageError && (logoUrl || previewUrl) && (
+              <div className="flex h-16 w-16 items-center justify-center rounded border border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+                <span className="text-xs text-gray-400">Failed to load</span>
               </div>
             )}
             <label className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${

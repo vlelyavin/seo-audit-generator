@@ -85,6 +85,9 @@ class Translator:
     def get(self, key: str, default: str = "", **kwargs) -> str:
         """Get translation with default fallback."""
         result = t(key, self.language, **kwargs)
+        if result == key and not default:
+            # Log missing keys for debugging
+            print(f"[i18n] Missing translation key: {key} for language: {self.language}")
         return result if result != key else default
 
 

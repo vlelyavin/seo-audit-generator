@@ -112,7 +112,7 @@ export default function DashboardPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-white dark:border-white border-t-transparent" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-900 dark:border-white border-t-transparent dark:border-t-transparent" />
           </div>
         ) : audits.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">

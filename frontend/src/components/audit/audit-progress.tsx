@@ -23,7 +23,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
     <div className="mx-auto max-w-xl py-16">
       <div className="rounded-xl border bg-white p-8 dark:border-gray-800 dark:bg-gray-900">
         <div className="mb-6 flex items-center justify-center">
-          <Loader2 className="h-10 w-10 animate-spin text-white dark:text-white" />
+          <Loader2 className="h-10 w-10 animate-spin text-gray-900 dark:text-white" />
         </div>
 
         <h2 className="mb-2 text-center text-lg font-semibold text-gray-900 dark:text-white">
@@ -42,7 +42,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
             <div
-              className="h-full rounded-full bg-white dark:bg-white transition-all duration-500"
+              className="h-full rounded-full bg-gray-900 dark:bg-white transition-all duration-500"
               style={{ width: `${pct}%` }}
             />
           </div>

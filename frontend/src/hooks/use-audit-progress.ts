@@ -11,8 +11,8 @@ export function useAuditProgress(fastApiId: string | null) {
   const [progress, setProgress] = useState<ProgressEvent | null>(null);
   const [connected, setConnected] = useState(false);
   const [done, setDone] = useState(false);
-  const [connectionAttempts, setConnectionAttempts] = useState(0);
   const [isPolling, setIsPolling] = useState(false);
+  const connectionAttemptsRef = useRef(0); // Use ref instead of state to avoid re-renders
   const esRef = useRef<EventSource | null>(null);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -55,6 +55,13 @@ export function useAuditProgress(fastApiId: string | null) {
   const connect = useCallback(() => {
     if (!fastApiId || isPolling) return;
 
+    // Check retry limit using ref (doesn't trigger re-render)
+    if (connectionAttemptsRef.current >= MAX_SSE_RETRIES) {
+      console.log('[SSE] Max retries reached, falling back to polling');
+      startPolling();
+      return;
+    }
+
     const fastapiUrl = process.env.NEXT_PUBLIC_FASTAPI_URL || "http://127.0.0.1:8000";
     console.log('[SSE] Attempting connection to:', `${fastapiUrl}/api/audit/${fastApiId}/status`);
     const es = new EventSource(`${fastapiUrl}/api/audit/${fastApiId}/status`);
@@ -63,7 +70,7 @@ export function useAuditProgress(fastApiId: string | null) {
     es.onopen = () => {
       console.log('[SSE] Connection established');
       setConnected(true);
-      setConnectionAttempts(0); // Reset on successful connection
+      connectionAttemptsRef.current = 0; // Reset on successful connection
     };
 
     es.addEventListener("progress", (event) => {
@@ -81,22 +88,34 @@ export function useAuditProgress(fastApiId: string | null) {
     });
 
     es.onerror = () => {
-      console.error('[SSE] Connection error, attempt:', connectionAttempts + 1);
+      connectionAttemptsRef.current += 1;
+      console.error('[SSE] Connection error, attempt:', connectionAttemptsRef.current);
       setConnected(false);
       es.close();
 
-      if (connectionAttempts >= MAX_SSE_RETRIES) {
+      // Don't call connect() here - let the retry happen via setTimeout
+      if (connectionAttemptsRef.current >= MAX_SSE_RETRIES) {
         console.log('[SSE] Max retries reached, falling back to polling');
         startPolling();
       } else {
-        setConnectionAttempts(prev => prev + 1);
-        setTimeout(() => connect(), SSE_RETRY_DELAY);
+        // Schedule retry without recursive call
+        setTimeout(() => {
+          // Only retry if we haven't started polling in the meantime
+          if (!isPolling) {
+            connect();
+          }
+        }, SSE_RETRY_DELAY);
       }
     };
-  }, [fastApiId, connectionAttempts, isPolling, startPolling]);
+  }, [fastApiId, isPolling, startPolling]); // Removed connectionAttempts dependency
 
   useEffect(() => {
+    if (!fastApiId) return;
+
+    // Reset retry counter on new fastApiId
+    connectionAttemptsRef.current = 0;
     connect();
+
     return () => {
       esRef.current?.close();
       if (pollIntervalRef.current) {
@@ -104,7 +123,7 @@ export function useAuditProgress(fastApiId: string | null) {
         pollIntervalRef.current = null;
       }
     };
-  }, [connect]);
+  }, [fastApiId, connect]); // Depend on fastApiId to reset on changes
 
   return { progress, connected, done };
 }
