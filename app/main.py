@@ -171,6 +171,16 @@ async def audit_status(audit_id: str):
     return EventSourceResponse(event_generator())
 
 
+@app.get("/api/audit/{audit_id}/current-status")
+async def get_current_audit_status(audit_id: str):
+    """Get current audit status (for polling, not SSE)."""
+    if audit_id not in audits:
+        raise HTTPException(status_code=404, detail="Audit not found")
+
+    audit = audits[audit_id]
+    return audit.model_dump()
+
+
 @app.get("/api/audit/{audit_id}")
 async def get_audit(audit_id: str):
     """Get audit result."""
