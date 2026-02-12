@@ -47,6 +47,16 @@ export async function GET(
   }
 
   if (!fastapiRes.ok) {
+    // Update database to reflect failure
+    await prisma.audit.update({
+      where: { id },
+      data: {
+        status: "failed",
+        errorMessage: `Failed to retrieve results (HTTP ${fastapiRes.status})`,
+        completedAt: new Date(),
+      },
+    });
+
     return NextResponse.json(
       { error: "Results not available yet" },
       { status: fastapiRes.status }

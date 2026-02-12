@@ -93,7 +93,7 @@ export function AnalyzerSection({ result }: AnalyzerSectionProps) {
               </button>
               {showTheory && (
                 <div
-                  className="mt-2 rounded-lg bg-gray-100 p-3 text-xs leading-relaxed text-gray-700 dark:bg-[#1a1a1a] dark:text-gray-300"
+                  className="mt-2 rounded-lg bg-gray-100 p-3 text-xs leading-relaxed text-gray-700 dark:bg-gray-900 dark:text-gray-300"
                   dangerouslySetInnerHTML={{ __html: result.theory }}
                 />
               )}

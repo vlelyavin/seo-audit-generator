@@ -39,6 +39,40 @@ export async function GET(
     }
 
     const data = await res.json();
+
+    // Update database when terminal state is reached
+    if (data.status === "completed" || data.status === "failed") {
+      const dbAudit = await prisma.audit.findUnique({
+        where: { id },
+        select: { status: true }
+      });
+
+      // Only update if status changed (avoid redundant writes)
+      if (dbAudit && dbAudit.status !== data.status) {
+        if (data.status === "failed") {
+          await prisma.audit.update({
+            where: { id },
+            data: {
+              status: "failed",
+              errorMessage: data.message || "Audit failed",
+              completedAt: new Date(),
+            },
+          });
+          console.log(`[Progress API] Updated audit ${id} to failed status`);
+        } else if (data.status === "completed") {
+          // Only update status/timestamp - results endpoint will add full results
+          await prisma.audit.update({
+            where: { id },
+            data: {
+              status: "completed",
+              completedAt: new Date(),
+            },
+          });
+          console.log(`[Progress API] Updated audit ${id} to completed status`);
+        }
+      }
+    }
+
     return NextResponse.json(data);
   } catch (error) {
     console.error('[Progress API] Error fetching from FastAPI:', error);

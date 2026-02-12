@@ -23,6 +23,7 @@ export async function GET() {
       criticalIssues: true,
       warnings: true,
       passedChecks: true,
+      errorMessage: true,
       startedAt: true,
       completedAt: true,
     },

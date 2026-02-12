@@ -56,7 +56,7 @@ export function LocaleSwitcher() {
               className={cn(
                 "block w-full whitespace-nowrap px-3 py-1.5 text-left text-sm",
                 loc === locale
-                  ? "bg-gray-100 text-gray-900 dark:bg-[#1a1a1a] dark:text-white"
+                  ? "bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white"
                   : "text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
               )}
             >

@@ -83,6 +83,7 @@ model Audit {
   passedChecks   Int       @default(0)
   resultJson     String?
   reportPath     String?
+  errorMessage   String?
   startedAt      DateTime  @default(now())
   completedAt    DateTime?
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)

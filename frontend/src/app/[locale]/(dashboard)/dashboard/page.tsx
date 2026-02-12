@@ -87,7 +87,7 @@ export default function DashboardPage() {
         </div>
         <Link
           href={`/${locale}/dashboard/audit/new`}
-          className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-200 dark:bg-white dark:hover:bg-gray-200 transition-colors"
+          className="flex items-center gap-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 px-4 py-2 text-sm font-medium dark:bg-white dark:text-black dark:hover:bg-gray-200 transition-colors"
         >
           <Plus className="h-4 w-4" />
           {t("startAudit")}
@@ -122,7 +122,7 @@ export default function DashboardPage() {
             </p>
             <Link
               href={`/${locale}/dashboard/audit/new`}
-              className="mt-4 rounded-lg bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-200 dark:bg-white dark:hover:bg-gray-200"
+              className="mt-4 rounded-lg bg-gray-900 text-white hover:bg-gray-800 px-4 py-2 text-sm font-medium dark:bg-white dark:text-black dark:hover:bg-gray-200"
             >
               {t("startAudit")}
             </Link>
@@ -164,6 +164,13 @@ export default function DashboardPage() {
                         </>
                       )}
                     </div>
+                    {audit.status === "failed" && audit.errorMessage && (
+                      <div className="mt-1">
+                        <span className="text-xs text-red-600 dark:text-red-400">
+                          {audit.errorMessage}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <ExternalLink className="h-4 w-4 shrink-0 text-gray-400" />
                 </Link>
@@ -224,7 +231,7 @@ function StatCard({
   color: "gray" | "green" | "yellow" | "red";
 }) {
   const colorClasses = {
-    gray: "bg-gray-100 text-gray-900 dark:bg-[#1a1a1a] dark:text-white",
+    gray: "bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white",
     green: "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400",
     yellow: "bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400",
     red: "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400",

@@ -242,7 +242,7 @@ export default function BrandingPage() {
         <button
           type="submit"
           disabled={saving}
-          className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-black hover:bg-gray-200 dark:bg-white dark:hover:bg-gray-200 disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 px-4 py-2 text-sm font-medium dark:bg-white dark:text-black dark:hover:bg-gray-200 disabled:opacity-50"
         >
           <Save className="h-4 w-4" />
           {saving ? "..." : "Save"}

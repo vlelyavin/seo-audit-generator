@@ -56,7 +56,7 @@ export function IssueCard({ issue }: IssueCardProps) {
           )}
 
           {issue.recommendation && (
-            <div className="mb-2 rounded bg-gray-100 px-2 py-1.5 text-xs text-gray-900 dark:bg-[#1a1a1a] dark:text-white">
+            <div className="mb-2 rounded bg-gray-100 px-2 py-1.5 text-xs text-gray-900 dark:bg-gray-900 dark:text-white">
               <span className="font-medium">Recommendation: </span>
               {issue.recommendation}
             </div>

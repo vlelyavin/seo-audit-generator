@@ -102,12 +102,12 @@ export default function PlansPage() {
                   ? "border-gray-900 ring-2 ring-gray-900/20 dark:border-white dark:ring-white/20"
                   : "border-gray-200 dark:border-gray-800",
                 isAgency &&
-                  "bg-gray-50 dark:bg-[#0a0a0a]"
+                  "bg-gray-50 dark:bg-gray-950"
               )}
             >
               {isCurrent && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-black dark:bg-white dark:text-black">
+                  <span className="rounded-full bg-gray-900 text-white px-3 py-1 text-xs font-medium dark:bg-white dark:text-black">
                     {t("current")}
                   </span>
                 </div>
@@ -155,8 +155,8 @@ export default function PlansPage() {
                   isCurrent
                     ? "cursor-not-allowed bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
                     : isAgency
-                    ? "bg-white text-black hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-                    : "bg-white text-black hover:bg-gray-200 dark:bg-white dark:hover:bg-gray-200"
+                    ? "bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                    : "bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
                 )}
               >
                 {isSwitching ? (

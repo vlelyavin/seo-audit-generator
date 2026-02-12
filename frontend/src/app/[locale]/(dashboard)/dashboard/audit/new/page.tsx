@@ -169,7 +169,7 @@ export default function NewAuditPage() {
         <button
           type="submit"
           disabled={loading || !url || selectedAnalyzers.length === 0}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-black hover:bg-gray-200 dark:bg-white dark:hover:bg-gray-200 disabled:opacity-50 transition-colors"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 px-4 py-3 text-sm font-medium dark:bg-white dark:text-black dark:hover:bg-gray-200 disabled:opacity-50 transition-colors"
         >
           <Play className="h-4 w-4" />
           {loading ? "..." : t("startAudit")}

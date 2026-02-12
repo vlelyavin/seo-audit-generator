@@ -77,6 +77,7 @@ export interface AuditSummary {
   criticalIssues: number;
   warnings: number;
   passedChecks: number;
+  errorMessage?: string | null;
   startedAt: string;
   completedAt?: string | null;
 }
@@ -172,8 +173,8 @@ export const SEVERITY_COLORS: Record<SeverityLevel, { bg: string; text: string; 
     border: "border-green-200 dark:border-green-800",
   },
   info: {
-    bg: "bg-gray-100 dark:bg-[#1a1a1a]",
+    bg: "bg-gray-100 dark:bg-gray-900",
     text: "text-gray-900 dark:text-white",
-    border: "border-gray-200 dark:border-[#333333]",
+    border: "border-gray-200 dark:border-gray-700",
   },
 };
