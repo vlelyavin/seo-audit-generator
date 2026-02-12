@@ -8,6 +8,7 @@ from pathlib import Path
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
+
     # API Keys
     PAGESPEED_API_KEY: Optional[str] = None
 
