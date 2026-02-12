@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
@@ -21,6 +21,28 @@ export default function NewAuditPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Custom page limit state
+  const [maxPages, setMaxPages] = useState<number>(50); // Default to Free plan limit
+  const [planLimit, setPlanLimit] = useState<number>(50); // User's plan max limit
+
+  // Fetch user's plan on mount
+  useEffect(() => {
+    async function fetchUserPlan() {
+      try {
+        const res = await fetch("/api/user/plan");
+        if (res.ok) {
+          const data = await res.json();
+          const limit = data.plan.maxPages || 50;
+          setPlanLimit(limit);
+          setMaxPages(limit); // Set default to plan max
+        }
+      } catch (err) {
+        console.error("Failed to fetch user plan:", err);
+      }
+    }
+    fetchUserPlan();
+  }, []);
+
   function toggleAnalyzer(name: string) {
     setSelectedAnalyzers((prev) =>
       prev.includes(name) ? prev.filter((a) => a !== name) : [...prev, name]
@@ -40,6 +62,7 @@ export default function NewAuditPage() {
           url,
           language,
           analyzers: selectedAnalyzers.length === ANALYZER_NAMES.length ? null : selectedAnalyzers,
+          maxPages, // Send user's custom page limit
         }),
       });
 
@@ -105,6 +128,32 @@ export default function NewAuditPage() {
               <option value="uk">Українська</option>
               <option value="ru">Русский</option>
             </select>
+          </div>
+
+          {/* Max Pages Input */}
+          <div className="mb-5">
+            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              {t("maxPages")}
+              <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
+                (1-{planLimit})
+              </span>
+            </label>
+            <input
+              type="number"
+              min="1"
+              max={planLimit}
+              value={maxPages}
+              onChange={(e) => {
+                const value = parseInt(e.target.value);
+                if (value >= 1 && value <= planLimit) {
+                  setMaxPages(value);
+                }
+              }}
+              className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-white dark:focus:ring-white/20"
+            />
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              {t("maxPagesHint", { limit: planLimit })}
+            </p>
           </div>
 
           {/* Analyzers */}

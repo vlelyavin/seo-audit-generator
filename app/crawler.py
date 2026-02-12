@@ -190,6 +190,9 @@ class WebCrawler:
                     ))
                     seen_external.add(normalized)
 
+        # Debug log: Track link discovery per page
+        print(f"[Crawler] Extracted {len(internal_links)} internal links, {len(external_links)} external links from {base_url}")
+
         return internal_links, external_links
 
     async def _fetch_page(self, context: BrowserContext, url: str, depth: int) -> Optional[PageData]:
@@ -329,7 +332,8 @@ class WebCrawler:
                 try:
                     async with asyncio.timeout(settings.TOTAL_TIMEOUT - 60):
                         while self.queue and len(self.pages) < self.max_pages:
-                            print(f"[Crawler] Queue: {len(self.queue)} URLs, Crawled: {len(self.pages)} pages, Visited: {len(self.visited)} URLs")
+                            # Debug log: Track queue progression
+                            print(f"[Crawler] Loop iteration: Queue={len(self.queue)} URLs, Crawled={len(self.pages)}/{self.max_pages} pages, Visited={len(self.visited)} URLs")
                             # Process batch of URLs
                             batch_size = min(self.parallel_requests, len(self.queue))
                             batch = [self.queue.popleft() for _ in range(batch_size)]
@@ -357,13 +361,30 @@ class WebCrawler:
 
                                 # Add new internal links to queue
                                 if page.status_code == 200:
+                                    links_discovered = 0
+                                    links_added = 0
+                                    links_rejected_visited = 0
+                                    links_rejected_invalid = 0
+
                                     for link in page.internal_links:
+                                        links_discovered += 1
                                         normalized_link = self._normalize_url(link)
-                                        if (normalized_link not in self.visited and
-                                            self._is_valid_url(normalized_link) and
-                                            len(self.pages) < self.max_pages):
+
+                                        if normalized_link in self.visited:
+                                            links_rejected_visited += 1
+                                            continue
+
+                                        if not self._is_valid_url(normalized_link):
+                                            links_rejected_invalid += 1
+                                            continue
+
+                                        if len(self.pages) < self.max_pages:
                                             self.visited.add(normalized_link)
                                             self.queue.append((normalized_link, page.depth + 1))
+                                            links_added += 1
+
+                                    # Debug log: Track link validation results
+                                    print(f"[Crawler] Page {page.url}: Discovered {links_discovered}, Added {links_added}, Rejected (visited: {links_rejected_visited}, invalid: {links_rejected_invalid}), Queue size: {len(self.queue)}")
                 except asyncio.TimeoutError:
                     print(f"[Crawler] Timeout after {settings.TOTAL_TIMEOUT - 60}s. Crawled {len(self.pages)} pages.")
                     # Gracefully exit - caller will receive pages crawled so far
