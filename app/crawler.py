@@ -307,57 +307,52 @@ class WebCrawler:
         Yields PageData for each crawled page.
         Uses Playwright for JavaScript rendering.
         """
-        try:
-            async with asyncio.timeout(settings.TOTAL_TIMEOUT - 60):  # Leave buffer for analysis
-                self.queue.append((self.start_url, 0))  # (url, depth)
-                self.visited.add(self.start_url)
+        # Note: Timeout is handled by run_audit() wrapper for Python 3.7+ compatibility
+        self.queue.append((self.start_url, 0))  # (url, depth)
+        self.visited.add(self.start_url)
 
-                async with async_playwright() as p:
-                    browser = await p.chromium.launch(headless=True)
-                    context = await browser.new_context(
-                        viewport={"width": 1920, "height": 1080},
-                        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                    )
+        async with async_playwright() as p:
+            browser = await p.chromium.launch(headless=True)
+            context = await browser.new_context(
+                viewport={"width": 1920, "height": 1080},
+                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            )
 
-                    try:
-                        while self.queue and len(self.pages) < self.max_pages:
-                            # Process batch of URLs
-                            batch_size = min(self.parallel_requests, len(self.queue))
-                            batch = [self.queue.popleft() for _ in range(batch_size)]
+            try:
+                while self.queue and len(self.pages) < self.max_pages:
+                    # Process batch of URLs
+                    batch_size = min(self.parallel_requests, len(self.queue))
+                    batch = [self.queue.popleft() for _ in range(batch_size)]
 
-                            # Fetch pages concurrently
-                            tasks = [self._fetch_page(context, url, depth) for url, depth in batch]
-                            results = await asyncio.gather(*tasks)
+                    # Fetch pages concurrently
+                    tasks = [self._fetch_page(context, url, depth) for url, depth in batch]
+                    results = await asyncio.gather(*tasks)
 
-                            for page in results:
-                                if page is None:
-                                    continue
+                    for page in results:
+                        if page is None:
+                            continue
 
-                                # Store page data
-                                self.pages[page.url] = page
+                        # Store page data
+                        self.pages[page.url] = page
 
-                                # Notify progress
-                                if self.progress_callback:
-                                    await self.progress_callback(page)
+                        # Notify progress
+                        if self.progress_callback:
+                            await self.progress_callback(page)
 
-                                yield page
+                        yield page
 
-                                # Add new internal links to queue
-                                if page.status_code == 200:
-                                    for link in page.internal_links:
-                                        normalized_link = self._normalize_url(link)
-                                        if (normalized_link not in self.visited and
-                                            self._is_valid_url(normalized_link) and
-                                            len(self.visited) < self.max_pages):
-                                            self.visited.add(normalized_link)
-                                            self.queue.append((normalized_link, page.depth + 1))
+                        # Add new internal links to queue
+                        if page.status_code == 200:
+                            for link in page.internal_links:
+                                normalized_link = self._normalize_url(link)
+                                if (normalized_link not in self.visited and
+                                    self._is_valid_url(normalized_link) and
+                                    len(self.visited) < self.max_pages):
+                                    self.visited.add(normalized_link)
+                                    self.queue.append((normalized_link, page.depth + 1))
 
-                    finally:
-                        await browser.close()
-
-        except asyncio.TimeoutError:
-            print(f"[Crawler] Timeout after {settings.TOTAL_TIMEOUT - 60}s")
-            # Return pages collected so far
+            finally:
+                await browser.close()
 
     async def crawl_all(self) -> Dict[str, PageData]:
         """Crawl all pages and return complete results."""
