@@ -470,7 +470,10 @@ async def run_audit(audit_id: str, request: AuditRequest):
         )
 
         async for page in crawler.crawl():
-            pages[page.url] = page
+            if page.status_code > 0:  # Only store successfully fetched pages
+                pages[page.url] = page
+            else:
+                print(f"[Audit] Skipping failed page {page.url}: {page.error or 'Unknown error'}")
 
         audit.pages_crawled = len(pages)
         audit.pages = pages

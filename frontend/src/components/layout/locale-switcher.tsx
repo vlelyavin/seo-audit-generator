@@ -42,13 +42,13 @@ export function LocaleSwitcher() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+        className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-gray-300 hover:bg-gray-800"
       >
         <Globe className="h-4 w-4" />
         {localeLabels[locale]}
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-lg border bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-900">
+        <div className="absolute right-0 top-full z-50 mt-1 w-44 rounded-lg border border-gray-700 bg-gray-900 py-1 shadow-lg">
           {routing.locales.map((loc) => (
             <button
               key={loc}
@@ -56,8 +56,8 @@ export function LocaleSwitcher() {
               className={cn(
                 "block w-full whitespace-nowrap px-3 py-1.5 text-left text-sm",
                 loc === locale
-                  ? "bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white"
-                  : "text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
+                  ? "bg-gray-800 text-white"
+                  : "text-gray-300 hover:bg-gray-800"
               )}
             >
               {localeLabels[loc]} — {loc === "en" ? "English" : loc === "ru" ? "Русский" : "Українська"}

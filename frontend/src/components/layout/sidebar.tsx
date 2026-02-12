@@ -78,17 +78,17 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r bg-white dark:border-gray-800 dark:bg-gray-950 transition-transform duration-200 lg:static lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-gray-800 bg-gray-950 transition-transform duration-200 lg:static lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex h-14 items-center justify-between border-b px-4 dark:border-gray-800 lg:hidden">
-          <span className="font-semibold text-gray-900 dark:text-white">
+        <div className="flex h-14 items-center justify-between border-b border-gray-800 px-4 lg:hidden">
+          <span className="font-semibold text-white">
             Menu
           </span>
           <button
             onClick={onClose}
-            className="rounded-md p-1.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="rounded-md p-1.5 text-gray-500 hover:bg-gray-800"
           >
             <X className="h-5 w-5" />
           </button>
@@ -123,8 +123,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white border-l-4 border-gray-900 dark:border-white"
-                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                    ? "bg-gray-900 text-white border-l-4 border-white"
+                    : "text-gray-300 hover:bg-gray-800"
                 )}
               >
                 <item.icon className="h-4 w-4" />
@@ -135,8 +135,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 
           {adminItems.length > 0 && (
             <>
-              <div className="my-3 border-t dark:border-gray-800" />
-              <p className="px-3 text-xs font-medium uppercase text-gray-400 dark:text-gray-500">
+              <div className="my-3 border-t border-gray-800" />
+              <p className="px-3 text-xs font-medium uppercase text-gray-500">
                 {t("admin")}
               </p>
               {adminItems.map((item) => {
@@ -149,8 +149,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                       isActive
-                        ? "bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white border-l-4 border-gray-900 dark:border-white"
-                        : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                        ? "bg-gray-900 text-white border-l-4 border-white"
+                        : "text-gray-300 hover:bg-gray-800"
                     )}
                   >
                     <item.icon className="h-4 w-4" />
@@ -163,16 +163,16 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         </nav>
 
         {session?.user && (
-          <div className="border-t p-3 dark:border-gray-800">
+          <div className="border-t border-gray-800 p-3">
             <Link
               href={`/${locale}/dashboard/plans`}
               onClick={onClose}
-              className="block rounded-lg bg-gray-50 p-3 transition-colors hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800"
+              className="block rounded-lg bg-gray-900 p-3 transition-colors hover:bg-gray-800"
             >
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+              <p className="text-xs font-medium text-gray-400">
                 {t("currentPlan")}
               </p>
-              <p className="text-sm font-semibold capitalize text-gray-900 dark:text-white">
+              <p className="text-sm font-semibold capitalize text-white">
                 {session.user.planId}
               </p>
             </Link>

@@ -227,6 +227,7 @@ class WebCrawler:
                 # Check content type
                 content_type = response.headers.get('content-type', '')
                 if 'text/html' not in content_type.lower():
+                    print(f"[Crawler] Skipping non-HTML page {url} (content-type: {content_type})")
                     return None
 
                 # Get rendered HTML after JavaScript execution
@@ -294,8 +295,14 @@ class WebCrawler:
                     final_url=final_url,
                 )
 
+            except asyncio.TimeoutError:
+                print(f"[Crawler] Timeout fetching {url}")
+                return PageData(url=url, status_code=0, depth=depth, error="Timeout")
             except Exception as e:
-                return PageData(url=url, status_code=0, depth=depth)
+                print(f"[Crawler] Error fetching {url}: {type(e).__name__}: {str(e)}")
+                import traceback
+                traceback.print_exc()
+                return PageData(url=url, status_code=0, depth=depth, error=str(e))
 
             finally:
                 if page:
@@ -303,11 +310,10 @@ class WebCrawler:
 
     async def crawl(self) -> AsyncGenerator[PageData, None]:
         """
-        BFS crawl starting from start_url.
+        BFS crawl starting from start_url with timeout.
         Yields PageData for each crawled page.
         Uses Playwright for JavaScript rendering.
         """
-        # Note: Timeout is handled by run_audit() wrapper for Python 3.7+ compatibility
         self.queue.append((self.start_url, 0))  # (url, depth)
         self.visited.add(self.start_url)
 
@@ -319,37 +325,51 @@ class WebCrawler:
             )
 
             try:
-                while self.queue and len(self.pages) < self.max_pages:
-                    # Process batch of URLs
-                    batch_size = min(self.parallel_requests, len(self.queue))
-                    batch = [self.queue.popleft() for _ in range(batch_size)]
+                # Add timeout wrapper (540 seconds for crawling)
+                try:
+                    async with asyncio.timeout(settings.TOTAL_TIMEOUT - 60):
+                        while self.queue and len(self.pages) < self.max_pages:
+                            print(f"[Crawler] Queue: {len(self.queue)} URLs, Crawled: {len(self.pages)} pages, Visited: {len(self.visited)} URLs")
+                            # Process batch of URLs
+                            batch_size = min(self.parallel_requests, len(self.queue))
+                            batch = [self.queue.popleft() for _ in range(batch_size)]
 
-                    # Fetch pages concurrently
-                    tasks = [self._fetch_page(context, url, depth) for url, depth in batch]
-                    results = await asyncio.gather(*tasks)
+                            # Fetch pages concurrently
+                            tasks = [self._fetch_page(context, url, depth) for url, depth in batch]
+                            results = await asyncio.gather(*tasks)
 
-                    for page in results:
-                        if page is None:
-                            continue
+                            for page in results:
+                                if page is None:
+                                    print(f"[Crawler] Skipped URL (returned None)")
+                                    continue
+                                if page.status_code == 0:
+                                    print(f"[Crawler] Skipped failed page {page.url}")
+                                    continue
 
-                        # Store page data
-                        self.pages[page.url] = page
+                                # Store page data
+                                self.pages[page.url] = page
 
-                        # Notify progress
-                        if self.progress_callback:
-                            await self.progress_callback(page)
+                                # Notify progress
+                                if self.progress_callback:
+                                    await self.progress_callback(page)
 
-                        yield page
+                                yield page
 
-                        # Add new internal links to queue
-                        if page.status_code == 200:
-                            for link in page.internal_links:
-                                normalized_link = self._normalize_url(link)
-                                if (normalized_link not in self.visited and
-                                    self._is_valid_url(normalized_link) and
-                                    len(self.visited) < self.max_pages):
-                                    self.visited.add(normalized_link)
-                                    self.queue.append((normalized_link, page.depth + 1))
+                                # Add new internal links to queue
+                                if page.status_code == 200:
+                                    for link in page.internal_links:
+                                        normalized_link = self._normalize_url(link)
+                                        if (normalized_link not in self.visited and
+                                            self._is_valid_url(normalized_link) and
+                                            len(self.pages) < self.max_pages):
+                                            self.visited.add(normalized_link)
+                                            self.queue.append((normalized_link, page.depth + 1))
+                except asyncio.TimeoutError:
+                    print(f"[Crawler] Timeout after {settings.TOTAL_TIMEOUT - 60}s. Crawled {len(self.pages)} pages.")
+                    # Gracefully exit - caller will receive pages crawled so far
+
+                # Log completion stats
+                print(f"[Crawler] Finished. Total pages: {len(self.pages)}, Total discovered: {len(self.visited)}, Queue remaining: {len(self.queue)}")
 
             finally:
                 await browser.close()

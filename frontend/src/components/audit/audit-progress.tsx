@@ -28,33 +28,33 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
     <div className="mx-auto max-w-xl py-16">
       <button
         onClick={() => router.push(`/${locale}/dashboard`)}
-        className="mb-4 flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+        className="mb-4 flex items-center gap-2 text-sm text-gray-400 hover:text-white"
       >
         <ArrowLeft className="h-4 w-4" />
         {t("backToDashboard")}
       </button>
-      <div className="rounded-xl border bg-white p-8 dark:border-gray-800 dark:bg-gray-900">
+      <div className="rounded-xl border border-gray-800 bg-gray-900 p-8">
         <div className="mb-6 flex items-center justify-center">
-          <Loader2 className="h-10 w-10 animate-spin text-gray-900 dark:text-white" />
+          <Loader2 className="h-10 w-10 animate-spin text-white" />
         </div>
 
-        <h2 className="mb-2 text-center text-lg font-semibold text-gray-900 dark:text-white">
+        <h2 className="mb-2 text-center text-lg font-semibold text-white">
           {t("auditInProgress")}
         </h2>
 
-        <p className="mb-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        <p className="mb-6 text-center text-sm text-gray-400">
           {message}
         </p>
 
         {/* Progress bar */}
         <div className="mb-6">
-          <div className="mb-1.5 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+          <div className="mb-1.5 flex items-center justify-between text-xs text-gray-400">
             <span>{Math.round(pct)}%</span>
             {pagesCrawled > 0 && <span>{pagesCrawled} pages</span>}
           </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-gray-700">
             <div
-              className="h-full rounded-full bg-gray-900 dark:bg-white transition-all duration-500"
+              className="h-full rounded-full bg-white transition-all duration-500"
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -70,10 +70,10 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
                 <div
                   className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium ${
                     isPast
-                      ? "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400"
+                      ? "bg-green-900/30 text-green-400"
                       : isActive
-                        ? "bg-gray-100 text-gray-900 dark:bg-[#1a1a1a] dark:text-white"
-                        : "bg-gray-100 text-gray-400 dark:bg-gray-800"
+                        ? "bg-gray-800 text-white"
+                        : "bg-gray-800 text-gray-400"
                   }`}
                 >
                   {isPast ? "\u2713" : i + 1}
@@ -81,7 +81,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
                 <span
                   className={`whitespace-nowrap text-xs ${
                     isActive
-                      ? "font-medium text-gray-900 dark:text-white"
+                      ? "font-medium text-white"
                       : "text-gray-400"
                   }`}
                 >
@@ -94,7 +94,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
 
         {/* Current URL */}
         {progress?.current_url && (
-          <div className="mt-4 overflow-hidden text-ellipsis whitespace-nowrap rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+          <div className="mt-4 overflow-hidden text-ellipsis whitespace-nowrap rounded-lg bg-gray-800 px-3 py-2 text-xs text-gray-400">
             {progress.current_url}
           </div>
         )}

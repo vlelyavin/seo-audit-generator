@@ -79,6 +79,7 @@ class PageData(BaseModel):
     response_headers: Dict[str, str] = Field(default_factory=dict)
     redirect_chain: List[str] = Field(default_factory=list)
     final_url: Optional[str] = None
+    error: Optional[str] = None  # Error message if fetch failed
 
 
 class AuditIssue(BaseModel):

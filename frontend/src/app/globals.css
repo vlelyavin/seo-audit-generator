@@ -18,27 +18,9 @@
   --color-gray-950: #0a0a0a;
 }
 
-/* Pure Black & White Dark Theme - CSS Variables */
+/* Dark Theme Only - CSS Variables */
 :root {
-  /* Light mode colors */
-  --color-background: 255 255 255;
-  --color-foreground: 17 24 39;
-  --color-card: 255 255 255;
-  --color-card-foreground: 17 24 39;
-  --color-border: 229 231 235;
-  --color-input: 229 231 235;
-  --color-ring: 160 160 160;
-
-  /* Semantic colors - preserved in both modes */
-  --color-success: 16 185 129;
-  --color-warning: 245 158 11;
-  --color-error: 239 68 68;
-  --color-info: 160 160 160;
-  --color-critical: 220 38 38;
-}
-
-/* Dark mode - pure black & white */
-.dark {
+  /* Dark theme colors (pure black & white) */
   --color-background: 0 0 0;           /* Pure black #000000 */
   --color-foreground: 255 255 255;      /* Pure white #ffffff */
   --color-card: 10 10 10;              /* Very dark gray #0a0a0a */
@@ -52,23 +34,11 @@
   --color-muted-foreground: 160 160 160; /* Light gray #a0a0a0 */
   --color-secondary: 26 26 26;
   --color-secondary-foreground: 255 255 255;
-}
 
-/* System preference dark mode */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    --color-background: 0 0 0;
-    --color-foreground: 255 255 255;
-    --color-card: 10 10 10;
-    --color-card-foreground: 255 255 255;
-    --color-border: 26 26 26;
-    --color-input: 26 26 26;
-    --color-ring: 160 160 160;
-    --color-accent: 20 20 20;
-    --color-accent-foreground: 255 255 255;
-    --color-muted: 26 26 26;
-    --color-muted-foreground: 160 160 160;
-    --color-secondary: 26 26 26;
-    --color-secondary-foreground: 255 255 255;
-  }
+  /* Semantic colors */
+  --color-success: 16 185 129;
+  --color-warning: 245 158 11;
+  --color-error: 239 68 68;
+  --color-info: 160 160 160;
+  --color-critical: 220 38 38;
 }
