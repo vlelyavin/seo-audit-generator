@@ -78,7 +78,7 @@ ALL_ANALYZERS = {
     "duplicates": DuplicatesAnalyzer,
     "redirects": RedirectsAnalyzer,
 }
-from .report_generator import ReportGenerator, translate_analyzer_content
+from .report_generator import get_report_generator, translate_analyzer_content
 from .i18n import get_translator
 
 # Ensure directories exist
@@ -410,7 +410,7 @@ async def download_report(audit_id: str, format: str = "html"):
 
     elif format == "pdf":
         # Generate PDF on demand
-        generator = ReportGenerator()
+        generator = get_report_generator()
         try:
             pdf_path = await generator.generate_pdf(audit)
         except ImportError as e:
@@ -425,7 +425,7 @@ async def download_report(audit_id: str, format: str = "html"):
 
     elif format == "docx":
         # Generate DOCX on demand
-        generator = ReportGenerator()
+        generator = get_report_generator()
         try:
             docx_path = await generator.generate_docx(audit)
         except ImportError as e:
@@ -656,7 +656,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
             stage="report",
         ))
 
-        generator = ReportGenerator()
+        generator = get_report_generator()
         report_path = await generator.generate(audit)
         audit.report_path = report_path
 

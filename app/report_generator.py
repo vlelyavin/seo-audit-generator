@@ -11,6 +11,9 @@ from .config import settings
 from .i18n import get_translator, _
 from .models import AnalyzerResult, AuditResult, SeverityLevel
 
+# Singleton instance for ReportGenerator
+_report_generator_instance = None
+
 
 def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) -> AnalyzerResult:
     """
@@ -1320,3 +1323,11 @@ class ReportGenerator:
         doc.save(docx_path)
 
         return str(docx_path)
+
+
+def get_report_generator() -> 'ReportGenerator':
+    """Get singleton ReportGenerator instance to cache Jinja2 environment."""
+    global _report_generator_instance
+    if _report_generator_instance is None:
+        _report_generator_instance = ReportGenerator()
+    return _report_generator_instance

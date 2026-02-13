@@ -55,7 +55,7 @@ class DuplicatesAnalyzer(BaseAnalyzer):
             shingles.add(shingle)
         return shingles
 
-    def _create_minhash_signature(self, shingles: set, num_hashes: int = 100) -> List[int]:
+    def _create_minhash_signature(self, shingles: set, num_hashes: int = 50) -> List[int]:
         """Create a MinHash signature from shingles."""
         if not shingles:
             return [0] * num_hashes

@@ -14,6 +14,10 @@ from playwright.async_api import async_playwright, Browser, BrowserContext
 from .config import settings
 from .models import ImageData, LinkData, PageData
 
+# Precompiled regex patterns for performance
+WORD_PATTERN = re.compile(r'\b\w+\b', re.UNICODE)
+WHITESPACE_PATTERN = re.compile(r'\s+', re.UNICODE)
+
 
 class WebCrawler:
     """Async BFS web crawler with Playwright for JavaScript rendering."""
@@ -107,12 +111,12 @@ class WebCrawler:
 
         text = soup.get_text(separator=' ', strip=True)
         # Normalize whitespace
-        text = re.sub(r'\s+', ' ', text)
+        text = WHITESPACE_PATTERN.sub(' ', text)
         return text
 
     def _count_words(self, text: str) -> int:
         """Count words in text."""
-        words = re.findall(r'\b\w+\b', text, re.UNICODE)
+        words = WORD_PATTERN.findall(text)
         return len(words)
 
     def _extract_images(self, soup: BeautifulSoup, base_url: str) -> list[ImageData]:
