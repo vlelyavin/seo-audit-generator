@@ -775,7 +775,9 @@
         "empty_sitemap": "Добавьте URL-адреса страниц в sitemap.xml.",
         "sitemap_urls_not_found": "Проверьте эти URL и удалите несуществующие из sitemap.",
         "pages_not_in_sitemap": "Добавьте важные страницы в sitemap для лучшей индексации.",
-        "sitemap_old_lastmod": "Обновите lastmod даты в sitemap при изменении контента страниц."
+        "sitemap_old_lastmod": "Обновите lastmod даты в sitemap при изменении контента страниц.",
+        "noindex_pages": "Убедитесь, что noindex установлен намеренно. Удалите noindex для страниц, которые нужно индексировать.",
+        "canonical_issues": "Исправьте canonical ссылки или удалите их, если они указывают на несуществующие страницы."
       }
     },
     "structure": {

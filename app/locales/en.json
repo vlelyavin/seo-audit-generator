@@ -775,7 +775,9 @@
         "empty_sitemap": "Add page URLs to sitemap.xml.",
         "sitemap_urls_not_found": "Check these URLs and remove non-existent ones from the sitemap.",
         "pages_not_in_sitemap": "Add important pages to the sitemap for better indexation.",
-        "sitemap_old_lastmod": "Update lastmod dates in the sitemap when page content changes."
+        "sitemap_old_lastmod": "Update lastmod dates in the sitemap when page content changes.",
+        "noindex_pages": "Make sure noindex is set intentionally. Remove noindex from pages that should be indexed.",
+        "canonical_issues": "Fix canonical links or remove them if they point to non-existent pages."
       }
     },
     "structure": {

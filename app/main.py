@@ -623,6 +623,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
 
         # Phase 2: Analysis - Run analyzers in parallel
         analysis_start = time.time()
+        completed_count = [0]  # mutable counter for closures
 
         async def run_single_analyzer(analyzer, pages: Dict[str, PageData], url: str, lang: str, index: int, total: int):
             """Run a single analyzer with concurrency control, timeout, and error handling.
@@ -642,29 +643,31 @@ async def run_audit(audit_id: str, request: AuditRequest):
             async with _analyzer_semaphore:
                 analyzer.set_language(lang)
 
-                # Emit progress for this analyzer
-                await emit_progress(ProgressEvent(
-                    status=AuditStatus.ANALYZING,
-                    progress=40 + ((index + 1) / total * 40),
-                    message=t("progress.analyzing_analyzer", lang, name=analyzer.display_name),
-                    pages_crawled=len(pages),
-                    stage="analyzing",
-                ))
-
                 try:
                     result = await asyncio.wait_for(
                         analyzer.analyze(pages, url),
                         timeout=settings.ANALYZER_TIMEOUT
                     )
-                    return analyzer.name, result
+                    name_result = (analyzer.name, result)
                 except asyncio.TimeoutError:
                     logger.error(f"Analyzer {analyzer.name} timed out after {settings.ANALYZER_TIMEOUT} seconds")
-                    return analyzer.name, None
+                    name_result = (analyzer.name, None)
                 except Exception as e:
                     # Log error but don't break other analyzers
                     logger.error(f"Error in {analyzer.name}: {e}", exc_info=e)
-                    # Return None to indicate failure
-                    return analyzer.name, None
+                    name_result = (analyzer.name, None)
+
+                # Emit progress AFTER completion for accurate reporting
+                completed_count[0] += 1
+                await emit_progress(ProgressEvent(
+                    status=AuditStatus.ANALYZING,
+                    progress=40 + (completed_count[0] / total * 40),
+                    message=t("progress.analyzing_analyzer", lang, name=analyzer.display_name),
+                    pages_crawled=len(pages),
+                    stage="analyzing",
+                ))
+
+                return name_result
 
         # Create tasks for all analyzers
         analyzer_tasks = [
