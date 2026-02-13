@@ -84,6 +84,9 @@ from .i18n import get_translator
 # Ensure directories exist
 settings.ensure_dirs()
 
+# Analyzer concurrency control (max 10 analyzers running simultaneously)
+_analyzer_semaphore = asyncio.Semaphore(10)
+
 # Create FastAPI app
 app = FastAPI(
     title="SEO Audit Tool",
@@ -530,7 +533,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         analysis_start = time.time()
 
         async def run_single_analyzer(analyzer, pages: List[PageData], url: str, lang: str, index: int, total: int):
-            """Run a single analyzer and return its name and result.
+            """Run a single analyzer with concurrency control, timeout, and error handling.
 
             Args:
                 analyzer: Analyzer instance
@@ -543,33 +546,35 @@ async def run_audit(audit_id: str, request: AuditRequest):
             Returns:
                 Tuple of (analyzer_name, analyzer_result)
             """
-            analyzer.set_language(lang)
+            # Limit concurrent analyzers to prevent resource exhaustion
+            async with _analyzer_semaphore:
+                analyzer.set_language(lang)
 
-            # Emit progress for this analyzer
-            await emit_progress(ProgressEvent(
-                status=AuditStatus.ANALYZING,
-                progress=40 + ((index + 1) / total * 40),
-                message=t("progress.analyzing_analyzer", lang, name=analyzer.display_name),
-                pages_crawled=len(pages),
-                stage="analyzing",
-            ))
+                # Emit progress for this analyzer
+                await emit_progress(ProgressEvent(
+                    status=AuditStatus.ANALYZING,
+                    progress=40 + ((index + 1) / total * 40),
+                    message=t("progress.analyzing_analyzer", lang, name=analyzer.display_name),
+                    pages_crawled=len(pages),
+                    stage="analyzing",
+                ))
 
-            try:
-                # Wrap analyzer call with 60-second timeout to prevent hanging audits
-                result = await asyncio.wait_for(
-                    analyzer.analyze(pages, url),
-                    timeout=60
-                )
-                return analyzer.name, result
-            except asyncio.TimeoutError:
-                # Analyzer exceeded timeout
-                logger.error(f"Analyzer {analyzer.name} timed out after 60 seconds")
-                return analyzer.name, None
-            except Exception as e:
-                # Log error but don't break other analyzers
-                logger.error(f"Error in {analyzer.name}: {e}", exc_info=e)
-                # Return None to indicate failure
-                return analyzer.name, None
+                try:
+                    # Wrap analyzer call with 60-second timeout to prevent hanging audits
+                    result = await asyncio.wait_for(
+                        analyzer.analyze(pages, url),
+                        timeout=60
+                    )
+                    return analyzer.name, result
+                except asyncio.TimeoutError:
+                    # Analyzer exceeded timeout
+                    logger.error(f"Analyzer {analyzer.name} timed out after 60 seconds")
+                    return analyzer.name, None
+                except Exception as e:
+                    # Log error but don't break other analyzers
+                    logger.error(f"Error in {analyzer.name}: {e}", exc_info=e)
+                    # Return None to indicate failure
+                    return analyzer.name, None
 
         # Create tasks for all analyzers
         analyzer_tasks = [
@@ -577,25 +582,49 @@ async def run_audit(audit_id: str, request: AuditRequest):
             for i, analyzer in enumerate(analyzers)
         ]
 
-        # Run all analyzers in parallel
-        analyzer_results = await asyncio.gather(*analyzer_tasks, return_exceptions=True)
+        # Execute analyzers (parallel or sequential based on config)
+        if settings.ENABLE_PARALLEL_ANALYZERS:
+            # Parallel execution (default, faster)
+            logger.info(f"Running {len(analyzers)} analyzers in parallel (max 10 concurrent)")
+            analyzer_results = await asyncio.gather(*analyzer_tasks, return_exceptions=True)
+        else:
+            # Sequential execution (for debugging)
+            logger.info(f"Running {len(analyzers)} analyzers sequentially (ENABLE_PARALLEL_ANALYZERS=False)")
+            analyzer_results = []
+            for task in analyzer_tasks:
+                result = await task
+                analyzer_results.append(result)
 
-        # Process results and handle exceptions
+        # Process results and track metadata
         results = {}
+        successful_analyzers = []
+        failed_analyzers = []
+
         for item in analyzer_results:
             if isinstance(item, Exception):
                 # Unexpected exception from gather
                 logger.error(f"Analyzer task failed unexpectedly: {item}", exc_info=item)
+                failed_analyzers.append("unknown")
                 continue
 
             analyzer_name, result = item
             if result is not None:
                 results[analyzer_name] = result
+                successful_analyzers.append(analyzer_name)
             else:
                 logger.warning(f"Analyzer {analyzer_name} returned no result")
+                failed_analyzers.append(analyzer_name)
 
         analysis_duration = time.time() - analysis_start
         logger.info(f"Analysis phase completed in {analysis_duration:.2f}s")
+
+        # Log analyzer execution statistics
+        logger.info(
+            f"Analyzer results: {len(successful_analyzers)}/{len(analyzers)} successful, "
+            f"{len(failed_analyzers)} failed"
+        )
+        if failed_analyzers:
+            logger.warning(f"Failed analyzers: {', '.join(failed_analyzers)}")
 
         audit.results = results
 
