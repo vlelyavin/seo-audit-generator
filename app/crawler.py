@@ -1,6 +1,7 @@
 """Web crawler for SEO audit using Playwright for JavaScript rendering."""
 
 import asyncio
+import gzip
 import logging
 import re
 import time
@@ -231,21 +232,28 @@ class WebCrawler:
                 if chain_urls:
                     redirect_chain = chain_urls + [response.url]
 
-                # Get rendered HTML (needed for both content-type sniffing and parsing)
+                # Check content type
                 content_type = response.headers.get('content-type', '')
                 ct_lower = content_type.lower()
                 is_html = 'text/html' in ct_lower or 'application/xhtml+xml' in ct_lower
 
-                html = await page.content()
-
-                if not is_html:
-                    # Some servers misconfigure Content-Type (e.g. application/octet-stream for HTML)
-                    # Playwright already rendered the page, so check if it actually looks like HTML
-                    html_lower = html[:500].lower()
-                    is_html = '<html' in html_lower or '<!doctype' in html_lower
-
-                if not is_html:
-                    return None
+                if is_html:
+                    # Standard path: browser rendered the page correctly
+                    html = await page.content()
+                else:
+                    # Content-Type doesn't indicate HTML.
+                    # Chromium treats non-HTML as downloads, so page.content() is an empty skeleton.
+                    # Fall back to raw response body — handle gzip if server omits Content-Encoding.
+                    try:
+                        raw_body = await response.body()
+                        if len(raw_body) > 2 and raw_body[:2] == b'\x1f\x8b':
+                            raw_body = gzip.decompress(raw_body)
+                        html = raw_body.decode('utf-8', errors='replace')
+                        html_lower = html[:500].lower()
+                        if '<html' not in html_lower and '<!doctype' not in html_lower:
+                            return None
+                    except Exception:
+                        return None
 
                 soup = BeautifulSoup(html, 'lxml')
 
