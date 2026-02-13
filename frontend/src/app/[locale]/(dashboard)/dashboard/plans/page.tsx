@@ -88,7 +88,7 @@ export default function PlansPage() {
       )}
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {plans.map((plan) => {
+        {plans.filter((p) => p.id === "agency").map((plan) => {
           const isCurrent = session?.user?.planId === plan.id;
           const isAgency = plan.id === "agency";
           const isSwitching = switching === plan.id;

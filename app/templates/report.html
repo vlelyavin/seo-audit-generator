@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>{{ t.report_title if t else 'SEO Audit' }} - {{ domain }}</title>
     <style>
         /* Reset & Base */
@@ -17,16 +20,16 @@
             --color-error-bg: #fef2f2;
             --color-info: #3b82f6;
             --color-info-bg: #eff6ff;
-            --color-text: #1f2937;
-            --color-text-light: #6b7280;
-            --color-bg: #f9fafb;
+            --color-text: #111827;
+            --color-text-light: #4b5563;
+            --color-bg: #ffffff;
             --color-white: #ffffff;
             --color-border: #e5e7eb;
             --sidebar-width: 260px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: var(--color-text);
             background: var(--color-bg);
@@ -223,14 +226,14 @@
             margin-bottom: 10px;
         }
 
-        .issue.success { border-left-color: var(--color-success); }
+        .issue.success { border-left-color: var(--color-success); background: #f0fdf4; }
         .issue.warning { border-left-color: var(--color-warning); }
         .issue.error { border-left-color: var(--color-error); }
         .issue.info { border-left-color: var(--color-info); }
 
         .issue-header {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 8px;
             margin-bottom: 6px;
         }
@@ -280,10 +283,11 @@
 
         .issue-recommendation {
             font-size: 13px;
-            padding: 10px 12px;
-            background: var(--color-bg);
-            border-radius: 6px;
-            margin-top: 8px;
+            padding: 10px 14px;
+            background: #f0f9ff;
+            border-left: 3px solid var(--color-info);
+            border-radius: 0 6px 6px 0;
+            margin-top: 10px;
             margin-left: 26px;
         }
 
@@ -291,9 +295,10 @@
             display: block;
             margin-bottom: 2px;
             font-size: 12px;
-            color: var(--color-text-light);
+            color: var(--color-info);
             text-transform: uppercase;
             letter-spacing: 0.3px;
+            font-weight: 600;
         }
 
         /* Tables — Striped rows */
@@ -405,20 +410,20 @@
 
         /* Expand URLs Button */
         .expand-urls-btn {
-            background: var(--color-bg);
-            color: var(--color-text-light);
-            border: 1px solid var(--color-border);
-            border-radius: 4px;
-            padding: 4px 10px;
+            background: none;
+            color: var(--color-info);
+            border: none;
+            padding: 4px 0;
             font-size: 12px;
             cursor: pointer;
             margin-top: 6px;
-            transition: all 0.2s;
+            font-weight: 500;
+            transition: color 0.2s;
         }
 
         .expand-urls-btn:hover {
-            background: var(--color-border);
             color: var(--color-text);
+            text-decoration: underline;
         }
 
         .urls-hidden {
@@ -443,6 +448,7 @@
             .summary-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
+    {# Branding disabled for now
     {% if brand and brand.primary_color %}
     <style>
         :root {
@@ -455,14 +461,17 @@
         {% endif %}
     </style>
     {% endif %}
+    #}
 </head>
 <body>
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
         <div class="sidebar-header">
+            {# Branding disabled for now
             {% if brand and brand.company_name %}
             <div style="font-size: 11px; font-weight: 600; color: var(--color-text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">{{ brand.company_name }}</div>
             {% endif %}
+            #}
             <h1>{{ t.report_title if t else 'SEO Audit' }}</h1>
             <div class="domain">{{ domain }}</div>
             <div class="domain" style="margin-top: 6px; font-size: 12px;">{{ generated_at }}</div>

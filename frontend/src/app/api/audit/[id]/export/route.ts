@@ -22,17 +22,17 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  // Get branding settings if user has them
-  const branding = await prisma.brandSettings.findUnique({
-    where: { userId: session.user.id },
-  });
+  // Branding disabled for now
+  // const branding = await prisma.brandSettings.findUnique({
+  //   where: { userId: session.user.id },
+  // });
 
   // Build query params for FastAPI
   const queryParams = new URLSearchParams({ format });
-  if (branding?.companyName) queryParams.set("company_name", branding.companyName);
-  if (branding?.primaryColor) queryParams.set("primary_color", branding.primaryColor);
-  if (branding?.accentColor) queryParams.set("accent_color", branding.accentColor);
-  if (branding?.logoUrl) queryParams.set("logo_url", branding.logoUrl);
+  // if (branding?.companyName) queryParams.set("company_name", branding.companyName);
+  // if (branding?.primaryColor) queryParams.set("primary_color", branding.primaryColor);
+  // if (branding?.accentColor) queryParams.set("accent_color", branding.accentColor);
+  // if (branding?.logoUrl) queryParams.set("logo_url", branding.logoUrl);
 
   const fastapiRes = await fastapiFetch(
     `/api/audit/${audit.fastApiId}/download?${queryParams.toString()}`

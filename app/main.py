@@ -382,10 +382,11 @@ async def get_audit_results(audit_id: str, lang: str = "uk"):
 async def download_report(
     audit_id: str,
     format: str = "html",
-    company_name: Optional[str] = None,
-    primary_color: Optional[str] = None,
-    accent_color: Optional[str] = None,
-    logo_url: Optional[str] = None,
+    # Branding disabled for now
+    # company_name: Optional[str] = None,
+    # primary_color: Optional[str] = None,
+    # accent_color: Optional[str] = None,
+    # logo_url: Optional[str] = None,
 ):
     """
     Download generated report.
@@ -393,10 +394,6 @@ async def download_report(
     Args:
         audit_id: Audit ID
         format: Report format - html, pdf, or docx
-        company_name: Optional brand company name
-        primary_color: Optional brand primary color (hex)
-        accent_color: Optional brand accent color (hex)
-        logo_url: Optional brand logo URL
     """
     if audit_id not in audits:
         raise HTTPException(status_code=404, detail="Audit not found")
@@ -406,15 +403,15 @@ async def download_report(
     if audit.status != AuditStatus.COMPLETED:
         raise HTTPException(status_code=400, detail="Audit not completed yet")
 
-    # Build brand settings dict (only include non-None values)
+    # Branding disabled for now
     brand = None
-    if any([company_name, primary_color, accent_color, logo_url]):
-        brand = {
-            "company_name": company_name,
-            "primary_color": primary_color,
-            "accent_color": accent_color,
-            "logo_url": logo_url,
-        }
+    # if any([company_name, primary_color, accent_color, logo_url]):
+    #     brand = {
+    #         "company_name": company_name,
+    #         "primary_color": primary_color,
+    #         "accent_color": accent_color,
+    #         "logo_url": logo_url,
+    #     }
 
     # Extract domain for filename
     domain = extract_domain(audit.url)

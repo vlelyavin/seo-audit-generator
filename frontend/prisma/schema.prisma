@@ -15,7 +15,7 @@ model User {
   password      String?
   image         String?
   role          String         @default("user")
-  planId        String         @default("free")
+  planId        String         @default("agency")
   plan          Plan           @relation(fields: [planId], references: [id])
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
