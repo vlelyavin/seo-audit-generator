@@ -13,16 +13,10 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="mb-8 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gray-900 text-white dark:bg-white dark:text-black text-lg font-bold">
-          SA
-        </div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+      <div className="rounded-xl border bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <h1 className="mb-4 text-center text-2xl font-bold text-gray-900 dark:text-white">
           {t("signIn")}
         </h1>
-      </div>
-
-      <div className="rounded-xl border bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <button
           onClick={handleGoogleSignIn}
           className="flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
