@@ -784,7 +784,20 @@ class ReportGenerator:
                 background: white !important;
                 font-size: 11pt !important;
             }
-            .section {
+            /* Granular page-break: allow sections to split, keep small elements intact */
+            .section-header {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+            .issue {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            .theory-block {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            .table-wrapper {
                 page-break-inside: avoid;
                 break-inside: avoid;
             }
@@ -797,8 +810,19 @@ class ReportGenerator:
             .screenshot-card img {
                 max-width: 100% !important;
             }
-            .theory-block {
-                page-break-inside: avoid;
+            /* Badge alignment for WeasyPrint */
+            .badge {
+                display: inline-flex !important;
+                align-items: center !important;
+                vertical-align: middle !important;
+                line-height: 1 !important;
+            }
+            .badge svg {
+                display: inline-block !important;
+                vertical-align: middle !important;
+            }
+            .section-header {
+                align-items: center !important;
             }
             /* Force details open and hide interactive elements for PDF */
             details {

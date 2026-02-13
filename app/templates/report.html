@@ -116,19 +116,22 @@
         .summary-card {
             background: var(--color-white);
             border-radius: 12px;
-            padding: 20px;
+            padding: 16px;
             border: 1px solid var(--color-border);
             box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
         .summary-card .icon-circle {
             width: 40px;
             height: 40px;
+            min-width: 40px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 12px;
         }
 
         .summary-card .icon-circle svg {
@@ -136,21 +139,21 @@
             height: 20px;
         }
 
-        .summary-card.info .icon-circle { background: var(--color-info-bg); color: var(--color-info); }
+        .summary-card.info .icon-circle { background: #f3f4f6; color: #6b7280; }
         .summary-card.success .icon-circle { background: var(--color-success-bg); color: var(--color-success); }
         .summary-card.warning .icon-circle { background: var(--color-warning-bg); color: var(--color-warning); }
         .summary-card.error .icon-circle { background: var(--color-error-bg); color: var(--color-error); }
 
         .summary-card .number {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             line-height: 1.2;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
 
         .summary-card .label {
             color: var(--color-text-light);
-            font-size: 13px;
+            font-size: 12px;
         }
 
         /* Section — Flat with divider */
@@ -185,6 +188,8 @@
         .section-header .badge svg {
             width: 13px;
             height: 13px;
+            display: inline-block;
+            vertical-align: middle;
         }
 
         .badge.success { background: var(--color-success-bg); color: var(--color-success); }
@@ -205,9 +210,6 @@
         .section-summary {
             font-weight: 500;
             margin-bottom: 14px;
-            padding: 10px 14px;
-            background: var(--color-bg);
-            border-radius: 6px;
             font-size: 14px;
         }
 
@@ -344,30 +346,26 @@
         /* Theory Block */
         .theory-block {
             margin-bottom: 14px;
-            border: 1px solid var(--color-border);
-            border-radius: 6px;
-            background: #f8fafc;
+            border-left: 3px solid var(--color-border);
+            border-radius: 0;
+            background: transparent;
         }
 
         .theory-block summary {
-            padding: 10px 14px;
+            padding: 8px 14px;
             cursor: pointer;
             font-weight: 500;
             font-size: 13px;
-            color: var(--color-text);
+            color: var(--color-text-light);
             user-select: none;
         }
 
         .theory-block summary:hover {
-            background: var(--color-bg);
-        }
-
-        .theory-block[open] summary {
-            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text);
         }
 
         .theory-content {
-            padding: 14px;
+            padding: 0 14px 10px 14px;
             font-size: 13px;
             line-height: 1.7;
             color: var(--color-text);
@@ -431,7 +429,10 @@
         @media print {
             .sidebar { display: none; }
             .main { margin-left: 0; padding: 0; }
-            .section { break-inside: avoid; page-break-inside: avoid; }
+            .section-header { page-break-after: avoid; break-after: avoid; }
+            .issue { page-break-inside: avoid; break-inside: avoid; }
+            .theory-block { page-break-inside: avoid; break-inside: avoid; }
+            .table-wrapper { page-break-inside: avoid; break-inside: avoid; }
             body { background: white; }
         }
 
@@ -499,42 +500,33 @@
                     <div class="icon-circle">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
                     </div>
-                    <div class="number">{{ audit.pages_crawled }}</div>
-                    <div class="label">{{ t.pages_crawled if t else 'Pages crawled' }}</div>
+                    <div><div class="number">{{ audit.pages_crawled }}</div><div class="label">{{ t.pages_crawled if t else 'Pages crawled' }}</div></div>
                 </div>
                 <div class="summary-card success">
                     <div class="icon-circle">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                     </div>
-                    <div class="number">{{ audit.passed_checks }}</div>
-                    <div class="label">{{ t.passed_checks if t else 'Checks passed' }}</div>
+                    <div><div class="number">{{ audit.passed_checks }}</div><div class="label">{{ t.passed_checks if t else 'Checks passed' }}</div></div>
                 </div>
                 <div class="summary-card warning">
                     <div class="icon-circle">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                     </div>
-                    <div class="number">{{ audit.warnings }}</div>
-                    <div class="label">{{ t.warnings if t else 'Warnings' }}</div>
+                    <div><div class="number">{{ audit.warnings }}</div><div class="label">{{ t.warnings if t else 'Warnings' }}</div></div>
                 </div>
                 <div class="summary-card error">
                     <div class="icon-circle">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                     </div>
-                    <div class="number">{{ audit.critical_issues }}</div>
-                    <div class="label">{{ t.critical_issues if t else 'Critical issues' }}</div>
+                    <div><div class="number">{{ audit.critical_issues }}</div><div class="label">{{ t.critical_issues if t else 'Critical issues' }}</div></div>
                 </div>
             </div>
         </section>
 
         {% if audit.homepage_screenshot %}
         <section class="section" id="homepage-screenshot">
-            <div class="section-header">
-                <h2>{{ t.homepage_screenshot_title if t.homepage_screenshot_title and t.homepage_screenshot_title != 'report.homepage_screenshot_title' else 'Homepage Screenshot' }}</h2>
-            </div>
-            <div class="section-content">
-                <div style="text-align: center;">
-                    <img src="data:image/png;base64,{{ audit.homepage_screenshot }}" alt="Homepage" style="max-width: 100%; border: 1px solid var(--color-border); border-radius: 8px;">
-                </div>
+            <div style="text-align: center;">
+                <img src="data:image/png;base64,{{ audit.homepage_screenshot }}" alt="Homepage" style="max-width: 100%; border: 1px solid var(--color-border); border-radius: 8px;">
             </div>
         </section>
         {% endif %}
