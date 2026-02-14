@@ -15,7 +15,6 @@ export default function NewAuditPage() {
   const { data: session } = useSession();
 
   const [url, setUrl] = useState("");
-  const [language, setLanguage] = useState(locale === "uk" ? "uk" : locale === "ru" ? "ru" : "en");
   const [selectedAnalyzers, setSelectedAnalyzers] = useState<string[]>([...ANALYZER_NAMES]);
   const [showAnalyzers, setShowAnalyzers] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -60,9 +59,9 @@ export default function NewAuditPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           url,
-          language,
+          language: "uk",
           analyzers: selectedAnalyzers.length === ANALYZER_NAMES.length ? null : selectedAnalyzers,
-          maxPages, // Send user's custom page limit
+          maxPages,
         }),
       });
 
@@ -112,22 +111,6 @@ export default function NewAuditPage() {
                 className="w-full rounded-lg border py-2.5 pl-10 pr-3 text-sm outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-white dark:focus:ring-white/20"
               />
             </div>
-          </div>
-
-          {/* Language selector */}
-          <div className="mb-5">
-            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
-              {t("language")}
-            </label>
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-white dark:focus:ring-white/20"
-            >
-              <option value="en">English</option>
-              <option value="uk">Українська</option>
-              <option value="ru">Русский</option>
-            </select>
           </div>
 
           {/* Max Pages Input */}

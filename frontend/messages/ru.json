@@ -111,7 +111,12 @@
     "noData": "Нет данных",
     "yes": "Да",
     "no": "Нет",
-    "generating": "Генерация {format}..."
+    "generating": "Генерация {format}...",
+    "exportDialogTitle": "Экспорт отчёта",
+    "exportDialogMessage": "Выберите формат и язык отчёта.",
+    "exportFormat": "Формат",
+    "exportLanguage": "Язык",
+    "exportDownload": "Скачать"
   },
   "settings": {
     "title": "Настройки",

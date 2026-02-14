@@ -111,7 +111,12 @@
     "noData": "No data",
     "yes": "Yes",
     "no": "No",
-    "generating": "Generating {format}..."
+    "generating": "Generating {format}...",
+    "exportDialogTitle": "Export Report",
+    "exportDialogMessage": "Choose the format and language for your report.",
+    "exportFormat": "Format",
+    "exportLanguage": "Language",
+    "exportDownload": "Download"
   },
   "settings": {
     "title": "Settings",

@@ -7,7 +7,6 @@ import {
   AlertTriangle,
   XCircle,
   Download,
-  ChevronDown,
   Search,
   Filter,
   ArrowLeft,
@@ -16,6 +15,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { AnalyzerSection } from "./analyzer-section";
+import { ExportDialog } from "@/components/ui/export-dialog";
 import { cn } from "@/lib/utils";
 import type { AuditResults, SeverityLevel, AnalyzerResult } from "@/types/audit";
 import { SEVERITY_COLORS } from "@/types/audit";
@@ -34,7 +34,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
   const t = useTranslations("audit");
   const [filter, setFilter] = useState<FilterMode>("all");
   const [search, setSearch] = useState("");
-  const [exportOpen, setExportOpen] = useState(false);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [exportingFormat, setExportingFormat] = useState<string | null>(null);
   const [exportError, setExportError] = useState<string | null>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -76,13 +76,13 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
     sectionRefs.current[name]?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  async function handleExport(format: string) {
-    setExportOpen(false);
+  async function handleExport(format: string, lang: string) {
+    setExportDialogOpen(false);
     setExportingFormat(format);
     setExportError(null);
 
     try {
-      const url = `/api/audit/${auditId}/export?format=${format}`;
+      const url = `/api/audit/${auditId}/export?format=${format}&lang=${lang}`;
 
       const response = await fetch(url);
       if (!response.ok) {
@@ -200,12 +200,12 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
             />
           </div>
 
-          {/* Export dropdown */}
-          <div className="relative ml-auto">
+          {/* Export button */}
+          <div className="ml-auto">
             <button
               type="button"
               disabled={exportingFormat !== null}
-              onClick={() => setExportOpen(!exportOpen)}
+              onClick={() => setExportDialogOpen(true)}
               className={cn(
                 "flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium",
                 exportingFormat
@@ -222,24 +222,19 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
                 <>
                   <Download className="h-4 w-4" />
                   {t("export")}
-                  <ChevronDown className="h-3.5 w-3.5" />
                 </>
               )}
             </button>
-            {exportOpen && !exportingFormat && (
-              <div className="absolute right-0 top-full z-10 mt-1 w-40 rounded-lg border border-gray-200 bg-gray-50 py-1 shadow-lg dark:border-gray-800 dark:bg-gray-900">
-                {["html", "pdf", "docx"].map((fmt) => (
-                  <button
-                    key={fmt}
-                    onClick={() => handleExport(fmt)}
-                    className="block w-full px-3 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
-                  >
-                    {fmt.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
+
+          {/* Export dialog */}
+          <ExportDialog
+            open={exportDialogOpen}
+            onClose={() => setExportDialogOpen(false)}
+            onExport={handleExport}
+            loading={exportingFormat !== null}
+            defaultLang={locale}
+          />
         </div>
 
         {/* Export error */}

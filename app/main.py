@@ -1,6 +1,7 @@
 """FastAPI application for SEO Audit Tool."""
 
 import asyncio
+import copy
 import json
 import logging
 import time
@@ -383,6 +384,7 @@ async def get_audit_results(audit_id: str, lang: str = "uk"):
 async def download_report(
     audit_id: str,
     format: str = "html",
+    lang: Optional[str] = None,
     # Branding disabled for now
     # company_name: Optional[str] = None,
     # primary_color: Optional[str] = None,
@@ -395,6 +397,7 @@ async def download_report(
     Args:
         audit_id: Audit ID
         format: Report format - html, pdf, or docx
+        lang: Override report language (en, uk, ru)
     """
     if audit_id not in audits:
         raise HTTPException(status_code=404, detail="Audit not found")
@@ -403,6 +406,11 @@ async def download_report(
 
     if audit.status != AuditStatus.COMPLETED:
         raise HTTPException(status_code=400, detail="Audit not completed yet")
+
+    # Override language if provided
+    if lang and lang in ("en", "uk", "ru"):
+        audit = copy.copy(audit)
+        audit.language = lang
 
     # Branding disabled for now
     brand = None
@@ -477,6 +485,7 @@ async def generate_report_from_data(request: Request):
     body = await request.json()
     format_type = body.get("format", "html").lower()
     audit_data = body.get("audit")
+    language_override = body.get("language")
 
     if not audit_data:
         raise HTTPException(status_code=400, detail="Missing audit data")
@@ -485,6 +494,9 @@ async def generate_report_from_data(request: Request):
     results = {}
     for name, result_dict in audit_data.get("results", {}).items():
         results[name] = AnalyzerResult(**result_dict)
+
+    # Use language override if provided, otherwise fall back to audit data
+    lang = language_override if language_override in ("en", "uk", "ru") else audit_data.get("language", "uk")
 
     audit = AuditResult(
         id=audit_data.get("id", str(uuid.uuid4())[:8]),
@@ -497,7 +509,7 @@ async def generate_report_from_data(request: Request):
         passed_checks=audit_data.get("passed_checks", 0),
         results=results,
         homepage_screenshot=audit_data.get("homepage_screenshot"),
-        language=audit_data.get("language", "uk"),
+        language=lang,
     )
 
     generator = get_report_generator()
@@ -528,6 +540,32 @@ async def generate_report_from_data(request: Request):
         )
     else:
         raise HTTPException(status_code=400, detail=f"Unsupported format: {format_type}")
+
+
+@app.post("/api/results/translate")
+async def translate_results(request: Request):
+    """Re-translate cached audit results to a different language."""
+    body = await request.json()
+    cached_data = body.get("results")
+    lang = body.get("lang", "en")
+
+    if not cached_data:
+        raise HTTPException(status_code=400, detail="Missing results data")
+
+    if lang not in ("en", "uk", "ru"):
+        lang = "en"
+
+    results_dict = {}
+    translator = get_translator(lang) if lang != "uk" else None
+    for name, result_data in cached_data.get("results", {}).items():
+        result = AnalyzerResult(**result_data)
+        if translator:
+            translated = translate_analyzer_content(result, lang, translator)
+            results_dict[name] = translated.model_dump()
+        else:
+            results_dict[name] = result.model_dump()
+
+    return JSONResponse(content={**cached_data, "results": results_dict})
 
 
 async def run_audit(audit_id: str, request: AuditRequest):

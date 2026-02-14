@@ -15,6 +15,7 @@ export async function GET(
   const { id } = await params;
   const { searchParams } = new URL(req.url);
   const format = searchParams.get("format") || "html";
+  const lang = searchParams.get("lang");
 
   const audit = await prisma.audit.findUnique({ where: { id } });
 
@@ -29,6 +30,7 @@ export async function GET(
 
   // Build query params for FastAPI
   const queryParams = new URLSearchParams({ format });
+  if (lang) queryParams.set("lang", lang);
   // if (branding?.companyName) queryParams.set("company_name", branding.companyName);
   // if (branding?.primaryColor) queryParams.set("primary_color", branding.primaryColor);
   // if (branding?.accentColor) queryParams.set("accent_color", branding.accentColor);
@@ -46,6 +48,7 @@ export async function GET(
       body: JSON.stringify({
         format,
         audit: JSON.parse(audit.resultJson),
+        language: lang || audit.language || "uk",
       }),
     });
 
