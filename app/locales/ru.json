@@ -105,7 +105,15 @@
       "near_duplicate": "Близкий дубликат",
       "valid": "Корректный",
       "missing_self_reference": "Отсутствует самоссылка",
-      "invalid_code": "Некорректный код"
+      "invalid_code": "Некорректный код",
+      "exists": "Есть",
+      "plain_missing": "Отсутствует",
+      "status_present": "Присутствует",
+      "invalid": "Некорректный",
+      "unknown": "Неизвестно",
+      "check_failed": "Проверка не удалась",
+      "count_items": "Количество элементов",
+      "noindex_pages_label": "Страницы с noindex"
     },
     "patterns": {
       "files": "файлов",
@@ -511,8 +519,6 @@
       "issues": {
         "favicon_ok": "Фавикон настроен корректно",
         "missing_favicon": "Фавикон отсутствует",
-        "no_favicon_ico": "Отсутствует /favicon.ico",
-        "no_apple_touch_icon": "Отсутствует Apple Touch Icon",
         "old_favicon_format": "Рекомендуется SVG или PNG формат",
         "missing": "Favicon отсутствует",
         "no_apple": "Отсутствует Apple Touch Icon",
@@ -522,15 +528,15 @@
       "details": {
         "favicon_ok": "Фавикон помогает пользователям узнавать ваш сайт.",
         "missing_favicon": "Без фавикона сайт выглядит менее профессионально.",
-        "no_favicon_ico": "Некоторые браузеры ищут favicon.ico в корне сайта.",
-        "no_apple_touch_icon": "Apple Touch Icon нужен для красивого отображения на iOS устройствах.",
+        "no_ico": "Некоторые браузеры ищут favicon.ico в корне сайта.",
+        "no_apple": "Apple Touch Icon нужен для красивого отображения на iOS устройствах.",
         "old_favicon_format": "SVG фавиконы масштабируются без потери качества и поддерживают тёмную тему.",
         "missing": "Favicon — это маленькая иконка, отображаемая в закладках браузера и на вкладках."
       },
       "recommendations": {
         "missing_favicon": "Создайте и добавьте фавикон на сайт.",
-        "no_favicon_ico": "Добавьте файл favicon.ico в корень сайта.",
-        "no_apple_touch_icon": "Добавьте Apple Touch Icon (180x180) для iOS устройств.",
+        "no_ico": "Добавьте файл favicon.ico в корень сайта.",
+        "no_apple": "Добавьте Apple Touch Icon (180x180) для iOS устройств.",
         "old_favicon_format": "Добавьте SVG версию фавикона.",
         "missing": "Добавьте favicon в формате PNG или ICO в корневую директорию сайта."
       }

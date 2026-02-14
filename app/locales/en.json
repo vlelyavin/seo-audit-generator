@@ -105,7 +105,15 @@
       "near_duplicate": "Near duplicate",
       "valid": "Valid",
       "missing_self_reference": "Missing self-reference",
-      "invalid_code": "Invalid code"
+      "invalid_code": "Invalid code",
+      "exists": "Exists",
+      "plain_missing": "Missing",
+      "status_present": "Present",
+      "invalid": "Invalid",
+      "unknown": "Unknown",
+      "check_failed": "Check failed",
+      "count_items": "Number of items",
+      "noindex_pages_label": "Pages with noindex"
     },
     "patterns": {
       "files": "files",
@@ -511,8 +519,6 @@
       "issues": {
         "favicon_ok": "Favicon is configured correctly",
         "missing_favicon": "Favicon is missing",
-        "no_favicon_ico": "/favicon.ico is missing",
-        "no_apple_touch_icon": "Apple Touch Icon is missing",
         "old_favicon_format": "SVG or PNG format is recommended",
         "missing": "Favicon missing",
         "no_apple": "Apple Touch Icon missing",
@@ -522,15 +528,15 @@
       "details": {
         "favicon_ok": "The favicon helps users recognize your website.",
         "missing_favicon": "Without a favicon, the website looks less professional.",
-        "no_favicon_ico": "Some browsers look for favicon.ico in the website root.",
-        "no_apple_touch_icon": "Apple Touch Icon is needed for proper display on iOS devices.",
+        "no_ico": "Some browsers look for favicon.ico in the website root.",
+        "no_apple": "Apple Touch Icon is needed for proper display on iOS devices.",
         "old_favicon_format": "SVG favicons scale without quality loss and support dark mode.",
         "missing": "Favicon is a small icon displayed in browser bookmarks and tabs."
       },
       "recommendations": {
         "missing_favicon": "Create and add a favicon to the website.",
-        "no_favicon_ico": "Add a favicon.ico file to the website root.",
-        "no_apple_touch_icon": "Add an Apple Touch Icon (180x180) for iOS devices.",
+        "no_ico": "Add a favicon.ico file to the website root.",
+        "no_apple": "Add an Apple Touch Icon (180x180) for iOS devices.",
         "old_favicon_format": "Add an SVG version of the favicon.",
         "missing": "Add a favicon in PNG or ICO format to the root directory of the site."
       }

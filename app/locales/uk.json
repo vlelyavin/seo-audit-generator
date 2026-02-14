@@ -105,7 +105,15 @@
       "near_duplicate": "Близький дублікат",
       "valid": "Коректний",
       "missing_self_reference": "Відсутнє самопосилання",
-      "invalid_code": "Некоректний код"
+      "invalid_code": "Некоректний код",
+      "exists": "Є",
+      "plain_missing": "Відсутній",
+      "status_present": "Присутній",
+      "invalid": "Некоректний",
+      "unknown": "Невідомо",
+      "check_failed": "Перевірка не вдалася",
+      "count_items": "Кількість елементів",
+      "noindex_pages_label": "Сторінки з noindex"
     },
     "patterns": {
       "files": "файлів",
@@ -509,29 +517,27 @@
         "needs_improvement": "Фавикон є, но можна улучшить"
       },
       "issues": {
-        "favicon_ok": "Фавикон настроен корректно",
-        "missing_favicon": "Фавикон відсутній",
-        "no_favicon_ico": "Отсутствует /favicon.ico",
-        "no_apple_touch_icon": "Отсутствует Apple Touch Icon",
-        "old_favicon_format": "Рекомендуется SVG или PNG формат",
+        "favicon_ok": "Фавікон налаштовано коректно",
+        "missing_favicon": "Фавікон відсутній",
+        "old_favicon_format": "Рекомендується SVG або PNG формат",
         "missing": "Favicon відсутній",
         "no_apple": "Відсутній Apple Touch Icon",
         "no_ico": "Відсутній .ico файл",
         "old_format": "Застарілий формат"
       },
       "details": {
-        "favicon_ok": "Фавикон помогает пользователям узнавать ваш сайт.",
-        "missing_favicon": "Без фавикона сайт виглядит менше профессионально.",
-        "no_favicon_ico": "Некоторие браузери ищут favicon.ico в корне сайту.",
-        "no_apple_touch_icon": "Apple Touch Icon нужен для красивого отображения на iOS устройствах.",
-        "old_favicon_format": "SVG фавикони масштабируются без потери качества и поддерживают тёмную тему.",
+        "favicon_ok": "Фавікон допомагає користувачам впізнавати ваш сайт.",
+        "missing_favicon": "Без фавікона сайт виглядає менш професійно.",
+        "no_ico": "Деякі браузери шукають favicon.ico в корені сайту.",
+        "no_apple": "Apple Touch Icon потрібен для коректного відображення на iOS пристроях.",
+        "old_favicon_format": "SVG фавікони масштабуються без втрати якості та підтримують темну тему.",
         "missing": "Favicon — це маленька іконка, яка відображається в закладках браузера та на вкладках."
       },
       "recommendations": {
-        "missing_favicon": "Создайте и додайте фавикон на сайт.",
-        "no_favicon_ico": "Добавьте файл favicon.ico в корень сайту.",
-        "no_apple_touch_icon": "Добавьте Apple Touch Icon (180x180) для iOS устройств.",
-        "old_favicon_format": "Добавьте SVG версию фавикона.",
+        "missing_favicon": "Створіть та додайте фавікон на сайт.",
+        "no_ico": "Додайте файл favicon.ico в корінь сайту.",
+        "no_apple": "Додайте Apple Touch Icon (180x180) для iOS пристроїв.",
+        "old_favicon_format": "Додайте SVG версію фавікона.",
         "missing": "Додайте favicon у форматі PNG або ICO до кореневої директорії сайту."
       }
     },

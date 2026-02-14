@@ -231,13 +231,13 @@ class RobotsAnalyzer(BaseAnalyzer):
 
         table_data.append({
             h_element: "robots.txt",
-            h_status: self.t("analyzer_content.robots.issues.status_exists" if robots_data.exists else self.t("analyzer_content.robots.issues.status_missing")),
+            h_status: self.t("analyzer_content.robots.issues.status_exists" if robots_data.exists else "analyzer_content.robots.issues.status_missing"),
             h_details: f"Sitemap: {len(robots_data.sitemaps)}, Disallow: {len(robots_data.disallowed_paths)}" if robots_data.exists else "-",
         })
 
         table_data.append({
             h_element: "sitemap.xml",
-            h_status: self.t("analyzer_content.robots.issues.status_exists" if sitemap_data.exists else self.t("analyzer_content.robots.issues.status_missing")),
+            h_status: self.t("analyzer_content.robots.issues.status_exists" if sitemap_data.exists else "analyzer_content.robots.issues.status_missing"),
             h_details: f"URL: {sitemap_data.urls_count}, {self.t('analyzers.robots.files')}: {sitemap_data.sitemap_count}" if sitemap_data.exists else "-",
         })
 
