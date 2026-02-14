@@ -818,11 +818,21 @@ class ReportGenerator:
                 background: white !important;
                 font-size: 11pt !important;
             }
-            /* Page-break: keep headers with content, allow everything else to split */
-            .section-header {
-                page-break-after: avoid;
-                break-after: avoid;
+            /* Compact spacing for PDF */
+            .section {
+                margin-bottom: 18px !important;
             }
+            .section-header {
+                margin-bottom: 10px !important;
+                padding-bottom: 8px !important;
+            }
+            .issue {
+                margin-bottom: 6px !important;
+            }
+            .theory-block {
+                margin-bottom: 8px !important;
+            }
+            /* Keep issue headers with their content */
             .issue-header {
                 page-break-after: avoid;
                 break-after: avoid;
