@@ -974,6 +974,117 @@ class ReportGenerator:
         if color_rgb is not None:
             run.font.color.rgb = RGBColor(*color_rgb)
 
+    @staticmethod
+    def _docx_add_hyperlink(paragraph, url: str, text: str, font_name: str = 'Inter', font_size_pt: int = 9, color_rgb=None):
+        """Add a clickable hyperlink to a Word paragraph."""
+        from docx.oxml.ns import qn
+        from docx.oxml import OxmlElement
+        from docx.shared import Pt, RGBColor
+
+        part = paragraph.part
+        r_id = part.relate_to(url, 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink', is_external=True)
+
+        hyperlink = OxmlElement('w:hyperlink')
+        hyperlink.set(qn('r:id'), r_id)
+
+        new_run = OxmlElement('w:r')
+        rPr = OxmlElement('w:rPr')
+
+        # Font
+        rFonts = OxmlElement('w:rFonts')
+        rFonts.set(qn('w:ascii'), font_name)
+        rFonts.set(qn('w:hAnsi'), font_name)
+        rFonts.set(qn('w:cs'), font_name)
+        rPr.append(rFonts)
+
+        # Size
+        sz = OxmlElement('w:sz')
+        sz.set(qn('w:val'), str(font_size_pt * 2))  # Half-points
+        rPr.append(sz)
+        szCs = OxmlElement('w:szCs')
+        szCs.set(qn('w:val'), str(font_size_pt * 2))
+        rPr.append(szCs)
+
+        # Color
+        rgb = color_rgb or (59, 130, 246)  # Default blue
+        color = OxmlElement('w:color')
+        color.set(qn('w:val'), '{:02X}{:02X}{:02X}'.format(*rgb))
+        rPr.append(color)
+
+        # Underline
+        u = OxmlElement('w:u')
+        u.set(qn('w:val'), 'single')
+        rPr.append(u)
+
+        new_run.append(rPr)
+        new_run_text = OxmlElement('w:t')
+        new_run_text.set(qn('xml:space'), 'preserve')
+        new_run_text.text = text
+        new_run.append(new_run_text)
+        hyperlink.append(new_run)
+        paragraph._p.append(hyperlink)
+
+    def _docx_add_formatted_cell(self, paragraph, value, font_size_pt: int = 9):
+        """Add formatted text to a table cell: colored ✓/✗/⚠ icons and clickable URLs."""
+        import re as _re
+        from docx.shared import RGBColor
+
+        text = str(value) if value is not None else ""
+
+        # Icon character → color mapping
+        icon_colors = {
+            '\u2713': (16, 185, 129),   # ✓ green
+            '\u2714': (16, 185, 129),   # ✔ green
+            '\u2717': (239, 68, 68),    # ✗ red
+            '\u2718': (239, 68, 68),    # ✘ red
+            '\u2716': (239, 68, 68),    # ✖ red
+        }
+        warning_chars = {'\u26a0'}  # ⚠
+        warning_color = (245, 158, 11)  # amber
+
+        # If the entire value is a URL, render as hyperlink
+        stripped = text.strip()
+        if _re.match(r'^https?://', stripped) and ' ' not in stripped:
+            self._docx_add_hyperlink(paragraph, stripped, stripped, font_size_pt=font_size_pt)
+            return
+
+        # Split text into segments around icon characters
+        # Build a regex pattern for all icon chars (including ⚠️ with variation selector)
+        icon_pattern = _re.compile('([\u2713\u2714\u2716\u2717\u2718]|\u26a0\ufe0f?)')
+        segments = icon_pattern.split(text)
+
+        for segment in segments:
+            if not segment:
+                continue
+
+            # Check if this segment is an icon character
+            clean = segment.replace('\ufe0f', '')  # Remove variation selector
+            if clean in icon_colors:
+                run = paragraph.add_run(clean)
+                self._docx_set_font(run, size_pt=font_size_pt, color_rgb=icon_colors[clean])
+            elif clean in warning_chars:
+                run = paragraph.add_run(clean)
+                self._docx_set_font(run, size_pt=font_size_pt, color_rgb=warning_color)
+            else:
+                # Regular text — check if it contains a URL
+                url_match = _re.search(r'(https?://[^\s]+)', segment)
+                if url_match:
+                    # Text before URL
+                    before = segment[:url_match.start()]
+                    if before:
+                        run = paragraph.add_run(before)
+                        self._docx_set_font(run, size_pt=font_size_pt)
+                    # URL as hyperlink
+                    self._docx_add_hyperlink(paragraph, url_match.group(1), url_match.group(1), font_size_pt=font_size_pt)
+                    # Text after URL
+                    after = segment[url_match.end():]
+                    if after:
+                        run = paragraph.add_run(after)
+                        self._docx_set_font(run, size_pt=font_size_pt)
+                else:
+                    run = paragraph.add_run(segment)
+                    self._docx_set_font(run, size_pt=font_size_pt)
+
     def _docx_parse_theory(self, doc, theory_html: str):
         """Parse theory HTML into Word paragraphs with formatting."""
         import re
@@ -1097,12 +1208,13 @@ class ReportGenerator:
             p.paragraph_format.space_before = Pt(4)
             run = p.add_run(f"{examples_label}:")
             self._docx_set_font(run, size_pt=8, bold=True, color_rgb=(75, 85, 99))
-            for url in issue.affected_urls[:5]:
+            for url in issue.affected_urls:
                 p = cell.add_paragraph()
                 p.paragraph_format.space_before = Pt(0)
                 p.paragraph_format.space_after = Pt(0)
-                run = p.add_run(f"  • {url}")
+                run = p.add_run("  \u2022 ")
                 self._docx_set_font(run, size_pt=8, color_rgb=(55, 65, 81))
+                self._docx_add_hyperlink(p, url, url, font_size_pt=8, color_rgb=(55, 65, 81))
 
     async def generate_docx(self, audit: AuditResult, brand: dict | None = None) -> str:
         """Generate styled DOCX report and return file path."""
@@ -1363,8 +1475,7 @@ class ReportGenerator:
                             cell = table.rows[row_idx + 1].cells[col_idx]
                             cell.text = ''
                             p = cell.paragraphs[0]
-                            run = p.add_run(str(value))
-                            self._docx_set_font(run, size_pt=9)
+                            self._docx_add_formatted_cell(p, value, font_size_pt=9)
                             self._docx_set_cell_margins(cell, top=40, right=80, bottom=40, left=80)
                             # Alternating row shading
                             if row_idx % 2 == 1:
