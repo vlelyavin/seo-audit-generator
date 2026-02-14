@@ -221,7 +221,7 @@ async def start_audit(request: AuditRequest, background_tasks: BackgroundTasks):
         url=str(request.url),
         status=AuditStatus.PENDING,
         started_at=datetime.utcnow(),
-        language=request.language if request.language in ["uk", "ru", "en"] else "uk",
+        language=request.language if request.language in ["en", "uk", "ru"] else "en",
     )
 
     # Store audit with timestamp
@@ -335,7 +335,7 @@ async def get_audit(audit_id: str):
 
 
 @app.get("/api/audit/{audit_id}/results")
-async def get_audit_results(audit_id: str, lang: str = "uk"):
+async def get_audit_results(audit_id: str, lang: str = "en"):
     """Get full analyzer results as JSON, optionally translated."""
     if audit_id not in audits:
         raise HTTPException(status_code=404, detail="Audit not found")
@@ -359,7 +359,7 @@ async def get_audit_results(audit_id: str, lang: str = "uk"):
 
     # Serialize results, optionally translated
     results_dict = {}
-    translator = get_translator(lang) if lang and lang != "uk" else None
+    translator = get_translator(lang) if lang and lang != "en" else None
     for name, result in audit.results.items():
         if translator:
             translated = translate_analyzer_content(result, lang, translator)
@@ -496,7 +496,7 @@ async def generate_report_from_data(request: Request):
         results[name] = AnalyzerResult(**result_dict)
 
     # Use language override if provided, otherwise fall back to audit data
-    lang = language_override if language_override in ("en", "uk", "ru") else audit_data.get("language", "uk")
+    lang = language_override if language_override in ("en", "uk", "ru") else audit_data.get("language", "en")
 
     audit = AuditResult(
         id=audit_data.get("id", str(uuid.uuid4())[:8]),
@@ -556,7 +556,7 @@ async def translate_results(request: Request):
         lang = "en"
 
     results_dict = {}
-    translator = get_translator(lang) if lang != "uk" else None
+    translator = get_translator(lang) if lang != "en" else None
     for name, result_data in cached_data.get("results", {}).items():
         result = AnalyzerResult(**result_data)
         if translator:
@@ -573,8 +573,10 @@ async def run_audit(audit_id: str, request: AuditRequest):
     channel = broadcast_channels[audit_id]
     audit, _ = audits[audit_id]
 
-    # Get language for progress messages
-    lang = audit.language if audit.language else "uk"
+    # Language for analyzer content (must stay "en" — source language)
+    lang = audit.language if audit.language else "en"
+    # Language for progress messages (matches UI locale)
+    progress_lang = request.progress_language if request.progress_language in ("en", "uk", "ru") else lang
 
     # Helper function to emit progress events
     async def emit_progress(event: ProgressEvent):
@@ -591,7 +593,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         await emit_progress(ProgressEvent(
             status=AuditStatus.CRAWLING,
             progress=0,
-            message=t("progress.crawling_start", lang),
+            message=t("progress.crawling_start", progress_lang),
             stage="crawling",
         ))
 
@@ -603,7 +605,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
             await emit_progress(ProgressEvent(
                 status=AuditStatus.CRAWLING,
                 progress=progress,
-                message=t("progress.crawling_pages", lang, count=len(pages)),
+                message=t("progress.crawling_pages", progress_lang, count=len(pages)),
                 current_url=page.url,
                 pages_crawled=len(pages),
                 stage="crawling",
@@ -628,7 +630,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         await emit_progress(ProgressEvent(
             status=AuditStatus.CRAWLING,
             progress=40,
-            message=t("progress.crawling_complete", lang, count=len(pages)),
+            message=t("progress.crawling_complete", progress_lang, count=len(pages)),
             pages_crawled=len(pages),
             stage="crawling",
         ))
@@ -650,7 +652,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         await emit_progress(ProgressEvent(
             status=AuditStatus.ANALYZING,
             progress=40,
-            message=t("progress.analyzing_start", lang),
+            message=t("progress.analyzing_start", progress_lang),
             pages_crawled=len(pages),
             stage="analyzing",
         ))
@@ -700,7 +702,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
                 await emit_progress(ProgressEvent(
                     status=AuditStatus.ANALYZING,
                     progress=40 + (completed_count[0] / total * 40),
-                    message=t("progress.analyzing_analyzer", lang, name=analyzer.display_name),
+                    message=t("progress.analyzing_analyzer", progress_lang, name=t(f"analyzers.{analyzer.name}.name", progress_lang)),
                     pages_crawled=len(pages),
                     stage="analyzing",
                 ))
@@ -782,7 +784,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         await emit_progress(ProgressEvent(
             status=AuditStatus.GENERATING_REPORT,
             progress=85,
-            message=t("progress.generating_report", lang),
+            message=t("progress.generating_report", progress_lang),
             pages_crawled=len(pages),
             stage="report",
         ))
@@ -798,7 +800,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         await emit_progress(ProgressEvent(
             status=AuditStatus.COMPLETED,
             progress=100,
-            message=t("progress.completed", lang),
+            message=t("progress.completed", progress_lang),
             pages_crawled=len(pages),
             stage="complete",
         ))
@@ -827,7 +829,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
         await emit_progress(ProgressEvent(
             status=AuditStatus.FAILED,
             progress=0,
-            message=t("progress.failed", lang, error="internal error"),
+            message=t("progress.failed", progress_lang, error="internal error"),
             stage="error",
         ))
 

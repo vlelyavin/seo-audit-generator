@@ -125,8 +125,8 @@ class SpeedAnalyzer(BaseAnalyzer):
 
         # Create metrics table
         # Get translated header keys
-        h_metric = self.t("table_translations.headers.Метрика")
-        h_target = self.t("table_translations.headers.Ціль")
+        h_metric = self.t("table_translations.headers.Metric")
+        h_target = self.t("table_translations.headers.Target")
 
         table_data = []
 
@@ -181,7 +181,7 @@ class SpeedAnalyzer(BaseAnalyzer):
 
         if table_data:
             tables.append({
-                "title": self.t("table_translations.titles.Core Web Vitals та метрики швидкості"),
+                "title": self.t("table_translations.titles.Core Web Vitals and Speed Metrics"),
                 "headers": [
                     h_metric,
                     "Mobile",

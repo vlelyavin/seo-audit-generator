@@ -59,7 +59,8 @@ export default function NewAuditPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           url,
-          language: "uk",
+          language: "en",
+          progressLanguage: locale,
           analyzers: selectedAnalyzers.length === ANALYZER_NAMES.length ? null : selectedAnalyzers,
           maxPages,
         }),

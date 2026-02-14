@@ -44,22 +44,22 @@ export async function GET(
       );
     }
 
-    // Cache Ukrainian (source) version in DB for reliable re-translation later
+    // Cache English (source) version in DB for reliable re-translation later
     if (!audit.resultJson) {
       let cacheData = data;
 
-      // If user requested non-Ukrainian, fetch Ukrainian version for caching
-      if (lang !== "uk") {
+      // If user requested non-English, fetch English version for caching
+      if (lang !== "en") {
         try {
-          const ukRes = await fastapiFetch(
-            `/api/audit/${audit.fastApiId}/results?lang=uk`
+          const enRes = await fastapiFetch(
+            `/api/audit/${audit.fastApiId}/results?lang=en`
           );
-          if (ukRes.ok) {
-            const ukData = await ukRes.json();
-            if (!ukData.partial) cacheData = ukData;
+          if (enRes.ok) {
+            const enData = await enRes.json();
+            if (!enData.partial) cacheData = enData;
           }
         } catch {
-          // If Ukrainian fetch fails, cache whatever we have
+          // If English fetch fails, cache whatever we have
         }
       }
 

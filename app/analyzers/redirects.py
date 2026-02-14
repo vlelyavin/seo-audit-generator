@@ -138,9 +138,9 @@ class RedirectsAnalyzer(BaseAnalyzer):
         # Sort chains by hops descending
         all_chains.sort(key=lambda x: x["hops"], reverse=True)
 
-        h_start = self.t("table_translations.headers.Початковий URL")
-        h_end = self.t("table_translations.headers.Кінцевий URL")
-        h_hops = self.t("table_translations.headers.Хопів")
+        h_start = self.t("table_translations.headers.Initial URL")
+        h_end = self.t("table_translations.headers.Final URL")
+        h_hops = self.t("table_translations.headers.Hops")
 
         for chain in all_chains[:10]:
             table_data.append({
@@ -151,7 +151,7 @@ class RedirectsAnalyzer(BaseAnalyzer):
 
         if table_data:
             tables.append({
-                "title": self.t("table_translations.titles.Ланцюжки редиректів"),
+                "title": self.t("table_translations.titles.Redirect Chains"),
                 "headers": [h_start, h_end, h_hops],
                 "rows": table_data,
             })

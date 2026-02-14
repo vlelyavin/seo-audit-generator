@@ -33,7 +33,8 @@ class AuditRequest(BaseModel):
     """Request to start a new audit."""
     url: HttpUrl
     include_screenshots: bool = True
-    language: str = "uk"  # Report language: uk (Ukrainian), ru (Russian), en (English)
+    language: str = "en"  # Source language: en (English), uk (Ukrainian), ru (Russian)
+    progress_language: Optional[str] = None  # UI locale for progress messages (defaults to language)
     analyzers: Optional[List[str]] = None  # None = all analyzers
     max_pages: Optional[int] = None  # Override MAX_PAGES (plan-enforced limit)
 
@@ -155,7 +156,7 @@ class AuditResult(BaseModel):
     pages: Dict[str, PageData] = Field(default_factory=dict, exclude=True)
     report_path: Optional[str] = None
     error_message: Optional[str] = None
-    language: str = "uk"  # Report language: uk, ru
+    language: str = "en"  # Report language: en, uk, ru
     homepage_screenshot: Optional[str] = None  # base64 homepage screenshot
 
 

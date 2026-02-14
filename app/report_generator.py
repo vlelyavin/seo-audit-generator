@@ -26,13 +26,13 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
     Translate analyzer result content to target language.
 
     This function handles translation at render time, allowing the analyzer
-    code to remain in Ukrainian (source language) while supporting multiple
-    output languages.
+    code to remain in English (source language) while supporting multiple
+    output languages (uk, ru).
     """
     import re
 
-    if lang == 'uk':
-        return result  # Ukrainian is the source language
+    if lang == 'en':
+        return result  # English is the source language
 
     # Create a deep copy to avoid modifying the original
     translated = copy.deepcopy(result)
@@ -59,15 +59,15 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
     # Translate summary - handle special cases for different analyzers
     if result.summary:
         if name == "cms":
-            # Extract CMS name from Ukrainian summary
-            cms_match = re.search(r'використовується (.+)$', result.summary)
+            # Extract CMS name from English summary
+            cms_match = re.search(r'using (.+)$', result.summary)
             if cms_match:
                 cms_name = cms_match.group(1)
                 summary_key = f"analyzer_content.{name}.summary.cms_detected"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary and "{cms}" in translated_summary:
                     translated.summary = translated_summary.format(cms=cms_name)
-            elif "не вдалося" in result.summary:
+            elif "could not be identified" in result.summary:
                 summary_key = f"analyzer_content.{name}.summary.cms_unknown"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
@@ -75,9 +75,8 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
 
         elif name == "meta_tags":
             # Handle meta_tags summary with dynamic numbers
-            if "Відсутні мета-теги:" in result.summary:
-                # Extract numbers: "Відсутні мета-теги: X Title, Y Description"
-                match = re.search(r'Відсутні мета-теги: (\d+) Title, (\d+) Description', result.summary)
+            if "Missing meta tags:" in result.summary:
+                match = re.search(r'Missing meta tags: (\d+) Title, (\d+) Description', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.missing"
                     translated_summary = translator.get(summary_key, "")
@@ -87,7 +86,7 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                             missing_descriptions=match.group(2)
                         )
                         # Handle duplicates part if present
-                        dup_match = re.search(r'Дублікати: (\d+) Title, (\d+) Description', result.summary)
+                        dup_match = re.search(r'Duplicates: (\d+) Title, (\d+) Description', result.summary)
                         if dup_match:
                             dup_key = f"analyzer_content.{name}.summary.duplicates"
                             dup_trans = translator.get(dup_key, "")
@@ -96,8 +95,8 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                                     duplicate_titles=dup_match.group(1),
                                     duplicate_descriptions=dup_match.group(2)
                                 )
-            elif "Дублікати:" in result.summary:
-                dup_match = re.search(r'Дублікати: (\d+) Title, (\d+) Description', result.summary)
+            elif "Duplicates:" in result.summary:
+                dup_match = re.search(r'Duplicates: (\d+) Title, (\d+) Description', result.summary)
                 if dup_match:
                     dup_key = f"analyzer_content.{name}.summary.duplicates"
                     translated_summary = translator.get(dup_key, "")
@@ -106,8 +105,8 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                             duplicate_titles=dup_match.group(1),
                             duplicate_descriptions=dup_match.group(2)
                         )
-            elif "Всі" in result.summary and "мають коректні мета-теги" in result.summary:
-                match = re.search(r'Всі (\d+) сторінок', result.summary)
+            elif "have correct meta tags" in result.summary:
+                match = re.search(r'All (\d+) pages', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.all_ok"
                     translated_summary = translator.get(summary_key, "")
@@ -115,15 +114,15 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                         translated.summary = translated_summary.format(total_pages=match.group(1))
 
         elif name == "headings":
-            if "Знайдено проблеми:" in result.summary:
-                match = re.search(r'Знайдено проблеми: (.+)$', result.summary)
+            if "Issues found:" in result.summary:
+                match = re.search(r'Issues found: (.+)$', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.problems_found"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
                         translated.summary = translated_summary.format(problems=match.group(1))
-            elif "мають коректний H1" in result.summary:
-                match = re.search(r'Всі (\d+) сторінок', result.summary)
+            elif "have a correct H1" in result.summary:
+                match = re.search(r'All (\d+) pages', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.all_ok"
                     translated_summary = translator.get(summary_key, "")
@@ -132,13 +131,13 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
 
         elif name == "page_404":
             summary_map = {
-                "налаштована коректно": "ok",
-                "створити або виправити": "missing",
-                "потребує покращень": "needs_improvement",
-                "Не вдалося перевірити": "check_failed"
+                "configured correctly": "ok",
+                "created or fixed": "missing",
+                "needs improvement": "needs_improvement",
+                "Could not check": "check_failed"
             }
-            for ukr_text, key in summary_map.items():
-                if ukr_text in result.summary:
+            for eng_text, key in summary_map.items():
+                if eng_text in result.summary:
                     summary_key = f"analyzer_content.{name}.summary.{key}"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
@@ -150,11 +149,11 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
             match = re.search(r'Mobile: (\d+)/100, Desktop: (\d+)/100', result.summary)
             if match:
                 mobile, desktop = match.group(1), match.group(2)
-                if "в нормі" in result.summary:
+                if "within normal range" in result.summary:
                     key = "ok"
-                elif "Потрібна оптимізація" in result.summary:
+                elif "Optimization needed" in result.summary:
                     key = "needs_optimization"
-                elif "Критичні" in result.summary:
+                elif "Critical" in result.summary:
                     key = "critical"
                 else:
                     key = None
@@ -163,22 +162,22 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
                         translated.summary = translated_summary.format(mobile=mobile, desktop=desktop)
-            elif "Не вдалося" in result.summary:
+            elif "Could not retrieve" in result.summary:
                 summary_key = f"analyzer_content.{name}.summary.failed"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
                     translated.summary = translated_summary
 
         elif name == "images":
-            if "Всі" in result.summary and "оптимізовані" in result.summary:
-                match = re.search(r'Всі (\d+) зображень', result.summary)
+            if "are optimized" in result.summary:
+                match = re.search(r'All (\d+) images', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.all_ok"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
                         translated.summary = translated_summary.format(count=match.group(1))
-            elif "Знайдено" in result.summary:
-                match = re.search(r'Знайдено (\d+) зображень\. Проблеми: (.+)$', result.summary)
+            elif "Found" in result.summary and "images" in result.summary:
+                match = re.search(r'Found (\d+) images\. Issues: (.+)$', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.problems"
                     translated_summary = translator.get(summary_key, "")
@@ -186,15 +185,15 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                         translated.summary = translated_summary.format(count=match.group(1), problems=match.group(2))
 
         elif name == "content":
-            if "мають достатньо контенту" in result.summary:
-                match = re.search(r'Всі (\d+) сторінок.*Середня кількість слів: (\d+)', result.summary)
+            if "have sufficient content" in result.summary:
+                match = re.search(r'All (\d+) pages.*Average word count: (\d+)', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.all_ok"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
                         translated.summary = translated_summary.format(total_pages=match.group(1), avg_words=match.group(2))
-            elif "Проблеми з контентом:" in result.summary:
-                match = re.search(r'Проблеми з контентом: (.+)\. Середня кількість слів: (\d+)', result.summary)
+            elif "Content issues:" in result.summary:
+                match = re.search(r'Content issues: (.+)\. Average word count: (\d+)', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.problems"
                     translated_summary = translator.get(summary_key, "")
@@ -202,15 +201,15 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                         translated.summary = translated_summary.format(problems=match.group(1), avg_words=match.group(2))
 
         elif name == "links":
-            if "Проблем не знайдено" in result.summary:
-                match = re.search(r'Перевірено (\d+) внутрішніх та (\d+) зовнішніх', result.summary)
+            if "No issues found" in result.summary:
+                match = re.search(r'Checked (\d+) internal and (\d+) external', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.no_broken"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
                         translated.summary = translated_summary.format(internal=match.group(1), external=match.group(2))
-            elif "Знайдено битих посилань:" in result.summary:
-                match = re.search(r'Знайдено битих посилань: (.+)$', result.summary)
+            elif "Broken links found:" in result.summary:
+                match = re.search(r'Broken links found: (.+)$', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.broken_found"
                     translated_summary = translator.get(summary_key, "")
@@ -219,12 +218,12 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
 
         elif name == "favicon":
             summary_map = {
-                "налаштовано коректно": "ok",
-                "відсутній": "missing",
-                "можна покращити": "needs_improvement"
+                "configured correctly": "ok",
+                "is missing": "missing",
+                "can be improved": "needs_improvement"
             }
-            for ukr_text, key in summary_map.items():
-                if ukr_text in result.summary:
+            for eng_text, key in summary_map.items():
+                if eng_text in result.summary:
                     summary_key = f"analyzer_content.{name}.summary.{key}"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
@@ -232,14 +231,14 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                     break
 
         elif name == "external_links":
-            match = re.search(r'Знайдено (\d+) зовнішніх посилань на (\d+) доменів', result.summary)
+            match = re.search(r'Found (\d+) external links to (\d+) domains', result.summary)
             if match:
                 summary_key = f"analyzer_content.{name}.summary.ok"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
                     translated.summary = translated_summary.format(count=match.group(1), domains=match.group(2))
             else:
-                match = re.search(r'Знайдено (\d+) зовнішніх посилань\. Попереджень: (\d+), інфо: (\d+)', result.summary)
+                match = re.search(r'Found (\d+) external links\. Warnings: (\d+), info: (\d+)', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.with_warnings"
                     translated_summary = translator.get(summary_key, "")
@@ -247,13 +246,13 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                         translated.summary = translated_summary.format(count=match.group(1), warnings=match.group(2), info=match.group(3))
 
         elif name == "robots":
-            if "в порядку" in result.summary:
+            if "in order" in result.summary:
                 summary_key = f"analyzer_content.{name}.summary.ok"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
                     translated.summary = translated_summary
-            elif "Проблеми з індексацією:" in result.summary:
-                match = re.search(r'Проблеми з індексацією: (.+)$', result.summary)
+            elif "Indexation issues:" in result.summary:
+                match = re.search(r'Indexation issues: (.+)$', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.problems"
                     translated_summary = translator.get(summary_key, "")
@@ -261,15 +260,15 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                         translated.summary = translated_summary.format(problems=match.group(1))
 
         elif name == "structure":
-            if "оптимальна" in result.summary:
-                match = re.search(r'Максимальна глибина: (\d+) рівнів', result.summary)
+            if "is optimal" in result.summary:
+                match = re.search(r'Maximum depth: (\d+) levels', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.ok"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
                         translated.summary = translated_summary.format(depth=match.group(1))
             else:
-                match = re.search(r'Максимальна глибина: (\d+)\. Проблеми: (.+)$', result.summary)
+                match = re.search(r'Maximum depth: (\d+)\. Issues: (.+)$', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.problems"
                     translated_summary = translator.get(summary_key, "")
@@ -277,36 +276,36 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                         translated.summary = translated_summary.format(depth=match.group(1), problems=match.group(2))
 
         elif name == "content_sections":
-            if "Виявлено:" in result.summary:
-                match = re.search(r'Виявлено: (.+)$', result.summary)
+            if "Detected:" in result.summary:
+                match = re.search(r'Detected: (.+)$', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.detected"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
                         translated.summary = translated_summary.format(sections=match.group(1))
-            elif "не виявлено" in result.summary:
+            elif "No informational sections" in result.summary:
                 summary_key = f"analyzer_content.{name}.summary.not_detected"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
                     translated.summary = translated_summary
 
         elif name == "schema":
-            if "Знайдено" in result.summary and "типів" in result.summary:
-                match = re.search(r'Знайдено (\d+) типів Schema\.org на (\d+) сторінках', result.summary)
+            if "Found" in result.summary and "Schema.org types" in result.summary:
+                match = re.search(r'Found (\d+) Schema\.org types across (\d+) pages', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.found"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
                         translated.summary = translated_summary.format(types=match.group(1), pages=match.group(2))
-            elif "відсутні" in result.summary:
+            elif "is missing" in result.summary:
                 summary_key = f"analyzer_content.{name}.summary.missing"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
                     translated.summary = translated_summary
 
         elif name == "social_tags":
-            if "OG теги:" in result.summary:
-                match = re.search(r'OG теги: (\d+)/(\d+).*Twitter Cards: (\d+)/(\d+)', result.summary)
+            if "OG tags:" in result.summary:
+                match = re.search(r'OG tags: (\d+)/(\d+).*Twitter Cards: (\d+)/(\d+)', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.stats"
                     translated_summary = translator.get(summary_key, "")
@@ -314,20 +313,20 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                         translated.summary = translated_summary.format(
                             og=match.group(1), total=match.group(2),
                             twitter=match.group(3), total2=match.group(4))
-            elif "Немає сторінок" in result.summary:
+            elif "No pages" in result.summary:
                 summary_key = f"analyzer_content.{name}.summary.no_pages"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
                     translated.summary = translated_summary
 
         elif name == "security":
-            if "в нормі" in result.summary:
+            if "in order" in result.summary:
                 summary_key = f"analyzer_content.{name}.summary.ok"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
                     translated.summary = translated_summary
-            elif "Знайдено проблем:" in result.summary:
-                match = re.search(r'Знайдено проблем: (.+)$', result.summary)
+            elif "Issues found:" in result.summary:
+                match = re.search(r'Issues found: (.+)$', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.problems"
                     translated_summary = translator.get(summary_key, "")
@@ -335,15 +334,15 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                         translated.summary = translated_summary.format(problems=match.group(1))
 
         elif name == "mobile":
-            if "мають viewport" in result.summary:
-                match = re.search(r'Всі (\d+) сторінок', result.summary)
+            if "have a viewport" in result.summary:
+                match = re.search(r'All (\d+) pages', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.ok"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
                         translated.summary = translated_summary.format(count=match.group(1))
-            elif "Проблеми:" in result.summary:
-                match = re.search(r'Проблеми: (.+)$', result.summary)
+            elif "Issues:" in result.summary:
+                match = re.search(r'Issues: (.+)$', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.problems"
                     translated_summary = translator.get(summary_key, "")
@@ -351,13 +350,13 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                         translated.summary = translated_summary.format(problems=match.group(1))
 
         elif name == "url_quality":
-            if "Всі URL якісні" in result.summary:
+            if "All URLs are well-structured" in result.summary:
                 summary_key = f"analyzer_content.{name}.summary.ok"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
                     translated.summary = translated_summary
-            elif "Знайдено проблем:" in result.summary:
-                match = re.search(r'Знайдено проблем: (.+)$', result.summary)
+            elif "Issues found:" in result.summary:
+                match = re.search(r'Issues found: (.+)$', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.problems"
                     translated_summary = translator.get(summary_key, "")
@@ -365,13 +364,13 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                         translated.summary = translated_summary.format(problems=match.group(1))
 
         elif name == "hreflang":
-            if "відсутні" in result.summary:
+            if "are missing" in result.summary:
                 summary_key = f"analyzer_content.{name}.summary.missing"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
                     translated.summary = translated_summary
-            elif "Знайдено" in result.summary:
-                match = re.search(r'Знайдено (\d+) мовних версій на (\d+) сторінках', result.summary)
+            elif "Found" in result.summary and "language versions" in result.summary:
+                match = re.search(r'Found (\d+) language versions across (\d+) pages', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.found"
                     translated_summary = translator.get(summary_key, "")
@@ -379,94 +378,64 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                         translated.summary = translated_summary.format(langs=match.group(1), pages=match.group(2))
 
         elif name == "duplicates":
-            if "Знайдено" in result.summary and "груп" in result.summary:
-                match = re.search(r'Знайдено (\d+) груп', result.summary)
+            if "Found" in result.summary and "duplicate groups" in result.summary:
+                match = re.search(r'Found (\d+) duplicate groups', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.found"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
                         translated.summary = translated_summary.format(count=match.group(1))
-            elif "не виявлено" in result.summary:
+            elif "No duplicates" in result.summary:
                 summary_key = f"analyzer_content.{name}.summary.ok"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
                     translated.summary = translated_summary
 
         elif name == "redirects":
-            if "Знайдено" in result.summary and "ланцюжків" in result.summary:
-                match = re.search(r'Знайдено (\d+) ланцюжків', result.summary)
+            if "Found" in result.summary and "redirect chains" in result.summary:
+                match = re.search(r'Found (\d+) redirect chains', result.summary)
                 if match:
                     summary_key = f"analyzer_content.{name}.summary.found"
                     translated_summary = translator.get(summary_key, "")
                     if translated_summary:
                         translated.summary = translated_summary.format(count=match.group(1))
-            elif "не знайдено" in result.summary:
+            elif "No redirect issues" in result.summary:
                 summary_key = f"analyzer_content.{name}.summary.ok"
                 translated_summary = translator.get(summary_key, "")
                 if translated_summary:
                     translated.summary = translated_summary
 
-        # Post-process: replace remaining Ukrainian words in summary
+        # Post-process: replace remaining English words in summary
         # (injected via {problems}, {broken}, {sections} placeholders)
-        if lang == 'en' and translated.summary:
-            _summary_word_map_en = {
-                'декілька H1': 'multiple H1',
-                'дублів H1': 'duplicate H1',
-                'порушень ієрархії': 'hierarchy violations',
-                'без H1': 'no H1',
-                'завеликі': 'too large',
-                'застарілий формат': 'outdated format',
-                'порожніх': 'empty',
-                'з малим контентом': 'with thin content',
-                'внутрішніх': 'internal',
-                'зовнішніх': 'external',
-                'глибоких сторінок': 'deep pages',
-                'сирітських': 'orphan',
-                'помилок': 'errors',
-                'попереджень': 'warnings',
-                'без viewport': 'no viewport',
-                'Flash-контент': 'Flash content',
-                'некоректний viewport': 'incorrect viewport',
-                'довгих URL': 'long URLs',
-                'великі літери': 'uppercase letters',
-                'спецсимволи': 'special characters',
-                'підкреслення': 'underscores',
-                'подвійні слеші': 'double slashes',
-                'параметри': 'parameters',
-            }
-            for ukr, eng in _summary_word_map_en.items():
-                if ukr in translated.summary:
-                    translated.summary = translated.summary.replace(ukr, eng)
-
-        if lang == 'ru' and translated.summary:
+        if translated.summary:
             _summary_word_map = {
-                'декілька H1': 'несколько H1',
-                'дублів H1': 'дублей H1',
-                'порушень ієрархії': 'нарушений иерархии',
-                'без H1': 'без H1',
-                'завеликі': 'слишком большие',
-                'застарілий формат': 'устаревший формат',
-                'порожніх': 'пустых',
-                'з малим контентом': 'с малым контентом',
-                'внутрішніх': 'внутренних',
-                'зовнішніх': 'внешних',
-                'глибоких сторінок': 'глубоких страниц',
-                'сирітських': 'сиротских',
-                'помилок': 'ошибок',
-                'попереджень': 'предупреждений',
-                'без viewport': 'без viewport',
-                'Flash-контент': 'Flash-контент',
-                'некоректний viewport': 'некорректный viewport',
-                'довгих URL': 'длинных URL',
-                'великі літери': 'заглавные буквы',
-                'спецсимволи': 'спецсимволы',
-                'підкреслення': 'подчёркивания',
-                'подвійні слеші': 'двойные слэши',
-                'параметри': 'параметры',
+                'multiple H1': {'uk': 'декілька H1', 'ru': 'несколько H1'},
+                'duplicate H1': {'uk': 'дублів H1', 'ru': 'дублей H1'},
+                'hierarchy violations': {'uk': 'порушень ієрархії', 'ru': 'нарушений иерархии'},
+                'no H1': {'uk': 'без H1', 'ru': 'без H1'},
+                'too large': {'uk': 'завеликі', 'ru': 'слишком большие'},
+                'outdated format': {'uk': 'застарілий формат', 'ru': 'устаревший формат'},
+                'empty': {'uk': 'порожніх', 'ru': 'пустых'},
+                'with thin content': {'uk': 'з малим контентом', 'ru': 'с малым контентом'},
+                'internal': {'uk': 'внутрішніх', 'ru': 'внутренних'},
+                'external': {'uk': 'зовнішніх', 'ru': 'внешних'},
+                'deep pages': {'uk': 'глибоких сторінок', 'ru': 'глубоких страниц'},
+                'orphan': {'uk': 'сирітських', 'ru': 'сиротских'},
+                'errors': {'uk': 'помилок', 'ru': 'ошибок'},
+                'warnings': {'uk': 'попереджень', 'ru': 'предупреждений'},
+                'no viewport': {'uk': 'без viewport', 'ru': 'без viewport'},
+                'Flash content': {'uk': 'Flash-контент', 'ru': 'Flash-контент'},
+                'incorrect viewport': {'uk': 'некоректний viewport', 'ru': 'некорректный viewport'},
+                'long URLs': {'uk': 'довгих URL', 'ru': 'длинных URL'},
+                'uppercase letters': {'uk': 'великі літери', 'ru': 'заглавные буквы'},
+                'special characters': {'uk': 'спецсимволи', 'ru': 'спецсимволы'},
+                'underscores': {'uk': 'підкреслення', 'ru': 'подчёркивания'},
+                'double slashes': {'uk': 'подвійні слеші', 'ru': 'двойные слэши'},
+                'parameters': {'uk': 'параметри', 'ru': 'параметры'},
             }
-            for ukr, rus in _summary_word_map.items():
-                if ukr in translated.summary:
-                    translated.summary = translated.summary.replace(ukr, rus)
+            for eng, translations in _summary_word_map.items():
+                if eng in translated.summary and lang in translations:
+                    translated.summary = translated.summary.replace(eng, translations[lang])
 
     # Translate issues
     for issue in translated.issues:
@@ -478,11 +447,11 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
             try:
                 # Handle CMS-specific translations with dynamic CMS name
                 if name == "cms" and issue.category == "cms_detected":
-                    cms_match = re.search(r'використовується (.+)$', issue.message)
+                    cms_match = re.search(r'using (.+)$', issue.message)
                     if cms_match and "{cms}" in translated_msg:
                         issue.message = translated_msg.format(cms=cms_match.group(1))
                 elif name == "cms" and issue.category == "multiple_cms":
-                    cms_match = re.search(r'ознаки: (.+)$', issue.message)
+                    cms_match = re.search(r'detected: (.+)$', issue.message)
                     if cms_match and "{cms_list}" in translated_msg:
                         issue.message = translated_msg.format(cms_list=cms_match.group(1))
                 # Try to format with count if available
@@ -495,7 +464,7 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
                     # No placeholders, use as-is
                     issue.message = translated_msg
                 else:
-                    # General fallback: extract dynamic values from Ukrainian message
+                    # General fallback: extract dynamic values from English message
                     format_kwargs = {}
                     numbers = re.findall(r'\d+', issue.message)
 
@@ -511,11 +480,11 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
 
                     # Extract domain for external_links many_links_same_domain
                     if '{domain}' in translated_msg:
-                        domain_match = re.search(r'на (.+?):', issue.message)
+                        domain_match = re.search(r'to (.+?):', issue.message)
                         if domain_match:
                             format_kwargs['domain'] = domain_match.group(1)
-                        # Also try to get count from "domain: N шт."
-                        count_match = re.search(r':\s*(\d+)\s*шт', issue.message)
+                        # Also try to get count from "domain: N"
+                        count_match = re.search(r':\s*(\d+)', issue.message)
                         if count_match:
                             format_kwargs['count'] = count_match.group(1)
 
@@ -531,7 +500,7 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
         if translated_details:
             if name == "cms" and issue.category == "cms_detected":
                 # Extract evidence from original details
-                evidence_match = re.search(r'ознаки: (.+)$', issue.details or "")
+                evidence_match = re.search(r'indicators: (.+)$', issue.details or "")
                 if evidence_match and "{evidence}" in translated_details:
                     evidence = evidence_match.group(1)
                     issue.details = translated_details.format(evidence=evidence)
@@ -544,37 +513,22 @@ def translate_analyzer_content(result: AnalyzerResult, lang: str, translator) ->
         if translated_rec and "{" not in translated_rec:
             issue.recommendation = translated_rec
 
-    # Post-process: replace remaining Ukrainian words in issue messages
+    # Post-process: replace remaining English words in issue messages
     # (speed FCP/LCP/CLS metrics, content_sections missing features, etc.)
-    if lang == 'en':
-        _issue_word_map_en = {
-            'повільний': 'slow',
-            'високий': 'high',
-            'ціль': 'target',
-            'відсутні елементи:': 'missing elements:',
-            'дати публікації': 'publication dates',
-            'категорії': 'categories',
-        }
-        for issue in translated.issues:
-            if issue.message:
-                for ukr, eng in _issue_word_map_en.items():
-                    if ukr in issue.message:
-                        issue.message = issue.message.replace(ukr, eng)
-
-    if lang == 'ru':
+    if translated.issues:
         _issue_word_map = {
-            'повільний': 'медленный',
-            'високий': 'высокий',
-            'ціль': 'цель',
-            'відсутні елементи:': 'отсутствуют элементы:',
-            'дати публікації': 'даты публикации',
-            'категорії': 'категории',
+            'slow': {'uk': 'повільний', 'ru': 'медленный'},
+            'high': {'uk': 'високий', 'ru': 'высокий'},
+            'target': {'uk': 'ціль', 'ru': 'цель'},
+            'missing elements:': {'uk': 'відсутні елементи:', 'ru': 'отсутствуют элементы:'},
+            'publication dates': {'uk': 'дати публікації', 'ru': 'даты публикации'},
+            'categories': {'uk': 'категорії', 'ru': 'категории'},
         }
         for issue in translated.issues:
             if issue.message:
-                for ukr, rus in _issue_word_map.items():
-                    if ukr in issue.message:
-                        issue.message = issue.message.replace(ukr, rus)
+                for eng, translations in _issue_word_map.items():
+                    if eng in issue.message and lang in translations:
+                        issue.message = issue.message.replace(eng, translations[lang])
 
     # Translate tables
     table_titles = translator.translations.get("table_translations", {}).get("titles", {})
@@ -702,7 +656,7 @@ class ReportGenerator:
         template = self.env.get_template("report.html")
 
         # Get translator for the audit language
-        lang = getattr(audit, 'language', 'uk') or 'uk'
+        lang = getattr(audit, 'language', 'en') or 'en'
         t = get_translator(lang)
 
         # Prepare sections for navigation with translated names
@@ -719,8 +673,8 @@ class ReportGenerator:
             if name in audit.results:
                 result = audit.results[name]
 
-                # Translate analyzer content if not Ukrainian
-                if lang != 'uk':
+                # Translate analyzer content if not English
+                if lang != 'en':
                     result = translate_analyzer_content(result, lang, t)
 
                 # Get translated title, fallback to display_name from result
@@ -1249,7 +1203,7 @@ class ReportGenerator:
             raise ImportError("python-docx is required for Word export. Install it with: pip install python-docx")
 
         # Setup i18n
-        lang = getattr(audit, 'language', 'uk') or 'uk'
+        lang = getattr(audit, 'language', 'en') or 'en'
         t = get_translator(lang)
 
         t_labels = {
@@ -1409,7 +1363,7 @@ class ReportGenerator:
             result = audit.results[name]
 
             # Translate content if needed
-            if lang != 'uk':
+            if lang != 'en':
                 result = translate_analyzer_content(result, lang, t)
 
             # Get translated section title

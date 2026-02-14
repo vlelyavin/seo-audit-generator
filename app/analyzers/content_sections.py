@@ -234,7 +234,7 @@ class ContentSectionsAnalyzer(BaseAnalyzer):
         ]
 
         tables.append({
-            "title": self.t("table_translations.titles.Інформаційні розділи"),
+            "title": self.t("table_translations.titles.Informational Sections"),
             "headers": [h_section, h_status, h_count],
             "rows": table_data,
         })

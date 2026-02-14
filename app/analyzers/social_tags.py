@@ -164,7 +164,7 @@ class SocialTagsAnalyzer(BaseAnalyzer):
         # Create table with tag status per page
         if page_tag_status:
             tables.append({
-                "title": self.t("table_translations.titles.Статус соціальних тегів"),
+                "title": self.t("table_translations.titles.Social Tags Status"),
                 "headers": ["URL", "og:title", "og:image", "twitter:card"],
                 "rows": page_tag_status[:10],
             })

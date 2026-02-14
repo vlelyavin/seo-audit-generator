@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-  const { url, language = "en", analyzers = null, maxPages } = body;
+  const { url, language = "en", progressLanguage, analyzers = null, maxPages } = body;
 
   if (!url) {
     return NextResponse.json({ error: "URL is required" }, { status: 400 });
@@ -90,6 +90,7 @@ export async function POST(req: Request) {
     body: JSON.stringify({
       url,
       language,
+      progress_language: progressLanguage || language,
       analyzers,
       max_pages: effectiveMaxPages,
     }),

@@ -216,7 +216,7 @@ class DuplicatesAnalyzer(BaseAnalyzer):
 
         h_url1 = "URL 1"
         h_url2 = "URL 2"
-        h_similarity = self.t("table_translations.headers.Подібність")
+        h_similarity = self.t("table_translations.headers.Similarity")
 
         for url_a, url_b, similarity, dup_type in all_pairs[:10]:
             table_data.append({
@@ -227,7 +227,7 @@ class DuplicatesAnalyzer(BaseAnalyzer):
 
         if table_data:
             tables.append({
-                "title": self.t("table_translations.titles.Дублікати контенту"),
+                "title": self.t("table_translations.titles.Content Duplicates"),
                 "headers": [h_url1, h_url2, h_similarity],
                 "rows": table_data,
             })

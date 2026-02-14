@@ -116,7 +116,8 @@
     "exportDialogMessage": "Выберите формат и язык отчёта.",
     "exportFormat": "Формат",
     "exportLanguage": "Язык",
-    "exportDownload": "Скачать"
+    "exportDownload": "Скачать",
+    "cancel": "Отмена"
   },
   "settings": {
     "title": "Настройки",

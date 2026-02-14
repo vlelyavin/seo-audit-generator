@@ -48,7 +48,7 @@ export async function GET(
       body: JSON.stringify({
         format,
         audit: JSON.parse(audit.resultJson),
-        language: lang || audit.language || "uk",
+        language: lang || audit.language || "en",
       }),
     });
 

@@ -30,7 +30,7 @@ class BaseAnalyzer(ABC):
         self.language = language
         # Import here to avoid circular dependencies
         from ..i18n import get_translator
-        self.translator = get_translator(language) if language != "uk" else None
+        self.translator = get_translator(language) if language != "en" else None
 
     def t(self, key: str, **kwargs) -> str:
         """
@@ -45,9 +45,9 @@ class BaseAnalyzer(ABC):
         """
         if self.translator:
             return self.translator(key, **kwargs)
-        # Fallback to Ukrainian (default locale)
+        # Fallback to English (default/source locale)
         from ..i18n import t
-        text = t(key, "uk", **kwargs)
+        text = t(key, "en", **kwargs)
         return text
 
     @abstractmethod

@@ -96,7 +96,7 @@ export function AnalyzerSection({ result }: AnalyzerSectionProps) {
               </button>
               {showTheory && (
                 <div
-                  className="mt-2 rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs leading-relaxed text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                  className="mt-2 whitespace-pre-line rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs leading-relaxed text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
                   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(result.theory) }}
                 />
               )}

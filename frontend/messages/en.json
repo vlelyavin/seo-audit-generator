@@ -116,7 +116,8 @@
     "exportDialogMessage": "Choose the format and language for your report.",
     "exportFormat": "Format",
     "exportLanguage": "Language",
-    "exportDownload": "Download"
+    "exportDownload": "Download",
+    "cancel": "Cancel"
   },
   "settings": {
     "title": "Settings",
