@@ -745,61 +745,8 @@ class ReportGenerator:
 
         return str(report_path)
 
-    def _build_pdf_pages(self, audit: AuditResult, sections: list, domain: str, t, lang: str) -> dict:
-        """Build top critical issues and category overview HTML for PDF injection.
-
-        Returns a dict with:
-        - 'top_issues': HTML for top critical issues (injected after screenshot)
-        - 'category_overview': HTML for category overview table (injected before analyzer sections)
-        """
-        # --- Top Critical Issues (max 3) ---
-        top_issues = []
-        for section in sections:
-            result = section["result"]
-            for issue in result.issues:
-                if issue.severity == SeverityLevel.ERROR:
-                    top_issues.append({
-                        "message": issue.message,
-                        "details": issue.details or "",
-                        "category": section["title"],
-                    })
-        top_issues = top_issues[:3]
-
-        top_issues_html = ""
-        if top_issues:
-            items = ""
-            for ti in top_issues:
-                detail = f' — {ti["details"][:120]}' if ti["details"] else ""
-                items += f'<li><strong>{ti["message"]}</strong>{detail}</li>\n'
-            top_issues_html = f'''
-            <div class="top-issues">
-                <h2 style="font-size: 14pt; margin-bottom: 12px;">{t("report.top_critical_issues")}</h2>
-                <ol style="padding-left: 20px; font-size: 10pt; color: #374151;">
-                    {items}
-                </ol>
-            </div>
-            '''
-
-        # --- Verdict info box (appended after top issues) ---
-        error_categories = [s["title"] for s in sections if s["severity"] == SeverityLevel.ERROR]
-        error_count = len(error_categories)
-        cat_list = ", ".join(error_categories[:3]) if error_categories else ""
-        score = audit.overall_score
-        if score >= 70:
-            verdict_key = "report.verdict_good"
-        elif score >= 40:
-            verdict_key = "report.verdict_average"
-        else:
-            verdict_key = "report.verdict_poor"
-        verdict_text = t(verdict_key, categories=cat_list, count=error_count)
-
-        if top_issues_html:
-            top_issues_html += f'''
-            <div class="pdf-verdict">
-                <p>{verdict_text}</p>
-            </div>
-            '''
-
+    def _build_pdf_pages(self, audit: AuditResult, sections: list, domain: str, t, lang: str) -> str:
+        """Build category overview HTML for PDF injection."""
         # --- Category Overview Table ---
         severity_order = {SeverityLevel.ERROR: 0, SeverityLevel.WARNING: 1, SeverityLevel.INFO: 2, SeverityLevel.SUCCESS: 3}
         sorted_sections = sorted(sections, key=lambda s: severity_order.get(s["severity"], 4))
@@ -844,7 +791,7 @@ class ReportGenerator:
                         <tr>
                             <th style="width: 30px;">#</th>
                             <th>{t("report.category")}</th>
-                            <th>{t("report.status")}</th>
+                            <th style="width: 100px;">{t("report.status")}</th>
                             <th style="width: 70px; text-align: center;">{t("report.critical_count")}</th>
                             <th style="width: 90px; text-align: center;">{t("report.warning_count")}</th>
                         </tr>
@@ -857,10 +804,7 @@ class ReportGenerator:
         </div>
         '''
 
-        return {
-            "top_issues": top_issues_html,
-            "category_overview": category_html,
-        }
+        return category_html
 
     async def generate_pdf(self, audit: AuditResult, brand: dict | None = None) -> str:
         """Generate PDF report and return file path."""
@@ -897,13 +841,13 @@ class ReportGenerator:
         with open(html_path, "r", encoding="utf-8") as f:
             html_content = f.read()
 
-        # Build top issues + category overview
-        pdf_parts = self._build_pdf_pages(audit, sections, domain, t, lang)
+        # Build category overview
+        category_overview_html = self._build_pdf_pages(audit, sections, domain, t, lang)
 
         # --- Change 1: Replace summary header with cover-style content ---
         generated_at = datetime.now().strftime("%d.%m.%Y")
         cover_header = f'''
-            <h1 class="pdf-cover-title">Express SEO audit by seo-audit.online</h1>
+            <h1 class="pdf-cover-title">Express SEO audit</h1>
             <div class="pdf-cover-url">Website: {domain}</div>
             <div class="pdf-cover-meta">{t("report.pages_analyzed", count=audit.pages_crawled)} · {generated_at}</div>
         '''
@@ -916,10 +860,10 @@ class ReportGenerator:
             flags=re.DOTALL,
         )
 
-        # --- Change 2: Inject top issues after screenshot, category overview before sections ---
+        # --- Inject category overview before analyzer sections ---
         html_content = html_content.replace(
             '<!-- Analyzer Sections -->',
-            pdf_parts["top_issues"] + '\n' + pdf_parts["category_overview"] + '\n<!-- Analyzer Sections -->'
+            category_overview_html + '\n<!-- Analyzer Sections -->'
         )
 
         # --- Change 4: Limit URL lists to 10 items for PDF ---
@@ -977,27 +921,6 @@ class ReportGenerator:
                 font-size: 10pt;
                 color: #111827;
                 margin-bottom: 4px;
-            }
-
-            /* === Top Critical Issues === */
-            .top-issues {
-                margin: 16px 0 24px 0;
-            }
-            .top-issues li {
-                margin-bottom: 8px;
-                line-height: 1.5;
-                font-size: 10pt;
-                color: #374151;
-            }
-            .pdf-verdict {
-                background: #f0f9ff;
-                border-left: 3px solid #3b82f6;
-                border-radius: 0 8px 8px 0;
-                padding: 10px 14px;
-                font-size: 10pt;
-                color: #374151;
-                line-height: 1.6;
-                margin-top: 16px;
             }
 
             /* === Category Overview === */
@@ -1110,6 +1033,9 @@ class ReportGenerator:
                 overflow: visible !important;
                 text-overflow: clip !important;
                 max-width: none !important;
+            }
+            .category-table .badge {
+                width: fit-content !important;
             }
             .issue-urls li {
                 white-space: nowrap !important;
