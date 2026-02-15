@@ -105,7 +105,6 @@
     "recommendation": "Рекомендація:",
     "affectedUrls": "Зачеплені URL ({count}):",
     "pages": "{count} сторінок",
-    "pagesOfEstimated": "{crawled} / ~{total} сторінок",
     "sections": "Розділи",
     "searchIssues": "Пошук проблем...",
     "noMatchingResults": "Жодних результатів за вашим фільтром.",

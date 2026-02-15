@@ -167,7 +167,6 @@ class ProgressEvent(BaseModel):
     message: str = ""
     current_url: Optional[str] = None
     pages_crawled: int = 0
-    estimated_pages: Optional[int] = None  # From sitemap, for smoother progress bar
     stage: Optional[str] = None
     analyzer_name: Optional[str] = None  # Display name of currently running analyzer
 
