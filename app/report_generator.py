@@ -780,6 +780,26 @@ class ReportGenerator:
             </div>
             '''
 
+        # --- Verdict info box (appended after top issues) ---
+        error_categories = [s["title"] for s in sections if s["severity"] == SeverityLevel.ERROR]
+        error_count = len(error_categories)
+        cat_list = ", ".join(error_categories[:3]) if error_categories else ""
+        score = audit.overall_score
+        if score >= 70:
+            verdict_key = "report.verdict_good"
+        elif score >= 40:
+            verdict_key = "report.verdict_average"
+        else:
+            verdict_key = "report.verdict_poor"
+        verdict_text = t(verdict_key, categories=cat_list, count=error_count)
+
+        if top_issues_html:
+            top_issues_html += f'''
+            <div class="pdf-verdict">
+                <p>{verdict_text}</p>
+            </div>
+            '''
+
         # --- Category Overview Table ---
         severity_order = {SeverityLevel.ERROR: 0, SeverityLevel.WARNING: 1, SeverityLevel.INFO: 2, SeverityLevel.SUCCESS: 3}
         sorted_sections = sorted(sections, key=lambda s: severity_order.get(s["severity"], 4))
@@ -884,9 +904,7 @@ class ReportGenerator:
         generated_at = datetime.now().strftime("%d.%m.%Y")
         cover_header = f'''
             <h1 class="pdf-cover-title">{t("report.cover_title")}</h1>
-            <div class="pdf-cover-url">{domain}</div>
-            <div class="pdf-cover-meta">{generated_at} | {t("report.pages_analyzed", count=audit.pages_crawled)}</div>
-            <div class="pdf-cover-branding">Made by seo-audit.online</div>
+            <div class="pdf-cover-meta">{domain} · {t("report.pages_analyzed", count=audit.pages_crawled)} · {generated_at} · Made by seo-audit.online</div>
         '''
         # Replace the original h1 + p header in the summary section
         html_content = re.sub(
@@ -949,20 +967,10 @@ class ReportGenerator:
                 color: #111827;
                 margin: 0 0 8px 0;
             }
-            .pdf-cover-url {
-                font-size: 14pt;
-                color: #3B82F6;
-                margin-bottom: 4px;
-            }
             .pdf-cover-meta {
                 font-size: 10pt;
-                color: #6B7280;
+                color: #111827;
                 margin-bottom: 4px;
-            }
-            .pdf-cover-branding {
-                font-size: 10pt;
-                color: #3B82F6;
-                margin-bottom: 20px;
             }
 
             /* === Top Critical Issues === */
@@ -975,9 +983,21 @@ class ReportGenerator:
                 font-size: 10pt;
                 color: #374151;
             }
+            .pdf-verdict {
+                background: #f0f9ff;
+                border-left: 3px solid #3b82f6;
+                border-radius: 8px;
+                padding: 10px 14px;
+                font-size: 10pt;
+                color: #374151;
+                line-height: 1.6;
+                margin-top: 12px;
+                margin-bottom: 24px;
+            }
 
             /* === Category Overview === */
             .category-overview {
+                page-break-before: always;
                 page-break-after: always;
             }
 
@@ -1009,6 +1029,7 @@ class ReportGenerator:
             /* Summary cards: compact for A4 */
             .summary-grid {
                 grid-template-columns: repeat(4, 1fr) !important;
+                margin-top: 24px !important;
             }
             .summary-card {
                 padding: 10px !important;
@@ -1035,10 +1056,15 @@ class ReportGenerator:
             .screenshot-card img {
                 max-width: 100% !important;
             }
-            /* Badge alignment for WeasyPrint */
+            /* Badge pill styling for WeasyPrint */
             .badge {
                 display: inline-flex !important;
                 align-items: center !important;
+                gap: 4px !important;
+                padding: 3px 10px !important;
+                border-radius: 9999px !important;
+                font-size: 12px !important;
+                font-weight: 500 !important;
                 vertical-align: middle !important;
                 line-height: 1 !important;
             }
@@ -1068,6 +1094,9 @@ class ReportGenerator:
                 display: block !important;
             }
             /* === Truncation: single-line URLs and table cells === */
+            .data-table {
+                table-layout: fixed !important;
+            }
             .issue-urls li {
                 white-space: nowrap !important;
                 overflow: hidden !important;
