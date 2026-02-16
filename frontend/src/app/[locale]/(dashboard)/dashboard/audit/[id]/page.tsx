@@ -127,27 +127,43 @@ export default function AuditPage({
       return;
     }
 
+    setLoading(true);
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+    let cancelled = false;
+
     async function fetchResults() {
       try {
         const res = await fetch(`/api/audit/${auditId}/results?lang=${locale}`);
 
-        // If 202 status, audit still in progress - wait longer
         if (res.status === 202) {
+          // Audit still finalizing in FastAPI — retry after delay
+          if (!cancelled) {
+            retryTimer = setTimeout(fetchResults, 1500);
+          }
           return;
         }
 
         if (res.ok) {
           const data = await res.json();
-          setResults(data.results);
-          setAuditMeta(data);
+          if (!cancelled) {
+            setResults(data.results);
+            setAuditMeta(data);
+          }
         }
       } catch (err) {
         console.error('[Audit] Failed to fetch results:', err);
       }
-      setLoading(false);
+      if (!cancelled) {
+        setLoading(false);
+      }
     }
 
     fetchResults();
+
+    return () => {
+      cancelled = true;
+      if (retryTimer) clearTimeout(retryTimer);
+    };
   }, [done, auditId, locale, progress?.status]);
 
   // Also try to load cached results on mount (for revisiting completed audits)

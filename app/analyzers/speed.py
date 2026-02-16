@@ -306,8 +306,21 @@ class SpeedAnalyzer(BaseAnalyzer):
                                 error_text = await response.text()
                                 logger.error(f"PageSpeed API error for {strategy}: status={response.status}, response={error_text[:500]}")
 
-                                # Check if it's a quota/rate limit error
+                                # Classify the error
+                                is_key_error = (
+                                    response.status == 403
+                                    and ("API_KEY" in error_text or "PERMISSION_DENIED" in error_text)
+                                )
                                 is_quota_error = response.status == 429 or "Quota" in error_text or "RATE_LIMIT" in error_text
+                                is_server_error = response.status >= 500
+
+                                # API key blocked (wrong restrictions, etc.) — retry without key
+                                if is_key_error and use_key and "key" in params:
+                                    logger.warning(f"API key blocked for {strategy} ({response.status}), retrying without key...")
+                                    params.pop("key", None)
+                                    use_key = None
+                                    await asyncio.sleep(1)
+                                    continue
 
                                 if is_quota_error and attempt < max_retries - 1:
                                     # Try without API key first (separate public quota)
@@ -324,7 +337,14 @@ class SpeedAnalyzer(BaseAnalyzer):
                                     await asyncio.sleep(wait_time)
                                     continue
 
-                                # Parse error message from API response
+                                # Transient server error (or undocumented rate limiting) — retry with backoff
+                                if is_server_error and attempt < max_retries - 1:
+                                    wait_time = (attempt + 1) * 3
+                                    logger.warning(f"Server error ({response.status}) for {strategy}, retry {attempt + 1}/{max_retries} in {wait_time}s...")
+                                    await asyncio.sleep(wait_time)
+                                    continue
+
+                                # Non-retryable error — parse and give up
                                 try:
                                     error_data = json_module.loads(error_text)
                                     api_error = error_data.get("error", {})
