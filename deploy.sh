@@ -20,6 +20,31 @@ run_as_app() {
     sudo -u "$APP_USER" -H bash -c "$1"
 }
 
+wait_for_http() {
+    local url="$1"
+    local max_attempts="${2:-30}"
+    local delay_seconds="${3:-2}"
+    local attempt=1
+
+    while [ "$attempt" -le "$max_attempts" ]; do
+        if curl -fsS "$url" >/dev/null 2>&1; then
+            return 0
+        fi
+        sleep "$delay_seconds"
+        attempt=$((attempt + 1))
+    done
+
+    return 1
+}
+
+print_service_debug() {
+    local service_name="$1"
+    echo "---- ${service_name} status ----"
+    sudo systemctl status "$service_name" --no-pager || true
+    echo "---- ${service_name} recent logs ----"
+    sudo journalctl -u "$service_name" -n 100 --no-pager || true
+}
+
 # 1. System dependencies
 echo "[1/11] Installing system dependencies..."
 sudo apt-get update
@@ -117,13 +142,28 @@ sudo systemctl enable nextjs-seo-audit
 sudo systemctl restart nextjs-seo-audit
 
 echo "Running health checks..."
-if ! curl -fsS http://127.0.0.1:8000/health >/dev/null; then
-    echo "ERROR: FastAPI health check failed"
+
+if ! sudo systemctl is-active --quiet seo-audit; then
+    echo "ERROR: FastAPI service is not active after restart"
+    print_service_debug "seo-audit"
     exit 1
 fi
 
-if ! curl -fsS http://127.0.0.1:3000 >/dev/null; then
+if ! wait_for_http "http://127.0.0.1:8000/health" 45 2; then
+    echo "ERROR: FastAPI health check failed"
+    print_service_debug "seo-audit"
+    exit 1
+fi
+
+if ! sudo systemctl is-active --quiet nextjs-seo-audit; then
+    echo "ERROR: Next.js service is not active after restart"
+    print_service_debug "nextjs-seo-audit"
+    exit 1
+fi
+
+if ! wait_for_http "http://127.0.0.1:3000" 45 2; then
     echo "ERROR: Next.js health check failed"
+    print_service_debug "nextjs-seo-audit"
     exit 1
 fi
 
