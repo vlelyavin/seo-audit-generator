@@ -578,9 +578,15 @@ async def run_audit(audit_id: str, request: AuditRequest):
     # Language for progress messages (matches UI locale)
     progress_lang = request.progress_language if request.progress_language in ("en", "uk", "ru") else lang
 
+    # Mutable ref so emit_progress can check speed task status (defined later)
+    speed_task_ref: list = [None]
+
     # Helper function to emit progress events
     async def emit_progress(event: ProgressEvent):
         """Broadcast event and store in history."""
+        task = speed_task_ref[0]
+        if task is not None and not task.done():
+            event.speed_testing = True
         await channel.broadcast(event)
         # Store in history (keep last 20 events)
         if audit_id not in audit_progress_history:
@@ -611,9 +617,10 @@ async def run_audit(audit_id: str, request: AuditRequest):
             speed_task = asyncio.create_task(
                 asyncio.wait_for(
                     speed_analyzer.analyze({}, str(request.url)),
-                    timeout=180  # 3 min — PageSpeed API is slow, needs retries for both mobile & desktop
+                    timeout=600  # 10 min — PageSpeed API is slow, needs retries for both mobile & desktop
                 )
             )
+            speed_task_ref[0] = speed_task
 
         async def progress_callback(page: PageData):
             progress = min(len(pages) / max_pages * 40, 40)
@@ -792,7 +799,7 @@ async def run_audit(audit_id: str, request: AuditRequest):
                     analyzer_name=t("analyzers.speed.name", progress_lang),
                 ))
             except asyncio.TimeoutError:
-                logger.error(f"Speed Analyzer timed out after 180s")
+                logger.error(f"Speed Analyzer timed out after 600s")
                 failed_analyzers.append("speed")
                 results["speed"] = AnalyzerResult(
                     name="speed",

@@ -125,7 +125,8 @@
     "progressCrawling": "Crawled {count} pages",
     "progressAnalyzing": "Analyzing crawled pages...",
     "progressAnalyzingName": "Analyzing: {name}...",
-    "progressGeneratingReport": "Generating report..."
+    "progressGeneratingReport": "Generating report...",
+    "speedTestingInBackground": "Also testing website speed (PageSpeed Insights)..."
   },
   "settings": {
     "title": "Settings",

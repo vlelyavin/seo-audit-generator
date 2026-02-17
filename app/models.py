@@ -191,6 +191,7 @@ class ProgressEvent(BaseModel):
     pages_crawled: int = 0
     stage: Optional[str] = None
     analyzer_name: Optional[str] = None  # Display name of currently running analyzer
+    speed_testing: bool = False  # True while PageSpeed test is running in background
 
 
 class RobotsTxtData(BaseModel):

@@ -59,9 +59,17 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
           {t("auditInProgress")}
         </h2>
 
-        <p className="mb-6 text-center text-sm text-gray-400">
+        <p className="mb-2 text-center text-sm text-gray-400">
           {getProgressMessage()}
         </p>
+
+        {progress?.speed_testing && (
+          <p className="mb-6 text-center text-xs text-blue-400">
+            {t("speedTestingInBackground")}
+          </p>
+        )}
+
+        {!progress?.speed_testing && <div className="mb-4" />}
 
         {/* Progress bar */}
         <div className="mb-6">
