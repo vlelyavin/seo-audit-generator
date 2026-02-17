@@ -126,7 +126,7 @@
     "progressAnalyzing": "Анализ просканированных страниц...",
     "progressAnalyzingName": "Анализ: {name}...",
     "progressGeneratingReport": "Генерация отчёта...",
-    "speedTestingInBackground": "Также тестируется скорость сайта (PageSpeed Insights)..."
+    "speedTestSuffix": "тест скорости"
   },
   "settings": {
     "title": "Настройки",

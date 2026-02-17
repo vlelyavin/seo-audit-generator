@@ -126,7 +126,7 @@
     "progressAnalyzing": "Analyzing crawled pages...",
     "progressAnalyzingName": "Analyzing: {name}...",
     "progressGeneratingReport": "Generating report...",
-    "speedTestingInBackground": "Also testing website speed (PageSpeed Insights)..."
+    "speedTestSuffix": "Speed test"
   },
   "settings": {
     "title": "Settings",

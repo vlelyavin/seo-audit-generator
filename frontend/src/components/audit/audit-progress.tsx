@@ -19,15 +19,16 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
 
   function getProgressMessage(): string {
     if (!progress) return t("progressConnecting");
+    const speedSuffix = progress.speed_testing ? ` + ${t("speedTestSuffix")}` : "";
     switch (progress.stage) {
       case "crawling":
         return progress.pages_crawled
-          ? t("progressCrawling", { count: progress.pages_crawled })
-          : t("progressCrawlingStart");
+          ? t("progressCrawling", { count: progress.pages_crawled }) + speedSuffix
+          : t("progressCrawlingStart") + speedSuffix;
       case "analyzing":
         return progress.analyzer_name
-          ? t("progressAnalyzingName", { name: progress.analyzer_name })
-          : t("progressAnalyzing");
+          ? t("progressAnalyzingName", { name: progress.analyzer_name }) + speedSuffix
+          : t("progressAnalyzing") + speedSuffix;
       case "generating_report":
         return t("progressGeneratingReport");
       default:
@@ -59,17 +60,9 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
           {t("auditInProgress")}
         </h2>
 
-        <p className="mb-2 text-center text-sm text-gray-400">
+        <p className="mb-6 text-center text-sm text-gray-400">
           {getProgressMessage()}
         </p>
-
-        {progress?.speed_testing && (
-          <p className="mb-6 text-center text-xs text-blue-400">
-            {t("speedTestingInBackground")}
-          </p>
-        )}
-
-        {!progress?.speed_testing && <div className="mb-4" />}
 
         {/* Progress bar */}
         <div className="mb-6">
