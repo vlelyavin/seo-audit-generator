@@ -75,7 +75,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
     <aside
       id="dashboard-sidebar"
       className={cn(
-        "fixed inset-y-0 left-0 top-14 z-50 flex w-64 flex-col overflow-hidden border-r border-gray-800 bg-black transition-[opacity,transform] duration-300 ease-out",
+        "fixed inset-y-0 left-0 top-14 z-50 flex w-52 flex-col overflow-hidden border-r border-gray-800 bg-black transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
         open
           ? "translate-x-0 opacity-100 pointer-events-auto"
           : "-translate-x-full opacity-0 pointer-events-none"

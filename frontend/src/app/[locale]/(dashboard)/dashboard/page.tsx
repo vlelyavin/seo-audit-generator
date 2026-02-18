@@ -337,7 +337,7 @@ function StatCard({
           <p className="text-2xl font-bold text-gray-900 dark:text-white">
             {value}
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
+          <p className="text-[11px] leading-tight whitespace-nowrap text-gray-500 dark:text-gray-400 sm:text-xs">{label}</p>
         </div>
       </div>
     </div>

@@ -9,7 +9,8 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { cn } from "@/lib/utils";
 
 const SIDEBAR_STORAGE_KEY = "seo-audit.sidebar.open";
-const SIDEBAR_WIDTH_MOBILE_CLASS = "translate-x-64";
+const SIDEBAR_WIDTH_MOBILE_CLASS = "translate-x-52";
+const SIDEBAR_TRANSITION = "duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]";
 
 export default function DashboardLayout({
   children,
@@ -73,14 +74,16 @@ export default function DashboardLayout({
     <div className="relative h-screen overflow-hidden">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {sidebarOpen && (
-        <button
-          type="button"
-          aria-label={tNav("closeSidebar")}
-          className="fixed inset-x-0 bottom-0 top-14 z-40 bg-black/35 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      <button
+        type="button"
+        aria-label={tNav("closeSidebar")}
+        className={cn(
+          "fixed inset-x-0 bottom-0 top-14 z-40 bg-black/35 transition-opacity lg:hidden",
+          SIDEBAR_TRANSITION,
+          sidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        )}
+        onClick={() => setSidebarOpen(false)}
+      />
 
       <Header
         sidebarOpen={sidebarOpen}
@@ -89,9 +92,10 @@ export default function DashboardLayout({
 
       <div
         className={cn(
-          "relative z-30 h-[calc(100%-3.5rem)] transition-[padding-left,transform] duration-300 ease-out",
+          "relative z-30 h-[calc(100%-3.5rem)] transition-[padding-left,transform]",
+          SIDEBAR_TRANSITION,
           sidebarOpen ? SIDEBAR_WIDTH_MOBILE_CLASS : "translate-x-0",
-          sidebarOpen ? "lg:pl-64 lg:translate-x-0" : "lg:pl-0 lg:translate-x-0"
+          sidebarOpen ? "lg:pl-52 lg:translate-x-0" : "lg:pl-0 lg:translate-x-0"
         )}
       >
         <main className="h-full overflow-y-auto p-4 lg:p-6">{children}</main>

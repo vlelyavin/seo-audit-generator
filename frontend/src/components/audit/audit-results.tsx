@@ -173,14 +173,14 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
 
         {/* Filter bar */}
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
-          <div className="w-full shrink-0 sm:w-auto">
-            <div className="flex w-full items-center gap-1 rounded-lg border border-gray-200 bg-gray-100 p-1 sm:w-auto dark:border-gray-800 dark:bg-gray-900">
+          <div className="w-full overflow-x-auto sm:w-auto">
+            <div className="inline-flex h-11 min-w-max items-center gap-1 whitespace-nowrap rounded-lg border border-gray-200 bg-gray-100 p-1 dark:border-gray-800 dark:bg-gray-900">
               {filterButtons.map((fb) => (
                 <button
                   key={fb.key}
                   onClick={() => setFilter(fb.key)}
                   className={cn(
-                    "flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors sm:flex-none sm:px-2.5",
+                    "inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition-colors",
                     filter === fb.key
                       ? "border border-gray-300 bg-white text-gray-900 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
                       : "border border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -195,13 +195,13 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
 
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <div className="relative min-w-0 flex-1">
-              <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder={t("searchIssues")}
-                className="h-[34px] w-full rounded-lg border py-1.5 pl-8 pr-3 text-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/30 dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:focus:border-white dark:focus:ring-white/20"
+                className="h-11 w-full rounded-lg border py-1.5 pl-9 pr-3 text-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/30 dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:focus:border-white dark:focus:ring-white/20"
               />
             </div>
 
@@ -212,7 +212,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
                 disabled={exportingFormat !== null}
                 onClick={() => setExportDialogOpen(true)}
                 className={cn(
-                  "flex h-[34px] items-center gap-1.5 rounded-lg border px-3 text-sm font-medium",
+                  "flex h-11 items-center gap-1.5 rounded-lg border px-3 text-sm font-medium",
                   exportingFormat
                     ? "cursor-not-allowed opacity-50 border-gray-300 text-gray-500 dark:border-gray-600 dark:text-gray-500"
                     : "text-gray-700 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
@@ -304,7 +304,7 @@ function StatCard({
         </div>
         <div>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
+          <p className="text-[11px] leading-tight whitespace-nowrap text-gray-500 dark:text-gray-400 sm:text-xs">{label}</p>
         </div>
       </div>
     </div>

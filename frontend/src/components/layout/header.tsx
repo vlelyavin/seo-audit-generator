@@ -14,7 +14,7 @@ interface HeaderProps {
 function SidebarToggleIcon({ open }: { open: boolean }) {
   return (
     <svg
-      width="18"
+      width="16"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -45,10 +45,10 @@ export function Header({ sidebarOpen, onSidebarToggle }: HeaderProps) {
   const { data: session } = useSession();
 
   return (
-    <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b border-gray-800 bg-black/80 px-4 backdrop-blur-sm lg:px-6">
+    <header className="sticky top-0 z-40 flex h-14 items-center gap-3 border-b border-gray-800 bg-black/80 px-4 backdrop-blur-sm lg:px-6">
       <button
         onClick={onSidebarToggle}
-        className="rounded-md p-2 text-gray-400 transition-colors hover:bg-gray-950 hover:text-white"
+        className="flex h-8 w-8 items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-gray-950 hover:text-white"
         aria-label={sidebarOpen ? t("closeSidebar") : t("openSidebar")}
         aria-expanded={sidebarOpen}
         aria-controls="dashboard-sidebar"
