@@ -21,7 +21,9 @@
     "users": "Користувачі",
     "logout": "Вийти",
     "login": "Увійти",
-    "currentPlan": "Поточний план"
+    "currentPlan": "Поточний план",
+    "openSidebar": "Відкрити бічну панель",
+    "closeSidebar": "Закрити бічну панель"
   },
   "auth": {
     "signIn": "Увійти",

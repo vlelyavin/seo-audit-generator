@@ -21,7 +21,9 @@
     "users": "Пользователи",
     "logout": "Выйти",
     "login": "Войти",
-    "currentPlan": "Текущий план"
+    "currentPlan": "Текущий план",
+    "openSidebar": "Открыть боковую панель",
+    "closeSidebar": "Закрыть боковую панель"
   },
   "auth": {
     "signIn": "Войти",

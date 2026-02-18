@@ -21,7 +21,9 @@
     "users": "Users",
     "logout": "Sign Out",
     "login": "Sign In",
-    "currentPlan": "Current Plan"
+    "currentPlan": "Current Plan",
+    "openSidebar": "Open sidebar",
+    "closeSidebar": "Close sidebar"
   },
   "auth": {
     "signIn": "Sign In",
