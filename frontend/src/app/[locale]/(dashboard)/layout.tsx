@@ -82,18 +82,19 @@ export default function DashboardLayout({
         />
       )}
 
+      <Header
+        sidebarOpen={sidebarOpen}
+        onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
+      />
+
       <div
         className={cn(
-          "relative z-30 flex h-full flex-col transition-[padding-left,transform] duration-300 ease-out",
+          "relative z-30 h-[calc(100%-3.5rem)] transition-[padding-left,transform] duration-300 ease-out",
           sidebarOpen ? SIDEBAR_WIDTH_MOBILE_CLASS : "translate-x-0",
           sidebarOpen ? "lg:pl-64 lg:translate-x-0" : "lg:pl-0 lg:translate-x-0"
         )}
       >
-        <Header
-          sidebarOpen={sidebarOpen}
-          onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
-        />
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">{children}</main>
+        <main className="h-full overflow-y-auto p-4 lg:p-6">{children}</main>
       </div>
     </div>
   );
