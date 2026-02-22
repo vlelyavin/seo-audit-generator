@@ -19,7 +19,8 @@ export async function GET(request: Request) {
   const storedState = cookieStore.get("gsc_oauth_state")?.value;
   const locale = cookieStore.get("NEXT_LOCALE")?.value ?? "en";
 
-  const dashboardUrl = new URL(`/${locale}/dashboard/indexing`, request.url);
+  const baseUrl = process.env.AUTH_URL ?? "http://localhost:3000";
+  const dashboardUrl = new URL(`/${locale}/dashboard/indexing`, baseUrl);
 
   // Handle errors from Google
   if (error) {
@@ -34,7 +35,7 @@ export async function GET(request: Request) {
   // Verify user is logged in
   const session = await auth();
   if (!session?.user) {
-    const loginUrl = new URL(`/${locale}/login`, request.url);
+    const loginUrl = new URL(`/${locale}/login`, baseUrl);
     return NextResponse.redirect(loginUrl);
   }
 
