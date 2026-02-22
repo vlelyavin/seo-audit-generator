@@ -262,23 +262,29 @@ async function main() {
     });
   }
 
-  // 9. IndexingLogs
+  // 9. IndexingLogs (skip entries with orphaned FK references)
   const logs = getAll("IndexingLog");
   console.log(`IndexingLogs: ${logs.length}`);
+  let logsSkipped = 0;
   for (const l of logs) {
-    await mysql.indexingLog.upsert({
-      where: { id: l.id as string },
-      update: {},
-      create: {
-        id: l.id as string,
-        indexedUrlId: l.indexedUrlId as string | null,
-        userId: l.userId as string,
-        action: l.action as string,
-        details: l.details as string | null,
-        createdAt: toDate(l.createdAt) || new Date(),
-      },
-    });
+    try {
+      await mysql.indexingLog.upsert({
+        where: { id: l.id as string },
+        update: {},
+        create: {
+          id: l.id as string,
+          indexedUrlId: l.indexedUrlId as string | null,
+          userId: l.userId as string,
+          action: l.action as string,
+          details: l.details as string | null,
+          createdAt: toDate(l.createdAt) || new Date(),
+        },
+      });
+    } catch {
+      logsSkipped++;
+    }
   }
+  if (logsSkipped) console.log(`  Skipped ${logsSkipped} logs (orphaned FK)`);
 
   // 10. UserDailyQuotas
   const quotas = getAll("UserDailyQuota");
