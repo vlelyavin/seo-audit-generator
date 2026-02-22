@@ -8,6 +8,7 @@ Type=simple
 User=seo-audit
 Group=seo-audit
 WorkingDirectory=/var/www/seo-audit/frontend/.next/standalone
+EnvironmentFile=/var/www/seo-audit/frontend/.env
 Environment="NODE_ENV=production"
 Environment="PORT=3000"
 Environment="HOSTNAME=127.0.0.1"
