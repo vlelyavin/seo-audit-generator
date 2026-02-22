@@ -41,6 +41,24 @@ async function main() {
   console.log(`Reading from SQLite: ${SQLITE_PATH}`);
   console.log(`Writing to MySQL: ${process.env.DATABASE_URL?.replace(/:[^@]+@/, ":***@")}\n`);
 
+  // Clear MySQL tables first (reverse FK order) to avoid unique constraint conflicts
+  console.log("Clearing existing MySQL data...");
+  await mysql.verificationToken.deleteMany();
+  await mysql.cronJobLog.deleteMany();
+  await mysql.dailyReport.deleteMany();
+  await mysql.creditTransaction.deleteMany();
+  await mysql.userDailyQuota.deleteMany();
+  await mysql.indexingLog.deleteMany();
+  await mysql.indexedUrl.deleteMany();
+  await mysql.site.deleteMany();
+  await mysql.brandSettings.deleteMany();
+  await mysql.audit.deleteMany();
+  await mysql.session.deleteMany();
+  await mysql.account.deleteMany();
+  await mysql.user.deleteMany();
+  await mysql.plan.deleteMany();
+  console.log("Cleared.\n");
+
   // 1. Plans (seed should have created these, but upsert to be safe)
   const plans = getAll("Plan");
   console.log(`Plans: ${plans.length}`);
