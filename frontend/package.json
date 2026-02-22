@@ -11,13 +11,17 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
     "@prisma/client": "^6.19.2",
+    "@types/nodemailer": "^7.0.11",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
+    "fast-xml-parser": "^5.3.7",
+    "googleapis": "^171.4.0",
     "isomorphic-dompurify": "^3.0.0-rc.2",
     "lucide-react": "^0.563.0",
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
     "next-intl": "^4.8.2",
+    "nodemailer": "^8.0.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "tailwind-merge": "^3.4.0"

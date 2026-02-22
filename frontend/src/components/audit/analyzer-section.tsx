@@ -53,11 +53,11 @@ export function AnalyzerSection({ result }: AnalyzerSectionProps) {
       >
         <SevIcon className={cn("h-5 w-5 shrink-0", colors.text)} />
         <div className="min-w-0 flex-1">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+          <h3 className="text-sm font-semibold text-white">
             {result.display_name}
           </h3>
           {result.summary && (
-            <p className="mt-0.5 truncate text-xs text-gray-600 dark:text-gray-400">
+            <p className="mt-0.5 truncate text-xs text-gray-400">
               {result.summary}
             </p>
           )}
@@ -76,10 +76,10 @@ export function AnalyzerSection({ result }: AnalyzerSectionProps) {
 
       {/* Content */}
       {expanded && (
-        <div className="border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
+        <div className="border-t border-gray-700 bg-gray-900 p-4">
           {/* Description */}
           {result.description && (
-            <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mb-3 text-sm text-gray-400">
               {result.description}
             </p>
           )}
@@ -89,14 +89,14 @@ export function AnalyzerSection({ result }: AnalyzerSectionProps) {
             <div className="mb-4">
               <button
                 onClick={() => setShowTheory(!showTheory)}
-                className="flex items-center gap-1.5 text-xs font-medium text-gray-900 underline dark:text-white"
+                className="flex items-center gap-1.5 text-xs font-medium text-gray-300 underline hover:text-white"
               >
                 <BookOpen className="h-3.5 w-3.5" />
                 {showTheory ? t("hideTheory") : t("showTheory")}
               </button>
               {showTheory && (
                 <div
-                  className="mt-2 whitespace-pre-line rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs leading-relaxed text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+                  className="mt-2 whitespace-pre-line rounded-lg border border-gray-700 bg-gray-800 p-3 text-xs leading-relaxed text-gray-300"
                   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(result.theory) }}
                 />
               )}
@@ -114,7 +114,7 @@ export function AnalyzerSection({ result }: AnalyzerSectionProps) {
 
           {/* No issues */}
           {result.issues.length === 0 && result.severity === "success" && (
-            <div className="flex items-center gap-2 rounded-lg bg-green-50 p-3 text-sm text-green-700 dark:bg-green-900/10 dark:text-green-400">
+            <div className="flex items-center gap-2 rounded-lg bg-green-900/10 p-3 text-sm text-green-400">
               <CheckCircle className="h-4 w-4" />
               {t("noIssuesFound")}
             </div>

@@ -1,0 +1,48 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { Link2, Search, Send } from "lucide-react";
+
+const STEP_ICONS = [Link2, Search, Send] as const;
+
+export function IndexingHowItWorks() {
+  const t = useTranslations("marketing.indexingLanding.howItWorks");
+
+  const steps = [
+    { num: "01", icon: STEP_ICONS[0], title: t("step1Title"), desc: t("step1Desc") },
+    { num: "02", icon: STEP_ICONS[1], title: t("step2Title"), desc: t("step2Desc") },
+    { num: "03", icon: STEP_ICONS[2], title: t("step3Title"), desc: t("step3Desc") },
+  ];
+
+  return (
+    <section className="border-t border-gray-800 bg-black py-24">
+      <div className="mx-auto max-w-6xl px-4 lg:px-6">
+        <p className="mb-4 text-sm font-medium italic text-copper">
+          {t("sectionLabel")}
+        </p>
+        <h2 className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
+          {t("title")}
+        </h2>
+
+        <div className="mt-16 grid gap-8 sm:grid-cols-3">
+          {steps.map((step) => (
+            <div key={step.num}>
+              <span className="text-4xl font-bold text-copper/30">
+                {step.num}
+              </span>
+              <div className="mt-4 flex items-center gap-3">
+                <step.icon className="h-6 w-6 text-copper" />
+                <h3 className="text-xl font-semibold text-white">
+                  {step.title}
+                </h3>
+              </div>
+              <p className="mt-3 leading-relaxed text-gray-400">
+                {step.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

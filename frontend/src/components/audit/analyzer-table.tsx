@@ -55,19 +55,19 @@ export function AnalyzerTable({ table }: AnalyzerTableProps) {
   return (
     <div>
       {table.title && (
-        <h4 className="mb-2 text-sm font-medium text-gray-900 dark:text-gray-200">
+        <h4 className="mb-2 text-sm font-medium text-gray-200">
           {table.title}
         </h4>
       )}
-      <div className="overflow-x-auto rounded-lg border dark:border-gray-700">
+      <div className="overflow-x-auto rounded-lg border border-gray-700">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-t border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-gray-800">
+            <tr className="border-b border-t border-gray-700 bg-gray-800">
               {headers.map((h, i) => (
                 <th
                   key={i}
                   onClick={() => handleSort(i)}
-                  className="cursor-pointer whitespace-nowrap px-3 py-2 text-left text-xs font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                  className="cursor-pointer whitespace-nowrap px-3 py-2 text-left text-xs font-medium text-gray-400 hover:text-gray-200"
                 >
                   <span className="flex items-center gap-1">
                     {h}
@@ -81,12 +81,12 @@ export function AnalyzerTable({ table }: AnalyzerTableProps) {
             {sortedRows.map((row, ri) => (
               <tr
                 key={ri}
-                className="border-b last:border-0 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800/50"
+                className="border-b border-gray-700 last:border-0 hover:bg-gray-800/50"
               >
                 {row.map((cell, ci) => (
                   <td
                     key={ci}
-                    className="whitespace-nowrap px-3 py-1.5 text-xs text-gray-900 dark:text-gray-200"
+                    className="whitespace-nowrap px-3 py-1.5 text-xs text-gray-200"
                   >
                     {renderCell(cell, t)}
                   </td>
@@ -156,9 +156,9 @@ function renderCell(val: string | number | boolean | null, t: (key: string) => s
   if (val === null || val === undefined) return "—";
   if (typeof val === "boolean") {
     return val ? (
-      <span className="text-green-600 dark:text-green-400">{t("yes")}</span>
+      <span className="text-green-400">{t("yes")}</span>
     ) : (
-      <span className="text-red-600 dark:text-red-400">{t("no")}</span>
+      <span className="text-red-400">{t("no")}</span>
     );
   }
   const str = String(val);
@@ -169,7 +169,7 @@ function renderCell(val: string | number | boolean | null, t: (key: string) => s
         href={str}
         target="_blank"
         rel="noopener noreferrer"
-        className="max-w-[300px] truncate text-gray-900 underline hover:text-blue-600 dark:text-white dark:hover:text-blue-400 block"
+        className="max-w-[300px] truncate text-gray-300 underline hover:text-copper block"
       >
         {str}
       </a>

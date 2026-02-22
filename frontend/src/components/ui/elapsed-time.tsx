@@ -29,6 +29,6 @@ export function ElapsedTime({ startedAt, stoppedAt }: { startedAt: string; stopp
   const elapsed = end - start;
 
   return (
-    <span className="shrink-0 text-xs tabular-nums text-gray-400 dark:text-gray-500">{formatElapsed(elapsed)}</span>
+    <span className="shrink-0 text-xs tabular-nums text-gray-400">{formatElapsed(elapsed)}</span>
   );
 }

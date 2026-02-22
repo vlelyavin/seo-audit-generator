@@ -58,7 +58,7 @@ export default function PlansPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-900 dark:text-white" />
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
       </div>
     );
   }
@@ -66,10 +66,10 @@ export default function PlansPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-white">
           {t("title")}
         </h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-1 text-sm text-gray-400">
           {t("subtitle")}
         </p>
       </div>
@@ -79,8 +79,8 @@ export default function PlansPage() {
           className={cn(
             "rounded-lg px-4 py-2 text-sm",
             message.type === "error"
-              ? "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300"
-              : "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300"
+              ? "bg-red-900/20 text-red-300"
+              : "bg-green-900/20 text-green-300"
           )}
         >
           {message.text}
@@ -121,17 +121,17 @@ export default function PlansPage() {
             <div
               key={plan.id}
               className={cn(
-                "relative flex h-full flex-col rounded-xl border bg-white p-6 dark:bg-gray-900",
+                "relative flex h-full flex-col rounded-xl border p-6",
                 isCurrent
-                  ? "border-gray-900 ring-2 ring-gray-900/20 dark:border-white dark:ring-white/20"
-                  : "border-gray-200 dark:border-gray-800",
-                isAgency &&
-                  "bg-gray-50 dark:bg-gray-950"
+                  ? "border-copper/50 bg-gray-950"
+                  : isAgency
+                  ? "border-copper/30 bg-gray-950"
+                  : "border-gray-800 bg-gray-900"
               )}
             >
               {isCurrent && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="rounded-full bg-gray-900 text-white px-3 py-1 text-xs font-medium dark:bg-white dark:text-black">
+                  <span className="rounded-full bg-gradient-to-r from-copper to-copper-light px-3 py-1 text-xs font-medium text-white">
                     {t("current")}
                   </span>
                 </div>
@@ -139,19 +139,19 @@ export default function PlansPage() {
 
               {isAgency && (
                 <div className="absolute -top-3 right-4">
-                  <Zap className="h-6 w-6 text-yellow-500" />
+                  <Zap className="h-6 w-6 text-copper" />
                 </div>
               )}
 
               <div className="mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-semibold text-white">
                   {t(plan.id)}
                 </h3>
                 <div className="mt-2 flex items-baseline">
-                  <span className="text-4xl font-bold text-gray-900 dark:text-white">
+                  <span className="text-4xl font-bold text-white">
                     ${plan.price}
                   </span>
-                  <span className="ml-1 text-sm text-gray-500 dark:text-gray-400">
+                  <span className="ml-1 text-sm text-gray-500">
                     {t("perMonth")}
                   </span>
                 </div>
@@ -172,12 +172,12 @@ export default function PlansPage() {
                 onClick={() => handleSelectPlan(plan.id)}
                 disabled={isCurrent || isSwitching}
                 className={cn(
-                  "mt-auto w-full rounded-lg px-4 py-2.5 text-sm font-medium transition-colors",
+                  "mt-auto w-full rounded-md px-4 py-2.5 text-sm font-semibold transition-opacity",
                   isCurrent
-                    ? "cursor-not-allowed bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
+                    ? "cursor-not-allowed bg-gray-800 text-gray-500"
                     : isAgency
-                    ? "bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
-                    : "bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                    ? "bg-gradient-to-r from-copper to-copper-light text-white hover:opacity-90"
+                    : "border border-gray-700 text-white hover:bg-gray-800"
                 )}
               >
                 {isSwitching ? (
@@ -200,8 +200,8 @@ export default function PlansPage() {
         })}
       </div>
 
-      <div className="rounded-lg border bg-gray-100 p-4 dark:border-[#333333] dark:bg-[#1a1a1a]">
-        <p className="text-sm text-gray-900 dark:text-white">
+      <div className="rounded-lg border border-gray-800 bg-gray-900 p-4">
+        <p className="text-sm text-gray-400">
           {t("noBilling")}
         </p>
       </div>
@@ -221,19 +221,14 @@ function FeatureItem({
   return (
     <li className="flex items-start gap-2">
       <Icon
-        className={cn(
-          "mt-0.5 h-5 w-5 shrink-0",
-          highlight
-            ? "text-blue-600 dark:text-blue-400"
-            : "text-green-600 dark:text-green-400"
-        )}
+        className="mt-0.5 h-5 w-5 shrink-0 text-copper"
       />
       <span
         className={cn(
           "text-sm",
           highlight
-            ? "font-medium text-gray-900 dark:text-white"
-            : "text-gray-600 dark:text-gray-300"
+            ? "font-medium text-white"
+            : "text-gray-300"
         )}
       >
         {text}

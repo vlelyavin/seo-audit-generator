@@ -1,0 +1,116 @@
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { Zap } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export function IndexingPricingSection() {
+  const t = useTranslations("marketing.indexingLanding.pricing");
+  const locale = useLocale();
+  const { data: session } = useSession();
+
+  const ctaHref = session?.user
+    ? `/${locale}/dashboard/indexing`
+    : `/${locale}/login`;
+
+  const packs = [
+    {
+      id: "starter",
+      name: t("starterName"),
+      price: t("starterPrice"),
+      credits: t("starterCredits"),
+      rate: t("starterRate"),
+      cta: t("starterCta"),
+      badge: null,
+      highlight: false,
+    },
+    {
+      id: "growth",
+      name: t("growthName"),
+      price: t("growthPrice"),
+      credits: t("growthCredits"),
+      rate: t("growthRate"),
+      cta: t("growthCta"),
+      badge: t("growthBadge"),
+      highlight: true,
+    },
+    {
+      id: "scale",
+      name: t("scaleName"),
+      price: t("scalePrice"),
+      credits: t("scaleCredits"),
+      rate: t("scaleRate"),
+      cta: t("scaleCta"),
+      badge: t("scaleBadge"),
+      highlight: false,
+    },
+  ];
+
+  return (
+    <section id="pricing" className="border-t border-gray-800 bg-black py-24">
+      <div className="mx-auto max-w-6xl px-4 lg:px-6">
+        <p className="mb-4 text-center text-sm font-medium italic text-copper">
+          {t("sectionLabel")}
+        </p>
+        <h2 className="text-center text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
+          {t("title")}
+        </h2>
+        <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-gray-400">
+          {t("subtitle")}
+        </p>
+
+        <div className="mt-16 grid gap-8 lg:grid-cols-3">
+          {packs.map((pack) => (
+            <div
+              key={pack.id}
+              className={cn(
+                "relative flex flex-col rounded-xl border bg-gray-950 p-8",
+                pack.highlight ? "border-copper/50" : "border-gray-800"
+              )}
+            >
+              {pack.badge && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="flex items-center gap-1 rounded-full bg-copper px-3 py-1 text-xs font-semibold text-white">
+                    {pack.highlight && <Zap className="h-3 w-3" />}
+                    {pack.badge}
+                  </span>
+                </div>
+              )}
+
+              <h3 className="text-lg font-semibold text-white">{pack.name}</h3>
+
+              <div className="mt-4 flex items-baseline gap-1">
+                <span className="text-5xl font-bold text-white">{pack.price}</span>
+                <span className="text-gray-500">one-time</span>
+              </div>
+
+              <div className="mt-6 space-y-2">
+                <p className="text-2xl font-semibold text-copper">{pack.credits}</p>
+                <p className="text-sm text-gray-400">{pack.rate}</p>
+              </div>
+
+              <Link
+                href={ctaHref}
+                className={cn(
+                  "mt-8 block rounded-md px-4 py-3.5 text-center text-sm font-semibold transition-opacity",
+                  pack.highlight
+                    ? "bg-gradient-to-r from-copper to-copper-light text-white hover:opacity-90"
+                    : "border border-gray-700 text-white hover:bg-gray-900"
+                )}
+              >
+                {pack.cta}
+              </Link>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-10 space-y-2 text-center">
+          <p className="text-sm text-gray-400">{t("freeNote")}</p>
+          <p className="text-sm text-gray-500">{t("quotaNote")}</p>
+        </div>
+      </div>
+    </section>
+  );
+}

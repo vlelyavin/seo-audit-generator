@@ -127,7 +127,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
       {/* Back button */}
       <button
         onClick={() => router.push(`/${locale}/dashboard`)}
-        className="mb-4 flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+        className="mb-4 flex items-center gap-2 text-sm text-gray-400 hover:text-white"
       >
         <ArrowLeft className="h-4 w-4" />
         {t("backToDashboard")}
@@ -141,7 +141,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
             <button
               key={name}
               onClick={() => scrollTo(name)}
-              className="flex w-full items-center gap-2 rounded-lg px-2 py-[calc(var(--spacing)*0.8)] text-left text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+              className="flex w-full items-center gap-2 rounded-lg px-2 py-[calc(var(--spacing)*0.8)] text-left text-sm text-gray-300 hover:bg-gray-800"
             >
               <span
                 className={cn(
@@ -149,7 +149,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
                   result.severity === "error" && "bg-red-500",
                   result.severity === "warning" && "bg-yellow-500",
                   result.severity === "success" && "bg-green-500",
-                  result.severity === "info" && "bg-gray-500 dark:bg-gray-400"
+                  result.severity === "info" && "bg-gray-500"
                 )}
               />
               <span className="truncate">{result.display_name}</span>
@@ -171,7 +171,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
         {/* Filter bar */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-4">
           <div className="w-full overflow-x-auto sm:w-auto">
-            <div className="inline-flex h-11 min-w-max items-center gap-1 whitespace-nowrap rounded-lg border border-gray-200 bg-gray-100 p-1 dark:border-gray-800 dark:bg-gray-900">
+            <div className="inline-flex h-11 min-w-max items-center gap-1 whitespace-nowrap rounded-lg border border-gray-800 bg-gray-900 p-1">
               {filterButtons.map((fb) => (
                 <button
                   key={fb.key}
@@ -179,8 +179,8 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
                   className={cn(
                     "inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition-colors",
                     filter === fb.key
-                      ? "border border-gray-300 bg-white text-gray-900 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                      : "border border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      ? "border border-gray-700 bg-gray-800 text-white shadow-sm"
+                      : "border border-transparent text-gray-400 hover:text-gray-200"
                   )}
                 >
                   <span className="shrink-0">{fb.icon}</span>
@@ -192,13 +192,13 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
 
           <div className="flex min-w-0 flex-1 items-center gap-4">
             <div className="relative min-w-0 flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder={t("searchIssues")}
-                className="h-11 w-full rounded-lg border py-1.5 pl-9 pr-3 text-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-400/30 dark:border-gray-800 dark:bg-gray-900 dark:text-white dark:focus:border-white dark:focus:ring-white/20"
+                className="h-11 w-full rounded-lg border border-gray-800 bg-gray-900 py-1.5 pl-9 pr-3 text-sm text-white outline-none placeholder-gray-500 transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
               />
             </div>
 
@@ -209,10 +209,10 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
                 disabled={exportingFormat !== null}
                 onClick={() => setExportDialogOpen(true)}
                 className={cn(
-                  "flex h-11 items-center gap-1.5 rounded-lg border px-3 text-sm font-medium",
+                  "flex h-11 items-center gap-1.5 rounded-lg border px-3 text-sm font-medium transition-colors",
                   exportingFormat
-                    ? "cursor-not-allowed opacity-50 border-gray-300 text-gray-500 dark:border-gray-600 dark:text-gray-500"
-                    : "text-gray-700 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+                    ? "cursor-not-allowed opacity-50 border-gray-700 text-gray-500"
+                    : "border-gray-800 bg-gray-900 text-gray-300 hover:bg-gray-800"
                 )}
               >
                 {exportingFormat ? (
@@ -243,11 +243,11 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
 
         {/* Export error */}
         {exportError && (
-          <div className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
+          <div className="flex items-center justify-between rounded-lg border border-red-800 bg-red-900/20 px-4 py-2 text-sm text-red-300">
             <span>{exportError}</span>
             <button
               onClick={() => setExportError(null)}
-              className="ml-4 text-red-500 hover:text-red-700 dark:hover:text-red-200"
+              className="ml-4 text-red-400 hover:text-red-200"
             >
               &times;
             </button>
@@ -256,7 +256,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
 
         {/* Analyzer sections */}
         {analyzerEntries.length === 0 ? (
-          <div className="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
+          <div className="py-12 text-center text-sm text-gray-400">
             {t("noMatchingResults")}
           </div>
         ) : (
@@ -287,21 +287,21 @@ function StatCard({
   color: "gray" | "green" | "yellow" | "red";
 }) {
   const colorClasses = {
-    gray: "bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white",
-    green: "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400",
-    yellow: "bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400",
-    red: "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400",
+    gray: "bg-gray-800 text-white",
+    green: "bg-green-900/20 text-green-400",
+    yellow: "bg-yellow-900/20 text-yellow-400",
+    red: "bg-red-900/20 text-red-400",
   };
 
   return (
-    <div className="rounded-xl border bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
       <div className="flex items-center gap-3">
         <div className={cn("rounded-lg p-2", colorClasses[color])}>
           <Icon className="h-5 w-5" />
         </div>
         <div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
-          <p className="text-[11px] leading-tight whitespace-nowrap text-gray-500 dark:text-gray-400 sm:text-xs">{label}</p>
+          <p className="text-2xl font-bold text-white">{value}</p>
+          <p className="text-[11px] leading-tight whitespace-nowrap text-gray-400 sm:text-xs">{label}</p>
         </div>
       </div>
     </div>

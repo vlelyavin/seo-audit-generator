@@ -61,7 +61,7 @@ export default function DashboardLayout({
   if (status === "loading") {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-white dark:border-white border-t-transparent dark:border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-white border-t-transparent" />
       </div>
     );
   }

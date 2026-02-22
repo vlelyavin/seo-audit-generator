@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-ubuntu);
   --font-mono: var(--font-geist-mono);
 
   /* Pure neutral gray scale override - NO blue tints */
@@ -16,6 +16,14 @@
   --color-gray-800: #262626;
   --color-gray-900: #171717;
   --color-gray-950: #0a0a0a;
+
+  /* Copper/bronze accent (lvdev.co exact) */
+  --color-copper: #b34e22;
+  --color-copper-light: #e38748;
+}
+
+body {
+  font-family: var(--font-ubuntu), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Dark Theme Only - CSS Variables */

@@ -64,7 +64,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
       </button>
       <div className="rounded-xl border border-gray-800 bg-gray-900 p-4 sm:p-8">
         <div className="mb-6 flex items-center justify-center">
-          <Loader2 className="h-10 w-10 animate-spin text-white" />
+          <Loader2 className="h-10 w-10 animate-spin text-copper" />
         </div>
 
         <h2 className="mb-2 text-center text-lg font-semibold text-white">
@@ -83,7 +83,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-gray-700">
             <div
-              className="h-full rounded-full bg-white transition-all duration-500"
+              className="h-full rounded-full bg-gradient-to-r from-copper to-copper-light transition-all duration-500"
               style={{ width: `${pct}%` }}
             />
           </div>

@@ -138,18 +138,18 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-5xl space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-white">
             {t("title")}
           </h1>
           {session?.user && (
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-sm text-gray-400">
               {t("welcome")}, {session.user.name || session.user.email}
             </p>
           )}
         </div>
         <Link
           href={`/${locale}/dashboard/audit/new`}
-          className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 px-4 py-2 text-sm font-medium dark:bg-white dark:text-black dark:hover:bg-gray-200 transition-colors"
+          className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           <Plus className="h-4 w-4" />
           {t("startAudit")}
@@ -165,36 +165,36 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent audits */}
-      <div className="rounded-xl border bg-white dark:border-gray-800 dark:bg-gray-900">
-        <div className="border-b p-4 dark:border-gray-800">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <div className="rounded-xl border border-gray-800 bg-gray-900">
+        <div className="border-b border-gray-800 p-4">
+          <h2 className="text-lg font-semibold text-white">
             {t("recentAudits")}
           </h2>
         </div>
 
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-900 dark:border-white border-t-transparent dark:border-t-transparent" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
           </div>
         ) : audits.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <BarChart3 className="mb-3 h-10 w-10 text-gray-300 dark:text-gray-600" />
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <BarChart3 className="mb-3 h-10 w-10 text-gray-600" />
+            <p className="text-sm text-gray-400">
               {t("noAudits")}
             </p>
             <Link
               href={`/${locale}/dashboard/audit/new`}
-              className="mt-4 rounded-lg bg-gray-900 text-white hover:bg-gray-800 px-4 py-2 text-sm font-medium dark:bg-white dark:text-black dark:hover:bg-gray-200"
+              className="mt-4 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               {t("startAudit")}
             </Link>
           </div>
         ) : (
-          <div className="divide-y dark:divide-gray-800">
+          <div className="divide-y divide-gray-800">
             {audits.map((audit) => (
               <div
                 key={audit.id}
-                className="group relative flex items-center gap-2 px-3 py-2 sm:gap-4 sm:px-4 sm:py-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                className="group relative flex items-center gap-2 px-3 py-2 sm:gap-4 sm:px-4 sm:py-3 hover:bg-gray-800/50 transition-colors"
               >
                 <Link
                   href={`/${locale}/dashboard/audit/${audit.id}`}
@@ -202,10 +202,10 @@ export default function DashboardPage() {
                 >
                   <StatusDot status={audit.status} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-xs font-medium text-gray-900 sm:text-sm dark:text-white">
+                    <p className="truncate text-xs font-medium text-white sm:text-sm">
                       {audit.url}
                     </p>
-                    <div className="mt-0.5 text-[11px] text-gray-500 sm:text-xs dark:text-gray-400">
+                    <div className="mt-0.5 text-[11px] text-gray-400 sm:text-xs">
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                         <span className="flex items-center gap-1">
                           <Clock className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
@@ -248,7 +248,7 @@ export default function DashboardPage() {
                     </div>
                     {audit.status === "failed" && audit.errorMessage && (
                       <div className="mt-1">
-                        <span className="text-xs text-red-600 dark:text-red-400">
+                        <span className="text-xs text-red-400">
                           {audit.errorMessage}
                         </span>
                       </div>
@@ -269,7 +269,7 @@ export default function DashboardPage() {
                     e.stopPropagation();
                     setDeleteAuditId(audit.id);
                   }}
-                  className="shrink-0 rounded-md p-1 text-gray-400 opacity-100 sm:p-1.5 sm:opacity-0 transition-opacity hover:bg-red-50 hover:text-red-600 sm:group-hover:opacity-100 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+                  className="shrink-0 rounded-md p-1 text-gray-400 opacity-100 sm:p-1.5 sm:opacity-0 transition-opacity hover:bg-red-900/20 hover:text-red-400 sm:group-hover:opacity-100"
                   title={t("deleteAudit")}
                 >
                   <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -302,8 +302,7 @@ function StatusDot({ status }: { status: string }) {
         "bg-green-500": status === "completed",
         "bg-red-500": status === "failed",
         "bg-yellow-500 animate-pulse": status === "crawling" || status === "analyzing",
-        "bg-gray-400": status === "pending",
-        "bg-gray-500 dark:bg-gray-400": status === "generating_report",
+        "bg-gray-400": status === "pending" || status === "generating_report",
       })}
     />
   );
@@ -321,23 +320,23 @@ function StatCard({
   color: "gray" | "green" | "yellow" | "red";
 }) {
   const colorClasses = {
-    gray: "bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white",
-    green: "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400",
-    yellow: "bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400",
-    red: "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400",
+    gray: "bg-gray-800 text-white",
+    green: "bg-green-900/20 text-green-400",
+    yellow: "bg-yellow-900/20 text-yellow-400",
+    red: "bg-red-900/20 text-red-400",
   };
 
   return (
-    <div className="rounded-xl border bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
       <div className="flex items-center gap-3">
         <div className={cn("rounded-lg p-2", colorClasses[color])}>
           <Icon className="h-5 w-5" />
         </div>
         <div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+          <p className="text-2xl font-bold text-white">
             {value}
           </p>
-          <p className="text-[11px] leading-tight whitespace-nowrap text-gray-500 dark:text-gray-400 sm:text-xs">{label}</p>
+          <p className="text-[11px] leading-tight whitespace-nowrap text-gray-400 sm:text-xs">{label}</p>
         </div>
       </div>
     </div>
