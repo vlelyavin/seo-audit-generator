@@ -123,6 +123,9 @@ run_as_app "cd '$FRONTEND_DIR' && npx tsx prisma/seed.ts"
 echo "[9/11] Building Next.js frontend..."
 run_as_app "cd '$FRONTEND_DIR' && npm run build"
 
+# Symlink .env into standalone dir so Next.js @next/env can load it at runtime
+ln -sf "$FRONTEND_DIR/.env" "$FRONTEND_DIR/.next/standalone/.env"
+
 # 10. Fix permissions
 echo "[10/11] Fixing permissions..."
 sudo chown -R "$APP_USER:$APP_USER" "$APP_DIR"
