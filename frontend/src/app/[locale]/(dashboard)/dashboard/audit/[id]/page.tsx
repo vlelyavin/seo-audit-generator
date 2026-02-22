@@ -203,11 +203,11 @@ export default function AuditPage({
   // Breadcrumbs component
   const Breadcrumbs = () => (
     <nav className="mb-6 flex items-center gap-2 text-sm">
-      <Link href={`/${locale}/dashboard`} className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+      <Link href={`/${locale}/dashboard`} className="text-gray-400 hover:text-white transition-colors">
         {tAudit("audits")}
       </Link>
-      <span className="text-gray-400">/</span>
-      <span className="font-medium text-gray-900 dark:text-white">{tAudit("currentAudit")}</span>
+      <span className="text-gray-600">/</span>
+      <span className="font-medium text-white">{tAudit("currentAudit")}</span>
     </nav>
   );
 
@@ -244,10 +244,10 @@ export default function AuditPage({
     return (
       <div className="mx-auto max-w-2xl py-12 text-center">
         <div className="mb-4 text-5xl">&#10060;</div>
-        <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-xl font-bold text-white">
           {tAudit("failed")}
         </h1>
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-2 text-sm text-gray-400">
           {progress.message}
         </p>
       </div>
@@ -273,15 +273,15 @@ export default function AuditPage({
     return (
       <div className="mx-auto max-w-2xl py-12 text-center">
         <div className="mb-4 text-5xl">&#10060;</div>
-        <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+        <h1 className="text-xl font-bold text-white">
           {tAudit("error")}
         </h1>
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-2 text-sm text-gray-400">
           {pageError}
         </p>
         <Link
           href={`/${locale}/dashboard`}
-          className="mt-4 inline-block text-blue-500 hover:text-blue-600"
+          className="mt-4 inline-block text-gray-400 hover:text-white transition-colors"
         >
           {tAudit("backToDashboard")}
         </Link>
@@ -293,14 +293,14 @@ export default function AuditPage({
   if (loading) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-white dark:border-white border-t-transparent dark:border-t-transparent" />
-        <p className="text-sm text-gray-500 dark:text-gray-400">{tAudit("loadingAudit")}</p>
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-white border-t-transparent" />
+        <p className="text-sm text-gray-400">{tAudit("loadingAudit")}</p>
       </div>
     );
   }
 
   return (
-    <div className="py-12 text-center text-gray-500 dark:text-gray-400">
+    <div className="py-12 text-center text-gray-400">
       {tAudit("noResults")}
     </div>
   );

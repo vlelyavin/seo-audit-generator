@@ -8,21 +8,46 @@ generator client {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  name          String?
-  email         String         @unique
-  emailVerified DateTime?
-  password      String?
-  image         String?
-  role          String         @default("user")
-  planId        String         @default("free")
-  plan          Plan           @relation(fields: [planId], references: [id])
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-  audits        Audit[]
-  brandSettings BrandSettings?
+  id                      String               @id @default(cuid())
+  name                    String?
+  email                   String               @unique
+  emailVerified           DateTime?
+  password                String?
+  image                   String?
+  role                    String               @default("user")
+  planId                  String               @default("free")
+  plan                    Plan                 @relation(fields: [planId], references: [id])
+  createdAt               DateTime             @default(now())
+  updatedAt               DateTime             @updatedAt
+  gscConnected            Boolean              @default(false)
+  gscConnectedAt          DateTime?
+  indexingCredits         Int                  @default(0)
+  creditLowWarningSent    Boolean              @default(false)
+  emailReports            Boolean              @default(true)
+  accounts                Account[]
+  sessions                Session[]
+  audits                  Audit[]
+  brandSettings           BrandSettings?
+  sites                   Site[]
+  indexingLogs            IndexingLog[]
+  dailyQuotas             UserDailyQuota[]
+  creditTransactions      CreditTransaction[]
+  dailyReports            DailyReport[]
+}
+
+model CreditTransaction {
+  id           String   @id @default(cuid())
+  userId       String
+  amount       Int
+  balanceAfter Int
+  type         String
+  description  String
+  lsOrderId    String?
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([lsOrderId])
 }
 
 model Account {
@@ -99,4 +124,103 @@ model BrandSettings {
   primaryColor String  @default("#2563eb")
   accentColor  String  @default("#7c3aed")
   user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Site {
+  id                 String        @id @default(cuid())
+  userId             String
+  domain             String
+  gscPermissionLevel String?
+  autoIndexGoogle    Boolean       @default(false)
+  autoIndexBing      Boolean       @default(false)
+  sitemapUrl         String?
+  indexnowKey        String?
+  lastSyncedAt       DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  indexedUrls        IndexedUrl[]
+  dailyReports       DailyReport[]
+
+  @@unique([userId, domain])
+}
+
+model IndexedUrl {
+  id               String        @id @default(cuid())
+  siteId           String
+  url              String
+  gscStatus        String?
+  indexingStatus   String        @default("none")
+  submissionMethod String        @default("none")
+  submittedAt      DateTime?
+  lastSyncedAt     DateTime?
+  errorMessage     String?
+  httpStatus       Int?
+  isNew            Boolean       @default(false)
+  isChanged        Boolean       @default(false)
+  lastmod          String?
+  retryCount       Int           @default(0)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  site             Site          @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  indexingLogs     IndexingLog[]
+
+  @@unique([siteId, url])
+}
+
+model IndexingLog {
+  id             String      @id @default(cuid())
+  indexedUrlId   String?
+  userId         String
+  action         String
+  details        String?
+  createdAt      DateTime    @default(now())
+  indexedUrl     IndexedUrl? @relation(fields: [indexedUrlId], references: [id], onDelete: SetNull)
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserDailyQuota {
+  id                 String   @id @default(cuid())
+  userId             String
+  date               String
+  googleSubmissions  Int      @default(0)
+  inspectionsUsed    Int      @default(0)
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+}
+
+model DailyReport {
+  id                    String   @id @default(cuid())
+  siteId                String
+  userId                String
+  reportDate            String
+  newPagesFound         Int      @default(0)
+  changedPagesFound     Int      @default(0)
+  removedPagesFound     Int      @default(0)
+  submittedGoogle       Int      @default(0)
+  submittedGoogleFailed Int      @default(0)
+  submittedBing         Int      @default(0)
+  submittedBingFailed   Int      @default(0)
+  pages404              Int      @default(0)
+  totalIndexed          Int      @default(0)
+  totalUrls             Int      @default(0)
+  creditsUsed           Int      @default(0)
+  creditsRemaining      Int      @default(0)
+  details               String?
+  createdAt             DateTime @default(now())
+  site                  Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([siteId, reportDate])
+  @@index([userId, reportDate])
+}
+
+model CronJobLog {
+  id          String   @id @default(cuid())
+  jobName     String   @unique
+  lastRunAt   DateTime
+  lastResult  String
+  lastSummary String?
+  updatedAt   DateTime @updatedAt
 }

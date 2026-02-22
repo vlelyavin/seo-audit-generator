@@ -168,19 +168,19 @@ export default function BrandingPage() {
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-gray-500 dark:text-gray-400">
+      <p className="text-sm text-gray-400">
         {t("description")}
       </p>
 
       {message && (
-        <div className="rounded-lg bg-gray-100 px-4 py-2 text-sm text-gray-900 dark:bg-[#1a1a1a] dark:text-white">
+        <div className="rounded-lg border border-gray-800 bg-gray-900 px-4 py-2 text-sm text-gray-300">
           {message}
         </div>
       )}
 
-      <form onSubmit={handleSave} className="rounded-xl border bg-white p-6 dark:border-gray-800 dark:bg-gray-900 space-y-5">
+      <form onSubmit={handleSave} className="rounded-xl border border-gray-800 bg-gray-900 p-6 space-y-5">
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="mb-1.5 block text-sm font-medium text-gray-300">
             {t("companyName")}
           </label>
           <input
@@ -188,12 +188,12 @@ export default function BrandingPage() {
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
             placeholder={t("companyNamePlaceholder")}
-            className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-white dark:focus:ring-white/20"
+            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white outline-none placeholder-gray-500 transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
           />
         </div>
 
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="mb-1.5 block text-sm font-medium text-gray-300">
             {t("logo")}
           </label>
           <div className="flex items-center gap-3">
@@ -202,7 +202,7 @@ export default function BrandingPage() {
                 <img
                   src={logoSrc}
                   alt="Logo"
-                  className="h-16 w-16 rounded border object-contain dark:border-gray-700"
+                  className="h-16 w-16 rounded border border-gray-700 object-contain"
                   onError={() => {
                     console.error("Failed to load logo image:", logoSrc);
                     setImageError(true);
@@ -210,24 +210,24 @@ export default function BrandingPage() {
                 />
                 {uploading && (
                   <div className="absolute inset-0 flex items-center justify-center rounded bg-black/50">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white dark:border-white border-t-transparent dark:border-t-transparent" />
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                   </div>
                 )}
               </div>
             )}
             {imageError && logoSrc && (
-              <div className="flex h-16 items-center gap-2 rounded border border-dashed border-gray-300 bg-gray-50 px-3 dark:border-gray-700 dark:bg-gray-800">
-                <ImageOff className="h-4 w-4 text-gray-400" />
-                <span className="text-xs text-gray-500 dark:text-gray-400">
+              <div className="flex h-16 items-center gap-2 rounded border border-dashed border-gray-700 bg-gray-800 px-3">
+                <ImageOff className="h-4 w-4 text-gray-500" />
+                <span className="text-xs text-gray-400">
                   {t("failedToLoad")}
                 </span>
               </div>
             )}
-            <label className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${
+            <label className={`flex cursor-pointer items-center gap-2 rounded-lg border border-gray-700 px-3 py-2 text-sm text-gray-300 transition-colors ${
               uploading
                 ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-gray-50 dark:hover:bg-gray-800'
-            } text-gray-700 dark:border-gray-700 dark:text-gray-300`}>
+                : 'hover:bg-gray-800'
+            }`}>
               <Upload className="h-4 w-4" />
               {uploading ? t("uploading") : t("uploadLogo")}
               <input
@@ -243,14 +243,14 @@ export default function BrandingPage() {
             </label>
           </div>
           {uploadError && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{uploadError}</p>
+            <p className="mt-1 text-sm text-red-400">{uploadError}</p>
           )}
         </div>
 
         <button
           type="submit"
           disabled={saving}
-          className="flex items-center gap-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 px-4 py-2 text-sm font-medium dark:bg-white dark:text-black dark:hover:bg-gray-200 disabled:opacity-50"
+          className="flex items-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           <Save className="h-4 w-4" />
           {saving ? "..." : tCommon("save")}

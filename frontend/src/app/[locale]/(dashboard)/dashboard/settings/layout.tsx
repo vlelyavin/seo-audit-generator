@@ -23,7 +23,7 @@ export default function SettingsLayout({
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+      <h1 className="text-2xl font-bold text-white">
         {t("title")}
       </h1>
 
@@ -40,7 +40,7 @@ export default function SettingsLayout({
               className={cn(
                 "px-4 py-2 text-sm font-medium transition-colors -mb-px border-b-2",
                 isActive
-                  ? "border-white text-white"
+                  ? "border-copper text-white"
                   : "border-transparent text-gray-400 hover:text-gray-200"
               )}
             >

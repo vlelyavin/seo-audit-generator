@@ -167,23 +167,23 @@ export const ANALYZER_LABELS: Record<AnalyzerName, string> = {
 /** Severity badge colors */
 export const SEVERITY_COLORS: Record<SeverityLevel, { bg: string; text: string; border: string }> = {
   error: {
-    bg: "bg-red-50 dark:bg-red-900/20",
-    text: "text-red-600 dark:text-red-400",
-    border: "border-red-200 dark:border-red-800",
+    bg: "bg-red-900/20",
+    text: "text-red-400",
+    border: "border-red-800",
   },
   warning: {
-    bg: "bg-yellow-50 dark:bg-yellow-900/20",
-    text: "text-yellow-600 dark:text-yellow-400",
-    border: "border-yellow-200 dark:border-yellow-800",
+    bg: "bg-yellow-900/20",
+    text: "text-yellow-400",
+    border: "border-yellow-800",
   },
   success: {
-    bg: "bg-green-50 dark:bg-green-900/20",
-    text: "text-green-600 dark:text-green-400",
-    border: "border-green-200 dark:border-green-800",
+    bg: "bg-green-900/20",
+    text: "text-green-400",
+    border: "border-green-800",
   },
   info: {
-    bg: "bg-gray-100 dark:bg-gray-900",
-    text: "text-gray-900 dark:text-white",
-    border: "border-gray-200 dark:border-gray-700",
+    bg: "bg-gray-800",
+    text: "text-gray-300",
+    border: "border-gray-700",
   },
 };

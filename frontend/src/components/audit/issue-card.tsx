@@ -23,20 +23,20 @@ export function IssueCard({ issue }: IssueCardProps) {
         onClick={() => hasDetails && setExpanded(!expanded)}
         className={cn(
           "flex w-full items-center gap-2 px-3 py-2 text-left text-sm",
-          hasDetails && "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800/50"
+          hasDetails && "cursor-pointer hover:bg-gray-800/50"
         )}
       >
         <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", {
           "bg-red-500": issue.severity === "error",
           "bg-yellow-500": issue.severity === "warning",
           "bg-green-500": issue.severity === "success",
-          "bg-gray-500 dark:bg-gray-400": issue.severity === "info",
+          "bg-gray-500": issue.severity === "info",
         })} />
-        <span className="flex-1 text-gray-800 dark:text-gray-200">
+        <span className="flex-1 text-gray-200">
           {issue.message}
         </span>
         {issue.count > 1 && (
-          <span className="shrink-0 rounded-full border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-xs text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
+          <span className="shrink-0 rounded-full border border-gray-700 bg-gray-800 px-1.5 py-0.5 text-xs text-gray-400">
             {issue.count}
           </span>
         )}
@@ -50,15 +50,15 @@ export function IssueCard({ issue }: IssueCardProps) {
       </button>
 
       {expanded && (
-        <div className="border-t px-3 py-2 dark:border-gray-700">
+        <div className="border-t border-gray-700 px-3 py-2">
           {issue.details && (
-            <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
+            <p className="mb-2 text-xs text-gray-400">
               {issue.details}
             </p>
           )}
 
           {issue.recommendation && (
-            <div className="mb-2 rounded border border-gray-200 bg-gray-50 px-2 py-1.5 text-xs text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-white">
+            <div className="mb-2 rounded border border-gray-700 bg-gray-800 px-2 py-1.5 text-xs text-gray-200">
               <span className="font-medium">{t("recommendation")} </span>
               {issue.recommendation}
             </div>
@@ -66,7 +66,7 @@ export function IssueCard({ issue }: IssueCardProps) {
 
           {issue.affected_urls.length > 0 && (
             <div>
-              <p className="mb-1 text-xs font-medium text-gray-700 dark:text-gray-400">
+              <p className="mb-1 text-xs font-medium text-gray-400">
                 {t("affectedUrls", { count: issue.affected_urls.length })}
               </p>
               <ul className="max-h-40 space-y-0.5 overflow-y-auto">
@@ -76,7 +76,7 @@ export function IssueCard({ issue }: IssueCardProps) {
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="truncate text-gray-900 underline dark:text-white"
+                      className="truncate text-gray-300 underline hover:text-copper"
                     >
                       {url}
                     </a>

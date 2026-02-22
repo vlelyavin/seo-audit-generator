@@ -22,13 +22,13 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="rounded-xl border bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <h1 className="mb-4 text-center text-2xl font-bold text-gray-900 dark:text-white">
+      <div className="rounded-xl border border-gray-800 bg-gray-900 p-6 shadow-sm">
+        <h1 className="mb-4 text-center text-2xl font-bold text-white">
           {t("signIn")}
         </h1>
         <button
           onClick={handleGoogleSignIn}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-700 px-4 py-2.5 text-sm font-medium text-gray-300 hover:bg-gray-800 transition-colors"
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24">
             <path
@@ -54,13 +54,13 @@ export default function LoginPage() {
         {isDev && (
           <>
             <div className="my-4 flex items-center gap-2">
-              <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
-              <span className="text-xs text-gray-400">DEV ONLY</span>
-              <div className="h-px flex-1 bg-gray-200 dark:bg-gray-700" />
+              <div className="h-px flex-1 bg-gray-700" />
+              <span className="text-xs text-gray-500">DEV ONLY</span>
+              <div className="h-px flex-1 bg-gray-700" />
             </div>
             <button
               onClick={handleDevSignIn}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 px-4 py-2.5 text-sm font-medium text-amber-600 hover:bg-amber-500/20 dark:text-amber-400"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-amber-500/50 bg-amber-500/10 px-4 py-2.5 text-sm font-medium text-amber-400 hover:bg-amber-500/20"
             >
               🔧 Dev Login (admin)
             </button>

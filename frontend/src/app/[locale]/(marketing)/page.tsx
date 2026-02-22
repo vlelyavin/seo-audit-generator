@@ -1,18 +1,15 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { HeroSection } from "@/components/landing/hero-section";
+import { FeaturesSection } from "@/components/landing/features-section";
+import { PricingSection } from "@/components/landing/pricing-section";
+import { FaqSection } from "@/components/landing/faq-section";
 
 export default function LandingPage() {
-  const t = useTranslations("marketing.landing");
-
   return (
-    <div className="mx-auto max-w-4xl px-4 py-24 text-center lg:px-6">
-      <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-        {t("title")}
-      </h1>
-      <p className="mt-4 text-lg text-gray-400">
-        {t("subtitle")}
-      </p>
-    </div>
+    <>
+      <HeroSection />
+      <FeaturesSection />
+      <PricingSection />
+      <FaqSection />
+    </>
   );
 }
