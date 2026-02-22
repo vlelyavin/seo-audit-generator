@@ -46,6 +46,7 @@ screenshots/*.jpg
 # Next.js
 frontend/node_modules/
 frontend/.next/
+frontend/dev.db
 frontend/prisma/dev.db
 frontend/prisma/prod.db
 
