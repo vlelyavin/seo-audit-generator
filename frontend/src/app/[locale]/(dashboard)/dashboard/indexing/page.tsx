@@ -138,6 +138,24 @@ interface RunStatus {
   ranAt?: string; // ISO string
 }
 
+interface LogEntry {
+  id: string;
+  action: string;
+  label: string;
+  url: string | null;
+  details: Record<string, unknown>;
+  createdAt: string;
+}
+
+interface LogPage {
+  logs: LogEntry[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  availableActions: string[];
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function relativeTime(dateStr: string | null | undefined): string {
@@ -917,7 +935,7 @@ function SiteCard({
   onVerifySuccess: () => void;
   showToast: (msg: string, ok?: boolean) => void;
 }) {
-  const [activeTab, setActiveTab] = useState<"overview" | "urls" | "report">(
+  const [activeTab, setActiveTab] = useState<"overview" | "urls" | "report" | "log">(
     "overview"
   );
 
@@ -934,6 +952,12 @@ function SiteCard({
   // Report state
   const [report, setReport] = useState<Report | null>(null);
   const [loadingReport, setLoadingReport] = useState(false);
+
+  // Log state
+  const [logPage, setLogPage] = useState<LogPage | null>(null);
+  const [loadingLog, setLoadingLog] = useState(false);
+  const [logFilter, setLogFilter] = useState("all");
+  const [logCurrentPage, setLogCurrentPage] = useState(1);
 
   // IndexNow verification modal state: null = closed, else holds the action to run after verify
   const [indexNowModal, setIndexNowModal] = useState<{ action: () => void } | null>(null);
@@ -978,11 +1002,28 @@ function SiteCard({
     }
   }, [site.id]);
 
-  // Load URLs/report when tabs become active
+  // ── Load log ──────────────────────────────────────────────────────────────
+
+  const loadLog = useCallback(
+    async (filter: string, page: number) => {
+      setLoadingLog(true);
+      try {
+        const params = new URLSearchParams({ action: filter, page: String(page) });
+        const res = await fetch(`/api/indexing/sites/${site.id}/logs?${params}`);
+        if (res.ok) setLogPage(await res.json());
+      } finally {
+        setLoadingLog(false);
+      }
+    },
+    [site.id]
+  );
+
+  // Load URLs/report/log when tabs become active
   useEffect(() => {
     if (!expanded) return;
     if (activeTab === "urls" && !urlPage) loadUrls(urlFilter, 1, urlSearch);
     if (activeTab === "report" && !report) loadReport();
+    if (activeTab === "log" && !logPage) loadLog(logFilter, 1);
   }, [expanded, activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Re-fetch when filter/page changes
@@ -990,6 +1031,12 @@ function SiteCard({
     if (!expanded || activeTab !== "urls") return;
     loadUrls(urlFilter, urlCurrentPage, urlSearch);
   }, [urlFilter, urlCurrentPage]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Re-fetch log when filter/page changes
+  useEffect(() => {
+    if (!expanded || activeTab !== "log") return;
+    loadLog(logFilter, logCurrentPage);
+  }, [logFilter, logCurrentPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSearchChange = (val: string) => {
     setUrlSearch(val);
@@ -1118,6 +1165,18 @@ function SiteCard({
     { id: "overview" as const, label: t("tabOverview") },
     { id: "urls" as const, label: t("tabUrls") },
     { id: "report" as const, label: t("tabReport") },
+    { id: "log" as const, label: "Log" },
+  ];
+
+  const LOG_FILTERS = [
+    { id: "all", label: "All" },
+    { id: "submitted_google", label: "Google" },
+    { id: "submitted_indexnow", label: "Bing" },
+    { id: "failed", label: "Failed" },
+    { id: "url_discovered", label: "Discovered" },
+    { id: "url_removed", label: "Removed" },
+    { id: "url_404", label: "404" },
+    { id: "removal_requested", label: "Removal" },
   ];
 
   const URL_FILTERS = [
@@ -1736,6 +1795,140 @@ function SiteCard({
             </div>
           )}
 
+          {/* ── Log Tab ──────────────────────────────────────────────────── */}
+          {activeTab === "log" && (
+            <div className="px-6 py-5 space-y-4">
+              {/* Filter + refresh row */}
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap gap-1">
+                  {LOG_FILTERS.map((f) => (
+                    <button
+                      key={f.id}
+                      onClick={() => {
+                        setLogFilter(f.id);
+                        setLogCurrentPage(1);
+                        setLogPage(null);
+                      }}
+                      className={cn(
+                        "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
+                        logFilter === f.id
+                          ? "bg-copper text-white"
+                          : "bg-gray-800 text-gray-400 hover:text-white"
+                      )}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => {
+                    setLogPage(null);
+                    loadLog(logFilter, logCurrentPage);
+                  }}
+                  className="ml-auto rounded-md border border-gray-700 p-1.5 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" />
+                </button>
+              </div>
+
+              {/* Log entries */}
+              {loadingLog ? (
+                <div className="space-y-2">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-10 rounded-lg border border-gray-800 bg-gray-950 animate-pulse"
+                    />
+                  ))}
+                </div>
+              ) : !logPage || logPage.logs.length === 0 ? (
+                <div className="rounded-lg border border-gray-800 bg-gray-950 p-10 text-center">
+                  <BarChart3 className="mx-auto h-8 w-8 text-gray-600 mb-2" />
+                  <p className="text-sm text-gray-400">No activity logged yet.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="overflow-hidden rounded-lg border border-gray-800 divide-y divide-gray-800">
+                    {logPage.logs.map((entry) => {
+                      const { dot, text } = logActionColor(entry.action);
+                      return (
+                        <div
+                          key={entry.id}
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-800/40 transition-colors"
+                        >
+                          {/* Colored dot */}
+                          <span className={cn("h-2 w-2 shrink-0 rounded-full", dot)} />
+
+                          {/* Label */}
+                          <span className={cn("text-xs font-medium shrink-0 w-40", text)}>
+                            {entry.label}
+                          </span>
+
+                          {/* URL */}
+                          {entry.url ? (
+                            <span className="flex-1 flex items-center gap-1.5 min-w-0">
+                              <span
+                                className="truncate text-xs text-gray-300"
+                                title={entry.url}
+                              >
+                                {entry.url}
+                              </span>
+                              <a
+                                href={entry.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="shrink-0 text-gray-500 hover:text-white transition"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            </span>
+                          ) : (
+                            <span className="flex-1 text-xs text-gray-600">—</span>
+                          )}
+
+                          {/* Timestamp */}
+                          <span className="shrink-0 text-xs text-gray-500">
+                            {relativeTime(entry.createdAt)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Pagination */}
+                  {logPage.totalPages > 1 && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-xs text-gray-500">
+                        Page {logPage.page} of {logPage.totalPages} · {logPage.total} entries
+                      </span>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setLogCurrentPage((p) => Math.max(1, p - 1))}
+                          disabled={logCurrentPage <= 1}
+                          className="flex items-center gap-1 rounded-md border border-gray-700 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-40"
+                        >
+                          <ChevronLeft className="h-3 w-3" />
+                          {t("prevPage")}
+                        </button>
+                        <button
+                          onClick={() =>
+                            setLogCurrentPage((p) => Math.min(logPage.totalPages, p + 1))
+                          }
+                          disabled={logCurrentPage >= logPage.totalPages}
+                          className="flex items-center gap-1 rounded-md border border-gray-700 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-40"
+                        >
+                          {t("nextPage")}
+                          <ChevronRight className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+
           {/* ── Report Tab ───────────────────────────────────────────────── */}
           {activeTab === "report" && (
             <div className="px-6 py-5 space-y-5">
@@ -1921,6 +2114,27 @@ function getTip(gscStatus: string): string {
     Indexed: "This URL is indexed by Google. No action needed.",
   };
   return tips[gscStatus] ?? gscStatus;
+}
+
+function logActionColor(action: string): { dot: string; text: string } {
+  switch (action) {
+    case "submitted_google":
+      return { dot: "bg-green-400", text: "text-green-400" };
+    case "submitted_indexnow":
+      return { dot: "bg-copper-light", text: "text-copper-light" };
+    case "failed":
+      return { dot: "bg-red-400", text: "text-red-400" };
+    case "url_discovered":
+      return { dot: "bg-blue-400", text: "text-blue-400" };
+    case "url_removed":
+      return { dot: "bg-orange-400", text: "text-orange-400" };
+    case "url_404":
+      return { dot: "bg-red-500", text: "text-red-500" };
+    case "removal_requested":
+      return { dot: "bg-orange-400", text: "text-orange-400" };
+    default:
+      return { dot: "bg-gray-400", text: "text-gray-400" };
+  }
 }
 
 function ExpandableList({
