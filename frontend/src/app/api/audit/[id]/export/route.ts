@@ -105,27 +105,54 @@ export async function GET(
       });
     }
 
-    // CSV: per-analyzer summary rows with a metadata header
+    // CSV: one row per issue (flat list of all problems found)
     const results = (auditData.results ?? {}) as Record<string, Record<string, unknown>>;
+    const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
+
+    let totalIssues = 0;
+    for (const result of Object.values(results)) {
+      const issues = (result.issues ?? []) as Array<Record<string, unknown>>;
+      totalIssues += issues.filter(
+        (i) => (i.severity as string)?.toLowerCase() !== "success"
+      ).length;
+    }
+
     const csvLines: string[] = [
       `# SEO Audit Report`,
       `# URL: ${audit.url}`,
       `# Date: ${dateStr}`,
       `# Pages Crawled: ${audit.pagesCrawled}`,
-      `# Passed Checks: ${audit.passedChecks}`,
-      `# Warnings: ${audit.warnings}`,
-      `# Critical Issues: ${audit.criticalIssues}`,
-      `#`,
-      `Analyzer,Status,Critical Issues,Warnings`,
+      `# Total Issues: ${totalIssues}`,
+      ``,
+      `Analyzer,Severity,Issue,Affected URL,Recommendation`,
     ];
+
     for (const result of Object.values(results)) {
-      const name = (result.display_name ?? result.name ?? "Unknown") as string;
-      const severity = ((result.severity ?? result.status ?? "info") as string).toUpperCase();
+      const analyzerName = (result.display_name ?? result.name ?? "Unknown") as string;
       const issues = (result.issues ?? []) as Array<Record<string, unknown>>;
-      const criticals = issues.filter((i) => (i.severity as string)?.toLowerCase() === "error").length;
-      const warns = issues.filter((i) => (i.severity as string)?.toLowerCase() === "warning").length;
-      csvLines.push(`"${name.replace(/"/g, '""')}","${severity}",${criticals},${warns}`);
+
+      for (const issue of issues) {
+        const severity = ((issue.severity as string) ?? "info").toUpperCase();
+        if (severity === "SUCCESS") continue;
+
+        const message = (issue.message as string) ?? "";
+        const recommendation = (issue.recommendation as string) ?? "";
+        const affectedUrls = (issue.affected_urls ?? []) as string[];
+
+        if (affectedUrls.length === 0) {
+          csvLines.push(
+            [esc(analyzerName), esc(severity), esc(message), esc(""), esc(recommendation)].join(",")
+          );
+        } else {
+          for (const url of affectedUrls) {
+            csvLines.push(
+              [esc(analyzerName), esc(severity), esc(message), esc(url), esc(recommendation)].join(",")
+            );
+          }
+        }
+      }
     }
+
     return new NextResponse(csvLines.join("\n"), {
       headers: {
         "Content-Type": "text/csv; charset=utf-8",
