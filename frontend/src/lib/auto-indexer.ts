@@ -198,6 +198,7 @@ export async function runAutoIndexForSite(
   }
 
   // 5. Google Indexing API
+  const googleSubmittedUrls = new Set<string>();
   if (site.autoIndexGoogle && aliveUrls.length > 0) {
     try {
       const quota = await getDailyQuota(site.userId);
@@ -266,6 +267,7 @@ export async function runAutoIndexForSite(
             await incrementGoogleSubmissions(site.userId, submitted.length);
             const now = new Date();
             for (const s of submitted) {
+              googleSubmittedUrls.add(s.url);
               const record = await prisma.indexedUrl.findUnique({
                 where: { siteId_url: { siteId: site.id, url: s.url } },
               });
@@ -399,11 +401,15 @@ export async function runAutoIndexForSite(
           where: { siteId_url: { siteId: site.id, url } },
         });
         if (record) {
+          // Preserve Google submission method if already submitted in this cycle
+          const method = googleSubmittedUrls.has(url)
+            ? "google_api,indexnow"
+            : "indexnow";
           await prisma.indexedUrl.update({
             where: { id: record.id },
             data: {
               indexingStatus: "submitted",
-              submissionMethod: "indexnow",
+              submissionMethod: method,
               submittedAt: now,
               isNew: false,
               isChanged: false,
@@ -431,53 +437,6 @@ export async function runAutoIndexForSite(
       select: { indexingCredits: true },
     });
     result.creditsRemaining = user?.indexingCredits ?? 0;
-  }
-
-  // Write / accumulate DailyReport for this run
-  try {
-    const today = new Date().toISOString().slice(0, 10);
-    const [totalUrls, totalIndexed] = await Promise.all([
-      prisma.indexedUrl.count({ where: { siteId: site.id } }),
-      prisma.indexedUrl.count({
-        where: { siteId: site.id, gscStatus: { contains: "indexed" } },
-      }),
-    ]);
-    await prisma.dailyReport.upsert({
-      where: { siteId_reportDate: { siteId: site.id, reportDate: today } },
-      create: {
-        siteId: site.id,
-        userId: site.userId,
-        reportDate: today,
-        newPagesFound: result.newUrls,
-        changedPagesFound: result.changedUrls,
-        removedPagesFound: result.removedUrls,
-        submittedGoogle: result.submittedGoogle,
-        submittedGoogleFailed: result.failedGoogle,
-        submittedBing: result.submittedBing,
-        submittedBingFailed: result.failedBing,
-        pages404: result.skipped404,
-        totalIndexed,
-        totalUrls,
-        creditsUsed: result.creditsUsed,
-        creditsRemaining: result.creditsRemaining,
-      },
-      update: {
-        newPagesFound: { increment: result.newUrls },
-        changedPagesFound: { increment: result.changedUrls },
-        removedPagesFound: { increment: result.removedUrls },
-        submittedGoogle: { increment: result.submittedGoogle },
-        submittedGoogleFailed: { increment: result.failedGoogle },
-        submittedBing: { increment: result.submittedBing },
-        submittedBingFailed: { increment: result.failedBing },
-        pages404: { increment: result.skipped404 },
-        totalIndexed,
-        totalUrls,
-        creditsUsed: { increment: result.creditsUsed },
-        creditsRemaining: result.creditsRemaining,
-      },
-    });
-  } catch {
-    // Non-fatal — don't let report write failure break the indexing result
   }
 
   return result;

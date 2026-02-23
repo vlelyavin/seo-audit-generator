@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import {
   getDailyQuota,
   GOOGLE_DAILY_SUBMISSION_LIMIT,
+  INDEXED_GSC_STATUSES,
 } from "@/lib/google-auth";
 
 /**
@@ -71,7 +72,7 @@ export async function GET(
   const [total, indexed, pending] = await Promise.all([
     prisma.indexedUrl.count({ where: { siteId } }),
     prisma.indexedUrl.count({
-      where: { siteId, gscStatus: "Submitted and indexed" },
+      where: { siteId, gscStatus: { in: [...INDEXED_GSC_STATUSES] } },
     }),
     prisma.indexedUrl.count({
       where: { siteId, indexingStatus: "pending" },

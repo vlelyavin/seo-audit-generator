@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getValidAccessToken } from "@/lib/google-auth";
+import { getValidAccessToken, INDEXED_GSC_STATUSES } from "@/lib/google-auth";
 import { fetchSitemapUrls, fallbackSitemapUrl } from "@/lib/sitemap-parser";
 
 /**
@@ -44,6 +44,7 @@ export async function POST(
 
   let startRow = 0;
   const ROW_LIMIT = 25000;
+  let gscError: string | null = null;
 
   while (true) {
     const searchRes = await fetch(
@@ -64,7 +65,12 @@ export async function POST(
       }
     );
 
-    if (!searchRes.ok) break;
+    if (!searchRes.ok) {
+      const errText = await searchRes.text().catch(() => "Unknown error");
+      gscError = `GSC Search Analytics error (${searchRes.status}): ${errText}`;
+      console.error("[sync-urls]", gscError);
+      break;
+    }
 
     const searchData = await searchRes.json();
     const rows: Array<{ keys: string[] }> = searchData.rows ?? [];
@@ -157,7 +163,7 @@ export async function POST(
   const notIndexed = await prisma.indexedUrl.count({
     where: {
       siteId: site.id,
-      gscStatus: { notIn: ["Submitted and indexed", "Indexed"] },
+      gscStatus: { notIn: [...INDEXED_GSC_STATUSES] },
     },
   });
 
@@ -167,5 +173,6 @@ export async function POST(
     newFound: newCount,
     totalUrls,
     notIndexed,
+    ...(gscError ? { warning: gscError } : {}),
   });
 }

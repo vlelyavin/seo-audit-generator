@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { runAutoIndexForSite } from "@/lib/auto-indexer";
+import { INDEXED_GSC_STATUSES } from "@/lib/google-auth";
 
 /**
  * POST /api/indexing/sites/[siteId]/run-auto-index
@@ -24,6 +25,53 @@ export async function POST(
   }
 
   const result = await runAutoIndexForSite(site);
+
+  // Write DailyReport for this manual run
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const [totalUrls, totalIndexed] = await Promise.all([
+      prisma.indexedUrl.count({ where: { siteId: site.id } }),
+      prisma.indexedUrl.count({
+        where: { siteId: site.id, gscStatus: { in: [...INDEXED_GSC_STATUSES] } },
+      }),
+    ]);
+    await prisma.dailyReport.upsert({
+      where: { siteId_reportDate: { siteId: site.id, reportDate: today } },
+      create: {
+        siteId: site.id,
+        userId: session.user.id,
+        reportDate: today,
+        newPagesFound: result.newUrls,
+        changedPagesFound: result.changedUrls,
+        removedPagesFound: result.removedUrls,
+        submittedGoogle: result.submittedGoogle,
+        submittedGoogleFailed: result.failedGoogle,
+        submittedBing: result.submittedBing,
+        submittedBingFailed: result.failedBing,
+        pages404: result.skipped404,
+        totalIndexed,
+        totalUrls,
+        creditsUsed: result.creditsUsed,
+        creditsRemaining: result.creditsRemaining,
+      },
+      update: {
+        newPagesFound: { increment: result.newUrls },
+        changedPagesFound: { increment: result.changedUrls },
+        removedPagesFound: { increment: result.removedUrls },
+        submittedGoogle: { increment: result.submittedGoogle },
+        submittedGoogleFailed: { increment: result.failedGoogle },
+        submittedBing: { increment: result.submittedBing },
+        submittedBingFailed: { increment: result.failedBing },
+        pages404: { increment: result.skipped404 },
+        totalIndexed,
+        totalUrls,
+        creditsUsed: { increment: result.creditsUsed },
+        creditsRemaining: result.creditsRemaining,
+      },
+    });
+  } catch {
+    // Non-fatal
+  }
 
   return NextResponse.json(result);
 }

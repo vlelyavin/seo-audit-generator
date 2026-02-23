@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { INDEXED_GSC_STATUSES } from "@/lib/google-auth";
 
 /**
  * GET /api/indexing/sites
@@ -36,7 +37,7 @@ export async function GET() {
 
       // GSC status breakdown (indexed vs not indexed)
       const indexed = await prisma.indexedUrl.count({
-        where: { siteId: site.id, gscStatus: { contains: "indexed" } },
+        where: { siteId: site.id, gscStatus: { in: [...INDEXED_GSC_STATUSES] } },
       });
 
       return {

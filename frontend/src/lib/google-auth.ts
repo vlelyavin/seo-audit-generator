@@ -153,3 +153,10 @@ export async function incrementInspections(userId: string, count: number) {
 
 export const GOOGLE_DAILY_SUBMISSION_LIMIT = 200;
 export const GOOGLE_DAILY_INSPECTION_LIMIT = 2000;
+
+/** GSC statuses that count as "indexed". Use this everywhere instead of contains:"indexed". */
+export const INDEXED_GSC_STATUSES = [
+  "Submitted and indexed",
+  "Indexed",
+  "Indexed, not submitted in sitemap",
+] as const;

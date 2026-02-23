@@ -146,6 +146,7 @@ export async function POST(
   let submittedBing = 0;
   let skippedQuotaFull = 0;
   const now = new Date();
+  const googleSubmittedUrls = new Set<string>();
 
   // ── Google submission ─────────────────────────────────────────────────────
   if (wantsGoogle && aliveUrls.length > 0) {
@@ -193,6 +194,7 @@ export async function POST(
       if (submitted.length > 0) {
         await incrementGoogleSubmissions(session.user.id, submitted.length);
         for (const s of submitted) {
+          googleSubmittedUrls.add(s.url);
           const record = urlRecords.find((r) => r.url === s.url);
           if (record) {
             await prisma.indexedUrl.update({
@@ -260,11 +262,15 @@ export async function POST(
       for (const url of aliveUrls.slice(0, submittedBing)) {
         const record = urlRecords.find((r) => r.url === url);
         if (record) {
+          // Preserve Google submission method if already submitted in this cycle
+          const method = googleSubmittedUrls.has(url)
+            ? "google_api,indexnow"
+            : "indexnow";
           await prisma.indexedUrl.update({
             where: { id: record.id },
             data: {
               indexingStatus: "submitted",
-              submissionMethod: "indexnow",
+              submissionMethod: method,
               submittedAt: now,
               isNew: false,
               isChanged: false,

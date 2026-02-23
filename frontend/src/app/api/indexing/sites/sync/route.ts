@@ -109,14 +109,18 @@ export async function POST() {
     upsertedSites.push(site);
   }
 
-  // Remove sites the user no longer has access to
-  const activeDomains = eligible.map((s) => s.siteUrl);
-  await prisma.site.deleteMany({
-    where: {
-      userId: session.user.id,
-      domain: { notIn: activeDomains },
-    },
-  });
+  // Remove sites the user no longer has access to.
+  // Safety: skip cleanup if GSC returned zero eligible sites — could be a temporary
+  // API glitch or permission change. Don't wipe all data on empty response.
+  if (eligible.length > 0) {
+    const activeDomains = eligible.map((s) => s.siteUrl);
+    await prisma.site.deleteMany({
+      where: {
+        userId: session.user.id,
+        domain: { notIn: activeDomains },
+      },
+    });
+  }
 
   // Mark user as gscConnected
   await prisma.user.update({

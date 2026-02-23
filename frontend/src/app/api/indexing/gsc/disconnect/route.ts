@@ -5,7 +5,8 @@ import { getGoogleAccount } from "@/lib/google-auth";
 
 /**
  * DELETE /api/indexing/gsc/disconnect
- * Revokes the user's Google token and clears GSC connection state.
+ * Disconnects GSC by clearing the expanded scope. Keeps OAuth tokens intact
+ * so that Google sign-in continues to work.
  * Query params:
  *   - deleteData: "true" (default) deletes all sites + URLs; "false" keeps data (OAuth only)
  */
@@ -20,26 +21,13 @@ export async function DELETE(req: Request) {
 
   const account = await getGoogleAccount(session.user.id);
 
-  // Revoke token with Google
-  if (account?.access_token) {
-    try {
-      await fetch(
-        `https://oauth2.googleapis.com/revoke?token=${account.access_token}`,
-        { method: "POST" }
-      );
-    } catch {
-      // Non-fatal — proceed with local cleanup even if revocation fails
-    }
-  }
-
-  // Clear OAuth tokens from Account record (keep provider link so user can sign in)
+  // Clear only the scope so hasRequiredScopes() returns false.
+  // Do NOT revoke the token or clear access_token/refresh_token — those are
+  // needed by the NextAuth Google OAuth provider for sign-in.
   if (account) {
     await prisma.account.update({
       where: { id: account.id },
       data: {
-        access_token: null,
-        refresh_token: null,
-        expires_at: null,
         scope: null,
       },
     });

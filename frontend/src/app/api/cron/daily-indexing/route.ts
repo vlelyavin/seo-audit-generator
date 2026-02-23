@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { runAutoIndexForSite } from "@/lib/auto-indexer";
-import { todayUTC } from "@/lib/google-auth";
+import { todayUTC, INDEXED_GSC_STATUSES } from "@/lib/google-auth";
 import {
   sendDailyReportEmail,
   sendLowCreditsEmail,
@@ -99,7 +99,7 @@ export async function POST(req: Request) {
         // ── Compute total stats for DailyReport ───────────────────────────
         const [totalIndexed, totalUrls] = await Promise.all([
           prisma.indexedUrl.count({
-            where: { siteId: site.id, gscStatus: { in: ["Submitted and indexed", "Indexed, not submitted in sitemap"] } },
+            where: { siteId: site.id, gscStatus: { in: [...INDEXED_GSC_STATUSES] } },
           }),
           prisma.indexedUrl.count({ where: { siteId: site.id } }),
         ]);

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getDailyQuota } from "@/lib/google-auth";
+import { getDailyQuota, INDEXED_GSC_STATUSES } from "@/lib/google-auth";
 
 /**
  * GET /api/indexing/sites/[siteId]/stats
@@ -27,10 +27,10 @@ export async function GET(
     await Promise.all([
       prisma.indexedUrl.count({ where: { siteId } }),
       prisma.indexedUrl.count({
-        where: { siteId, indexingStatus: "submitted", submissionMethod: "google_api" },
+        where: { siteId, indexingStatus: "submitted", submissionMethod: { contains: "google_api" } },
       }),
       prisma.indexedUrl.count({
-        where: { siteId, indexingStatus: "submitted", submissionMethod: "indexnow" },
+        where: { siteId, indexingStatus: "submitted", submissionMethod: { contains: "indexnow" } },
       }),
       prisma.indexedUrl.count({
         where: { siteId, indexingStatus: "failed" },
@@ -47,7 +47,7 @@ export async function GET(
   const indexed = await prisma.indexedUrl.count({
     where: {
       siteId,
-      gscStatus: "Submitted and indexed",
+      gscStatus: { in: [...INDEXED_GSC_STATUSES] },
     },
   });
 
