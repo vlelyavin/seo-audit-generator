@@ -706,23 +706,26 @@ export default function IndexingPage() {
             </h2>
             <p className="mt-1 text-sm text-gray-400">{t("connectDesc")}</p>
           </div>
+        </div>
 
-          {isConnected ? (
-            <span className="flex items-center gap-1.5 rounded-full bg-green-900/20 px-3 py-1 text-xs font-medium text-green-400">
-              <CheckCircle className="h-3.5 w-3.5" />
-              {t("connected")}
+        {/* GSC account status container */}
+        <div className="mt-3 flex items-center gap-3 rounded-md border border-gray-800 bg-gray-950 px-3 py-2.5">
+          <div className="flex flex-1 items-center gap-2 min-w-0">
+            {isConnected ? (
+              <CheckCircle className="h-4 w-4 text-green-400 shrink-0" />
+            ) : (
+              <XCircle className="h-4 w-4 text-gray-500 shrink-0" />
+            )}
+            <span className="text-sm text-gray-300 truncate">
+              {gscStatus?.email ?? t("notConnected")}
             </span>
-          ) : (
-            <span className="flex items-center gap-1.5 rounded-full bg-red-900/20 px-3 py-1 text-xs font-medium text-red-400">
-              <XCircle className="h-3.5 w-3.5" />
-              {t("notConnected")}
+          </div>
+          {isConnected && (
+            <span className="shrink-0 text-xs font-medium text-green-400">
+              {t("connected")}
             </span>
           )}
         </div>
-
-        {gscStatus?.email && (
-          <p className="mt-3 text-sm text-gray-400">{gscStatus.email}</p>
-        )}
 
         {gscStatus?.connected && !gscStatus.hasRequiredScopes && (
           <p className="mt-2 text-sm text-yellow-400">
