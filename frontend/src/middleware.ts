@@ -13,19 +13,14 @@ const locales = routing.locales;
  */
 function hasSessionCookie(req: NextRequest): boolean {
   const token =
-    req.cookies.get("authjs.session-token")?.value ||
-    req.cookies.get("__Secure-authjs.session-token")?.value;
-  if (!token) return false;
-  // JWTs have 3 base64-encoded parts separated by dots
-  const parts = token.split(".");
-  return parts.length >= 3 && parts.every((p) => p.length > 0);
+    req.cookies.get("authjs.session-token")?.value || req.cookies.get("__Secure-authjs.session-token")?.value;
+  return !!token && token.length > 10;
 }
 
 function stripLocale(pathname: string): string {
   for (const locale of locales) {
     if (pathname === `/${locale}`) return "/";
-    if (pathname.startsWith(`/${locale}/`))
-      return pathname.slice(locale.length + 1);
+    if (pathname.startsWith(`/${locale}/`)) return pathname.slice(locale.length + 1);
   }
   return pathname;
 }
