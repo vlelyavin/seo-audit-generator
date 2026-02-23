@@ -171,6 +171,7 @@ model IndexedUrl {
 
 model IndexingLog {
   id             String      @id @default(cuid()) @db.VarChar(191)
+  siteId         String?     @db.VarChar(191)
   indexedUrlId   String?     @db.VarChar(191)
   userId         String      @db.VarChar(191)
   action         String      @db.VarChar(100)
@@ -178,6 +179,8 @@ model IndexingLog {
   createdAt      DateTime    @default(now())
   indexedUrl     IndexedUrl? @relation(fields: [indexedUrlId], references: [id], onDelete: SetNull)
   user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([siteId, createdAt])
 }
 
 model UserDailyQuota {

@@ -96,6 +96,15 @@ export async function runAutoIndexForSite(
         where: { id: existing.id },
         data: { isChanged: false, isNew: false },
       });
+      await prisma.indexingLog.create({
+        data: {
+          siteId: site.id,
+          userId: site.userId,
+          indexedUrlId: existing.id,
+          action: "url_removed",
+          details: JSON.stringify({ url: existing.url }),
+        },
+      });
     }
   }
 
@@ -106,7 +115,7 @@ export async function runAutoIndexForSite(
     const existing = existingUrlMap.get(loc);
 
     if (!existing) {
-      await prisma.indexedUrl.create({
+      const newRecord = await prisma.indexedUrl.create({
         data: {
           siteId: site.id,
           url: loc,
@@ -117,6 +126,15 @@ export async function runAutoIndexForSite(
       });
       result.newUrls++;
       newOrChangedUrls.push(loc);
+      await prisma.indexingLog.create({
+        data: {
+          siteId: site.id,
+          userId: site.userId,
+          indexedUrlId: newRecord.id,
+          action: "url_discovered",
+          details: JSON.stringify({ url: loc }),
+        },
+      });
     } else if (lastmod && lastmod !== existing.lastmod) {
       await prisma.indexedUrl.update({
         where: { id: existing.id },
@@ -157,6 +175,15 @@ export async function runAutoIndexForSite(
       await prisma.indexedUrl.update({
         where: { id: dbEntry.id },
         data: { httpStatus: check.httpStatus, indexingStatus: "failed", errorMessage: "404/410 detected" },
+      });
+      await prisma.indexingLog.create({
+        data: {
+          siteId: site.id,
+          userId: site.userId,
+          indexedUrlId: dbEntry.id,
+          action: "url_404",
+          details: JSON.stringify({ url: check.url, httpStatus: check.httpStatus }),
+        },
       });
     } else {
       if (check.httpStatus) {
@@ -255,6 +282,7 @@ export async function runAutoIndexForSite(
                 });
                 await prisma.indexingLog.create({
                   data: {
+                    siteId: site.id,
                     userId: site.userId,
                     indexedUrlId: record.id,
                     action: "submitted_google",
@@ -283,6 +311,7 @@ export async function runAutoIndexForSite(
               });
               await prisma.indexingLog.create({
                 data: {
+                  siteId: site.id,
                   userId: site.userId,
                   indexedUrlId: record.id,
                   action: "failed",
@@ -342,6 +371,7 @@ export async function runAutoIndexForSite(
           });
           await prisma.indexingLog.create({
             data: {
+              siteId: site.id,
               userId: site.userId,
               indexedUrlId: record.id,
               action: "submitted_indexnow",
@@ -360,6 +390,53 @@ export async function runAutoIndexForSite(
       select: { indexingCredits: true },
     });
     result.creditsRemaining = user?.indexingCredits ?? 0;
+  }
+
+  // Write / accumulate DailyReport for this run
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const [totalUrls, totalIndexed] = await Promise.all([
+      prisma.indexedUrl.count({ where: { siteId: site.id } }),
+      prisma.indexedUrl.count({
+        where: { siteId: site.id, gscStatus: { contains: "indexed" } },
+      }),
+    ]);
+    await prisma.dailyReport.upsert({
+      where: { siteId_reportDate: { siteId: site.id, reportDate: today } },
+      create: {
+        siteId: site.id,
+        userId: site.userId,
+        reportDate: today,
+        newPagesFound: result.newUrls,
+        changedPagesFound: result.changedUrls,
+        removedPagesFound: result.removedUrls,
+        submittedGoogle: result.submittedGoogle,
+        submittedGoogleFailed: result.failedGoogle,
+        submittedBing: result.submittedBing,
+        submittedBingFailed: result.failedBing,
+        pages404: result.skipped404,
+        totalIndexed,
+        totalUrls,
+        creditsUsed: result.creditsUsed,
+        creditsRemaining: result.creditsRemaining,
+      },
+      update: {
+        newPagesFound: { increment: result.newUrls },
+        changedPagesFound: { increment: result.changedUrls },
+        removedPagesFound: { increment: result.removedUrls },
+        submittedGoogle: { increment: result.submittedGoogle },
+        submittedGoogleFailed: { increment: result.failedGoogle },
+        submittedBing: { increment: result.submittedBing },
+        submittedBingFailed: { increment: result.failedBing },
+        pages404: { increment: result.skipped404 },
+        totalIndexed,
+        totalUrls,
+        creditsUsed: { increment: result.creditsUsed },
+        creditsRemaining: result.creditsRemaining,
+      },
+    });
+  } catch {
+    // Non-fatal — don't let report write failure break the indexing result
   }
 
   return result;
