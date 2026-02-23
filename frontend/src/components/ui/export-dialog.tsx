@@ -16,8 +16,10 @@ interface ExportDialogProps {
 
 const ALL_FORMAT_OPTIONS: Record<ExportFormat, string> = {
   pdf: "PDF",
-  html: "HTML",
+  html: "HTML", // Not offered in any plan — kept for potential future re-enabling
   docx: "DOCX",
+  json: "JSON",
+  csv: "CSV",
 };
 
 const LANGUAGE_OPTIONS = [
@@ -108,24 +110,30 @@ export function ExportDialog({
           </select>
         </div>
 
-        {/* Language select */}
-        <div className="mb-6">
-          <label className="mb-1.5 block text-sm font-medium text-gray-300">
-            {t("exportLanguage")}
-          </label>
-          <select
-            value={lang}
-            onChange={(e) => setLang(e.target.value)}
-            disabled={loading}
-            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2.5 text-sm text-white outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20 disabled:opacity-50"
-          >
-            {LANGUAGE_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Language select — not shown for data formats (JSON/CSV) */}
+        {selectedFormat !== "json" && selectedFormat !== "csv" && (
+          <div className="mb-6">
+            <label className="mb-1.5 block text-sm font-medium text-gray-300">
+              {t("exportLanguage")}
+            </label>
+            <select
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
+              disabled={loading}
+              className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2.5 text-sm text-white outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20 disabled:opacity-50"
+            >
+              {LANGUAGE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        {/* Spacer to maintain layout when language is hidden */}
+        {(selectedFormat === "json" || selectedFormat === "csv") && (
+          <div className="mb-6" />
+        )}
 
         {/* Actions */}
         <div className="flex gap-3">

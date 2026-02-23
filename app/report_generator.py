@@ -896,6 +896,17 @@ class ReportGenerator:
             flags=re.DOTALL,
         )
 
+        # --- Embed branding logo as base64 so WeasyPrint doesn't need to fetch it ---
+        if brand and brand.get("logo_url"):
+            logo_bytes = self._fetch_logo_bytes(brand["logo_url"])
+            if logo_bytes:
+                import base64 as _b64
+                ext = brand["logo_url"].rsplit(".", 1)[-1].lower()
+                mime = {"jpg": "image/jpeg", "jpeg": "image/jpeg", "gif": "image/gif", "webp": "image/webp"}.get(ext, "image/png")
+                b64_data = _b64.b64encode(logo_bytes).decode("ascii")
+                data_uri = f"data:{mime};base64,{b64_data}"
+                html_content = html_content.replace(f'src="{brand["logo_url"]}"', f'src="{data_uri}"')
+
         # --- Change 4: Limit URL lists to 10 items for PDF ---
         html_content = self._limit_pdf_urls(html_content)
 
@@ -955,6 +966,11 @@ class ReportGenerator:
                 font-size: 10pt;
                 color: #111827;
                 margin-bottom: 4px;
+            }
+
+            /* === Summary → Screenshot spacing === */
+            #summary {
+                margin-bottom: 24px !important;
             }
 
             /* === Category Overview === */

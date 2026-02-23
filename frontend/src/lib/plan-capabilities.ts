@@ -1,4 +1,5 @@
-export type ExportFormat = "pdf" | "html" | "docx";
+// "html" is kept in the type for backwards-compatibility but is not offered in any plan
+export type ExportFormat = "pdf" | "html" | "docx" | "json" | "csv";
 
 export interface PlanCapabilities {
   allowedExportFormats: ExportFormat[];
@@ -14,9 +15,9 @@ export function getPlanCapabilities(planId?: string | null): PlanCapabilities {
 
   return {
     allowedExportFormats: isAgency
-      ? ["pdf", "html", "docx"]
+      ? ["pdf", "docx", "json", "csv"]  // html disabled; json/csv agency-only
       : isPro
-      ? ["pdf", "html"]
+      ? ["pdf", "docx"]                  // html disabled
       : ["pdf"],
     canUseBranding: isAgency,
     showWatermark: isFree,

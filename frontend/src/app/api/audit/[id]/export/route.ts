@@ -15,7 +15,7 @@ import {
   toPublicLogoPath,
 } from "@/lib/logo-storage";
 
-const SUPPORTED_FORMATS: ExportFormat[] = ["pdf", "html", "docx"];
+const SUPPORTED_FORMATS: ExportFormat[] = ["pdf", "html", "docx", "json", "csv"];
 
 export async function GET(
   req: Request,
@@ -60,6 +60,78 @@ export async function GET(
 
   if (!audit || audit.userId !== session.user.id) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  // --- JSON / CSV: handled directly without going to FastAPI ---
+  if (format === "json" || format === "csv") {
+    if (!audit.resultJson) {
+      return NextResponse.json({ error: "No audit data available" }, { status: 404 });
+    }
+
+    let auditData: Record<string, unknown>;
+    try {
+      auditData = JSON.parse(audit.resultJson);
+    } catch {
+      return NextResponse.json({ error: "Invalid audit data" }, { status: 500 });
+    }
+
+    let hostname = audit.url;
+    try { hostname = new URL(audit.url).hostname; } catch { /* use raw url */ }
+    const dateStr = new Date().toISOString().slice(0, 10);
+
+    if (format === "json") {
+      // Strip large base64 screenshot to keep file size reasonable
+      const { homepage_screenshot: _screenshot, ...rest } = auditData as Record<string, unknown>;
+      const exportData = {
+        audit_id: audit.id,
+        site_url: audit.url,
+        language: audit.language,
+        started_at: audit.startedAt,
+        completed_at: audit.completedAt,
+        stats: {
+          pages_crawled: audit.pagesCrawled,
+          passed_checks: audit.passedChecks,
+          warnings: audit.warnings,
+          critical_issues: audit.criticalIssues,
+          total_issues: audit.totalIssues,
+        },
+        results: rest.results ?? {},
+      };
+      return new NextResponse(JSON.stringify(exportData, null, 2), {
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Disposition": `attachment; filename="seo-audit_${hostname}_${dateStr}.json"`,
+        },
+      });
+    }
+
+    // CSV: per-analyzer summary rows with a metadata header
+    const results = (auditData.results ?? {}) as Record<string, Record<string, unknown>>;
+    const csvLines: string[] = [
+      `# SEO Audit Report`,
+      `# URL: ${audit.url}`,
+      `# Date: ${dateStr}`,
+      `# Pages Crawled: ${audit.pagesCrawled}`,
+      `# Passed Checks: ${audit.passedChecks}`,
+      `# Warnings: ${audit.warnings}`,
+      `# Critical Issues: ${audit.criticalIssues}`,
+      `#`,
+      `Analyzer,Status,Critical Issues,Warnings`,
+    ];
+    for (const result of Object.values(results)) {
+      const name = (result.display_name ?? result.name ?? "Unknown") as string;
+      const severity = ((result.severity ?? result.status ?? "info") as string).toUpperCase();
+      const issues = (result.issues ?? []) as Array<Record<string, unknown>>;
+      const criticals = issues.filter((i) => (i.severity as string)?.toLowerCase() === "error").length;
+      const warns = issues.filter((i) => (i.severity as string)?.toLowerCase() === "warning").length;
+      csvLines.push(`"${name.replace(/"/g, '""')}","${severity}",${criticals},${warns}`);
+    }
+    return new NextResponse(csvLines.join("\n"), {
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="seo-audit_${hostname}_${dateStr}.csv"`,
+      },
+    });
   }
 
   let brand: Record<string, string> | undefined;
