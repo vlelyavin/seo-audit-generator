@@ -1269,222 +1269,192 @@ function SiteCard({
 
           {/* ── Overview Tab ─────────────────────────────────────────────── */}
           {activeTab === "overview" && (
-            <div className="px-6 py-5 space-y-5">
-              {/* Stats row */}
-              {stats ? (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <StatBox label={t("total")} value={stats.total} />
-                  <StatBox
-                    label={t("indexed")}
-                    value={stats.indexed}
-                    color="green"
-                  />
-                  <StatBox
-                    label={t("notIndexed")}
-                    value={stats.notIndexed}
-                    color="red"
-                  />
-                  <StatBox
-                    label={t("pending")}
-                    value={stats.pending}
-                    color="yellow"
-                  />
-                  <StatBox
-                    label={t("submitted")}
-                    value={stats.submittedGoogle + stats.submittedBing}
-                    color="blue"
-                  />
-                  <StatBox
-                    label={t("failed")}
-                    value={stats.failed}
-                    color="red"
-                  />
-                  <StatBox
-                    label={t("pages404")}
-                    value={stats.is404s}
-                    color="orange"
-                  />
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {Array.from({ length: 7 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-16 rounded-lg border border-gray-800 bg-gray-950 animate-pulse"
-                    />
-                  ))}
-                </div>
-              )}
+            <div className="px-6 py-5">
+              <div className="flex flex-col md:flex-row gap-5 items-start">
 
-              {/* Quota */}
-              {quota && (
-                <div className="rounded-lg border border-gray-800 bg-gray-950 p-4 space-y-2">
-                  <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    {t("quota")}
-                  </p>
-                  <QuotaBar
-                    label={t("googleQuota")}
-                    used={quota.googleSubmissions.used}
-                    limit={quota.googleSubmissions.limit}
-                  />
-                  <QuotaBar
-                    label={t("inspectionQuota")}
-                    used={quota.inspections.used}
-                    limit={quota.inspections.limit}
-                  />
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={onSyncUrls}
-                  disabled={syncingUrls}
-                  className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
-                >
-                  <RefreshCw
-                    className={cn(
-                      "h-3.5 w-3.5",
-                      syncingUrls && "animate-spin"
-                    )}
-                  />
-                  {t("syncUrls")}
-                </button>
-
-                <button
-                  onClick={() =>
-                    onRequestSubmit(
-                      site.id,
-                      [],
-                      ["google"],
-                      stats?.notIndexed ?? 0
-                    )
-                  }
-                  disabled={
-                    !stats?.notIndexed ||
-                    quota?.googleSubmissions.remaining === 0
-                  }
-                  className="flex items-center gap-1.5 rounded-md bg-gradient-to-r from-copper to-copper-light px-3 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-                >
-                  {t("submitAllNotIndexed")} (Google)
-                </button>
-
-                {site.indexnowKey && (
-                  <button
-                    onClick={() =>
-                      bingSubmit(() =>
-                        onRequestSubmit(site.id, [], ["bing"], stats?.notIndexed ?? 0)
-                      )
-                    }
-                    disabled={!stats?.notIndexed}
-                    className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
-                  >
-                    {t("submitAllNotIndexed")} (Bing)
-                  </button>
-                )}
-
-                {(site.autoIndexGoogle || site.autoIndexBing) && (
-                  <button
-                    onClick={onRunNow}
-                    disabled={running}
-                    className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
-                  >
-                    {running ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <Play className="h-3.5 w-3.5" />
-                    )}
-                    {running ? "Running…" : t("runNow")}
-                  </button>
-                )}
-              </div>
-
-              {/* Auto-index toggles */}
-              <div className="space-y-2">
-                <Toggle
-                  label={t("autoIndexGoogle")}
-                  tooltip="Automatically submits new and updated pages to Google via the Indexing API."
-                  checked={site.autoIndexGoogle}
-                  onChange={onToggleAutoGoogle}
-                />
-                <Toggle
-                  label={t("autoIndexBing")}
-                  tooltip={
-                    !site.indexnowKeyVerified
-                      ? "Validate domain ownership first — click to set up IndexNow verification."
-                      : "Automatically pings Bing via IndexNow when pages are added or updated. Free."
-                  }
-                  checked={site.autoIndexBing}
-                  onChange={onToggleAutoBing}
-                  disabled={!site.indexnowKeyVerified}
-                  onDisabledClick={() => setIndexNowModal({ action: () => {} })}
-                />
-              </div>
-
-              {/* IndexNow key status badge — shown when already verified */}
-              {site.indexnowKey && site.indexnowKeyVerified && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-green-900/20 px-3 py-1 text-xs font-medium text-green-400">
-                  <CheckCircle className="h-3.5 w-3.5" />
-                  IndexNow key verified
-                </span>
-              )}
-
-              {/* Run Now status panel */}
-              {runStatus && (
-                <div
-                  className={cn(
-                    "rounded-lg border px-4 py-3 text-sm",
-                    runStatus.phase === "running" &&
-                      "border-gray-700 bg-gray-950 text-gray-300",
-                    runStatus.phase === "done" &&
-                      "border-green-900/40 bg-green-900/10 text-green-300",
-                    runStatus.phase === "error" &&
-                      "border-red-900/40 bg-red-900/10 text-red-400"
+                {/* ── Left column: stats (60%) ─────────────────────────── */}
+                <div className="w-full md:w-3/5 space-y-2">
+                  {stats ? (
+                    <>
+                      {/* Row 1: Total, Indexed, Not Indexed, Pending */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <StatBox label={t("total")} value={stats.total} />
+                        <StatBox label={t("indexed")} value={stats.indexed} color="green" />
+                        <StatBox label={t("notIndexed")} value={stats.notIndexed} color="red" />
+                        <StatBox label={t("pending")} value={stats.pending} color="yellow" />
+                      </div>
+                      {/* Row 2: Submitted, Failed, 404 */}
+                      <div className="grid grid-cols-3 gap-2">
+                        <StatBox label={t("submitted")} value={stats.submittedGoogle + stats.submittedBing} color="blue" />
+                        <StatBox label={t("failed")} value={stats.failed} color="red" />
+                        <StatBox label={t("pages404")} value={stats.is404s} color="orange" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-2 gap-2">
+                        {Array.from({ length: 4 }).map((_, i) => (
+                          <div key={i} className="h-16 rounded-lg border border-gray-800 bg-gray-950 animate-pulse" />
+                        ))}
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <div key={i} className="h-16 rounded-lg border border-gray-800 bg-gray-950 animate-pulse" />
+                        ))}
+                      </div>
+                    </>
                   )}
-                >
-                  {runStatus.phase === "running" && (
-                    <span className="flex items-center gap-2">
-                      <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
-                      Running auto-index job…
+                </div>
+
+                {/* ── Right column: quota + controls (40%) ─────────────── */}
+                <div className="w-full md:w-2/5 space-y-4">
+
+                  {/* Quota */}
+                  {quota && (
+                    <div className="rounded-lg border border-gray-800 bg-gray-950 p-4 space-y-2">
+                      <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        {t("quota")}
+                      </p>
+                      <QuotaBar
+                        label={t("googleQuota")}
+                        used={quota.googleSubmissions.used}
+                        limit={quota.googleSubmissions.limit}
+                      />
+                      <QuotaBar
+                        label={t("inspectionQuota")}
+                        used={quota.inspections.used}
+                        limit={quota.inspections.limit}
+                      />
+                    </div>
+                  )}
+
+                  {/* Auto-index toggles */}
+                  <div className="space-y-2">
+                    <Toggle
+                      label={t("autoIndexGoogle")}
+                      tooltip="Automatically submits new and updated pages to Google via the Indexing API."
+                      checked={site.autoIndexGoogle}
+                      onChange={onToggleAutoGoogle}
+                    />
+                    <Toggle
+                      label={t("autoIndexBing")}
+                      tooltip={
+                        !site.indexnowKeyVerified
+                          ? "Validate domain ownership first — click to set up IndexNow verification."
+                          : "Automatically pings Bing via IndexNow when pages are added or updated. Free."
+                      }
+                      checked={site.autoIndexBing}
+                      onChange={onToggleAutoBing}
+                      disabled={!site.indexnowKeyVerified}
+                      onDisabledClick={() => setIndexNowModal({ action: () => {} })}
+                    />
+                  </div>
+
+                  {/* IndexNow key status badge */}
+                  {site.indexnowKey && site.indexnowKeyVerified && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-green-900/20 px-3 py-1 text-xs font-medium text-green-400">
+                      <CheckCircle className="h-3.5 w-3.5" />
+                      IndexNow key verified
                     </span>
                   )}
-                  {runStatus.phase === "done" && (
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 font-medium">
-                        <CheckCircle className="h-3.5 w-3.5 shrink-0" />
-                        <span>
-                          Completed{" "}
-                          <span className="text-xs font-normal text-green-500/70">
-                            {relativeTime(runStatus.ranAt)}
-                          </span>
+
+                  {/* Actions */}
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={onSyncUrls}
+                      disabled={syncingUrls}
+                      className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+                    >
+                      <RefreshCw className={cn("h-3.5 w-3.5", syncingUrls && "animate-spin")} />
+                      {t("syncUrls")}
+                    </button>
+
+                    <button
+                      onClick={() => onRequestSubmit(site.id, [], ["google"], stats?.notIndexed ?? 0)}
+                      disabled={!stats?.notIndexed || quota?.googleSubmissions.remaining === 0}
+                      className="flex items-center gap-1.5 rounded-md bg-gradient-to-r from-copper to-copper-light px-3 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                    >
+                      {t("submitAllNotIndexed")} (Google)
+                    </button>
+
+                    {site.indexnowKey && (
+                      <button
+                        onClick={() => bingSubmit(() => onRequestSubmit(site.id, [], ["bing"], stats?.notIndexed ?? 0))}
+                        disabled={!stats?.notIndexed}
+                        className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+                      >
+                        {t("submitAllNotIndexed")} (Bing)
+                      </button>
+                    )}
+
+                    {(site.autoIndexGoogle || site.autoIndexBing) && (
+                      <button
+                        onClick={onRunNow}
+                        disabled={running}
+                        className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+                      >
+                        {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
+                        {running ? "Running…" : t("runNow")}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Run Now status panel */}
+                  {runStatus && (
+                    <div
+                      className={cn(
+                        "rounded-lg border px-4 py-3 text-sm",
+                        runStatus.phase === "running" && "border-gray-700 bg-gray-950 text-gray-300",
+                        runStatus.phase === "done" && "border-green-900/40 bg-green-900/10 text-green-300",
+                        runStatus.phase === "error" && "border-red-900/40 bg-red-900/10 text-red-400"
+                      )}
+                    >
+                      {runStatus.phase === "running" && (
+                        <span className="flex items-center gap-2">
+                          <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
+                          Running auto-index job…
                         </span>
-                      </div>
-                      <p className="text-xs text-green-400/80 pl-5">
-                        {runStatus.newUrls} new · {runStatus.changedUrls} changed · {runStatus.removedUrls} removed · {runStatus.submittedGoogle} → Google · {runStatus.submittedBing} → Bing
-                        {(runStatus.failedGoogle ?? 0) + (runStatus.failedBing ?? 0) > 0 && (
-                          <span className="text-red-400"> · {(runStatus.failedGoogle ?? 0) + (runStatus.failedBing ?? 0)} failed</span>
-                        )}
-                      </p>
+                      )}
+                      {runStatus.phase === "done" && (
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 font-medium">
+                            <CheckCircle className="h-3.5 w-3.5 shrink-0" />
+                            <span>
+                              Completed{" "}
+                              <span className="text-xs font-normal text-green-500/70">
+                                {relativeTime(runStatus.ranAt)}
+                              </span>
+                            </span>
+                          </div>
+                          <p className="text-xs text-green-400/80 pl-5">
+                            {runStatus.newUrls} new · {runStatus.changedUrls} changed · {runStatus.removedUrls} removed · {runStatus.submittedGoogle} → Google · {runStatus.submittedBing} → Bing
+                            {(runStatus.failedGoogle ?? 0) + (runStatus.failedBing ?? 0) > 0 && (
+                              <span className="text-red-400"> · {(runStatus.failedGoogle ?? 0) + (runStatus.failedBing ?? 0)} failed</span>
+                            )}
+                          </p>
+                        </div>
+                      )}
+                      {runStatus.phase === "error" && (
+                        <div className="flex items-start gap-2">
+                          <XCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                          <span>
+                            Failed{" "}
+                            <span className="text-xs font-normal text-red-400/70">
+                              {relativeTime(runStatus.ranAt)}
+                            </span>
+                            {runStatus.errorMsg && (
+                              <span className="block text-xs mt-0.5 text-red-400/80">
+                                {runStatus.errorMsg}
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   )}
-                  {runStatus.phase === "error" && (
-                    <div className="flex items-start gap-2">
-                      <XCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                      <span>
-                        Failed{" "}
-                        <span className="text-xs font-normal text-red-400/70">
-                          {relativeTime(runStatus.ranAt)}
-                        </span>
-                        {runStatus.errorMsg && (
-                          <span className="block text-xs mt-0.5 text-red-400/80">
-                            {runStatus.errorMsg}
-                          </span>
-                        )}
-                      </span>
-                    </div>
-                  )}
+
                 </div>
-              )}
+              </div>
             </div>
           )}
 
