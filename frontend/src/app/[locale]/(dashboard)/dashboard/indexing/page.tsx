@@ -843,7 +843,7 @@ export default function IndexingPage() {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setShowCreditModal(false)}
           />
-          <div className="relative z-10 w-full max-w-md rounded-xl border border-gray-800 bg-gray-900 p-6 shadow-xl">
+          <div className="relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-gray-800 bg-gray-900 p-6 shadow-xl">
             {/* Close button */}
             <button
               onClick={() => setShowCreditModal(false)}
@@ -1404,13 +1404,13 @@ function SiteCard({
       {expanded && (
         <div className="border-t border-gray-800">
           {/* Tabs */}
-          <div className="flex border-b border-gray-800 px-6">
+          <div className="flex overflow-x-auto scrollbar-none border-b border-gray-800 px-4 sm:px-6">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  "px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px",
+                  "shrink-0 whitespace-nowrap px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px",
                   activeTab === tab.id
                     ? "border-copper text-white"
                     : "border-transparent text-gray-400 hover:text-gray-200"
@@ -1423,7 +1423,7 @@ function SiteCard({
 
           {/* ── Overview Tab ─────────────────────────────────────────────── */}
           {activeTab === "overview" && (
-            <div className="px-6 py-5 space-y-5">
+            <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-5">
               {/* Stats row */}
               {stats ? (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -1642,16 +1642,16 @@ function SiteCard({
 
           {/* ── URLs Tab ─────────────────────────────────────────────────── */}
           {activeTab === "urls" && (
-            <div className="px-6 py-5 space-y-4">
+            <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-4">
               {/* Filter tabs + search row */}
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="space-y-2">
                 <div className="flex flex-wrap gap-1">
                   {URL_FILTERS.map((f) => (
                     <button
                       key={f.id}
                       onClick={() => handleFilterChange(f.id)}
                       className={cn(
-                        "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
+                        "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors min-h-[36px]",
                         urlFilter === f.id
                           ? "bg-copper text-white"
                           : "bg-gray-800 text-gray-400 hover:text-white"
@@ -1661,19 +1661,21 @@ function SiteCard({
                     </button>
                   ))}
                 </div>
-                <input
-                  type="text"
-                  value={urlSearch}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  placeholder={t("searchUrls")}
-                  className="ml-auto w-48 rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-xs text-white placeholder-gray-500 outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
-                />
-                <button
-                  onClick={() => loadUrls(urlFilter, urlCurrentPage, urlSearch)}
-                  className="rounded-md border border-gray-700 p-1.5 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
-                >
-                  <RefreshCw className="h-3.5 w-3.5" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={urlSearch}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    placeholder={t("searchUrls")}
+                    className="flex-1 min-w-0 rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-xs text-white placeholder-gray-500 outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
+                  />
+                  <button
+                    onClick={() => loadUrls(urlFilter, urlCurrentPage, urlSearch)}
+                    className="shrink-0 rounded-md border border-gray-700 p-2 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+                  >
+                    <RefreshCw className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               </div>
 
               {/* Bulk action bar */}
@@ -2067,7 +2069,7 @@ function SiteCard({
 
           {/* ── Log Tab ──────────────────────────────────────────────────── */}
           {activeTab === "log" && (
-            <div className="px-6 py-5 space-y-4">
+            <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-4">
               {/* Filter + refresh row */}
               <div className="flex flex-wrap items-center gap-2">
                 <div className="flex flex-wrap gap-1">
@@ -2080,7 +2082,7 @@ function SiteCard({
                         setLogPage(null);
                       }}
                       className={cn(
-                        "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
+                        "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors min-h-[36px]",
                         logFilter === f.id
                           ? "bg-copper text-white"
                           : "bg-gray-800 text-gray-400 hover:text-white"
@@ -2095,7 +2097,7 @@ function SiteCard({
                     setLogPage(null);
                     loadLog(logFilter, logCurrentPage);
                   }}
-                  className="rounded-md border border-gray-700 p-1.5 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+                  className="min-h-[36px] rounded-md border border-gray-700 px-2 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
                 >
                   <RefreshCw className="h-3.5 w-3.5" />
                 </button>
@@ -2201,7 +2203,7 @@ function SiteCard({
 
           {/* ── Report Tab ───────────────────────────────────────────────── */}
           {activeTab === "report" && (
-            <div className="px-6 py-5 space-y-5">
+            <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-5">
               <h3 className="text-sm font-semibold text-white">
                 {t("todayReport")}
               </h3>
@@ -2667,7 +2669,7 @@ function IndexNowVerifyModal({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative z-10 w-full max-w-md rounded-xl border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div className="relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-gray-800 bg-gray-900 p-6 shadow-xl">
         {/* Close button */}
         <button
           onClick={onClose}
