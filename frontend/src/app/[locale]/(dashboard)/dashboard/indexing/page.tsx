@@ -1409,9 +1409,15 @@ function SiteCard({
                 />
                 <Toggle
                   label={t("autoIndexBing")}
-                  tooltip="Automatically pings Bing via IndexNow when pages are added or updated. Free."
+                  tooltip={
+                    !site.indexnowKeyVerified
+                      ? "Validate domain ownership first — click to set up IndexNow verification."
+                      : "Automatically pings Bing via IndexNow when pages are added or updated. Free."
+                  }
                   checked={site.autoIndexBing}
                   onChange={onToggleAutoBing}
+                  disabled={!site.indexnowKeyVerified}
+                  onDisabledClick={() => setIndexNowModal({ action: () => {} })}
                 />
               </div>
 
@@ -2304,31 +2310,44 @@ function Toggle({
   tooltip,
   checked,
   onChange,
+  disabled = false,
+  onDisabledClick,
 }: {
   label: string;
   tooltip?: string;
   checked: boolean;
   onChange: (v: boolean) => void;
+  disabled?: boolean;
+  onDisabledClick?: () => void;
 }) {
   const [showTooltip, setShowTooltip] = useState(false);
 
+  const handleClick = () => {
+    if (disabled) {
+      onDisabledClick?.();
+    } else {
+      onChange(!checked);
+    }
+  };
+
   return (
-    <label className="flex cursor-pointer items-center gap-3">
+    <label className={cn("flex items-center gap-3", disabled ? "cursor-not-allowed" : "cursor-pointer")}>
       <div
-        onClick={() => onChange(!checked)}
+        onClick={handleClick}
         className={cn(
           "relative h-5 w-9 rounded-full transition-colors",
-          checked ? "bg-copper" : "bg-gray-700"
+          disabled ? "opacity-40" : "",
+          checked && !disabled ? "bg-copper" : "bg-gray-700"
         )}
       >
         <span
           className={cn(
             "absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform",
-            checked ? "translate-x-4" : "translate-x-0"
+            checked && !disabled ? "translate-x-4" : "translate-x-0"
           )}
         />
       </div>
-      <span className="text-sm text-gray-300">{label}</span>
+      <span className={cn("text-sm", disabled ? "text-gray-500" : "text-gray-300")}>{label}</span>
       {tooltip && (
         <div className="relative flex items-center">
           <button
