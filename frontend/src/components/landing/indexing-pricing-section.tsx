@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Zap } from "lucide-react";
+import { Zap, Rocket, Building2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function IndexingPricingSection() {
@@ -79,7 +79,19 @@ export function IndexingPricingSection() {
                 </div>
               )}
 
-              <h3 className="text-lg font-semibold text-white">{pack.name}</h3>
+              {(() => {
+                const icons: Record<string, React.ComponentType<{ className?: string }>> = {
+                  starter: Zap,
+                  growth: Rocket,
+                  scale: Building2,
+                };
+                const PackIcon = icons[pack.id];
+                return PackIcon ? (
+                  <PackIcon className={cn("h-6 w-6", pack.highlight ? "text-copper" : "text-gray-400")} />
+                ) : null;
+              })()}
+
+              <h3 className="mt-2 text-lg font-semibold text-white">{pack.name}</h3>
 
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="text-5xl font-bold text-white">{pack.price}</span>
@@ -94,12 +106,13 @@ export function IndexingPricingSection() {
               <Link
                 href={ctaHref}
                 className={cn(
-                  "mt-8 block rounded-md px-4 py-3.5 text-center text-sm font-semibold transition-opacity",
+                  "mt-8 flex items-center justify-center gap-2 rounded-md px-4 py-3.5 text-center text-sm font-semibold transition-opacity",
                   pack.highlight
                     ? "bg-gradient-to-r from-copper to-copper-light text-white hover:opacity-90"
                     : "border border-gray-700 text-white hover:bg-gray-900"
                 )}
               >
+                <ArrowRight className="h-4 w-4" />
                 {pack.cta}
               </Link>
             </div>

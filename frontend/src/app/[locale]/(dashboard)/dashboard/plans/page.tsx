@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { Check, Loader2, Zap } from "lucide-react";
+import { Check, Loader2, Zap, Rocket, Building2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Plan } from "@/types/plan";
 
@@ -137,13 +137,18 @@ export default function PlansPage() {
                 </div>
               )}
 
-              {isAgency && (
-                <div className="absolute -top-3 right-4">
-                  <Zap className="h-6 w-6 text-copper" />
-                </div>
-              )}
-
               <div className="mb-4">
+                {(() => {
+                  const icons: Record<string, React.ComponentType<{ className?: string }>> = {
+                    free: Zap,
+                    pro: Rocket,
+                    agency: Building2,
+                  };
+                  const PlanIcon = icons[plan.id];
+                  return PlanIcon ? (
+                    <PlanIcon className={cn("mb-2 h-6 w-6", isAgency ? "text-copper" : "text-gray-400")} />
+                  ) : null;
+                })()}
                 <h3 className="text-lg font-semibold text-white">
                   {t(plan.id)}
                 </h3>
@@ -172,7 +177,7 @@ export default function PlansPage() {
                 onClick={() => handleSelectPlan(plan.id)}
                 disabled={isCurrent || isSwitching}
                 className={cn(
-                  "mt-auto w-full rounded-md px-4 py-2.5 text-sm font-semibold transition-opacity",
+                  "mt-auto flex w-full items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-opacity",
                   isCurrent
                     ? "cursor-not-allowed bg-gray-800 text-gray-500"
                     : isAgency
@@ -181,18 +186,27 @@ export default function PlansPage() {
                 )}
               >
                 {isSwitching ? (
-                  <span className="flex items-center justify-center gap-2">
+                  <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     {t("switching")}
-                  </span>
+                  </>
                 ) : isCurrent ? (
-                  t("currentPlan")
+                  <>
+                    <Check className="h-4 w-4" />
+                    {t("currentPlan")}
+                  </>
                 ) : plan.price >
                   (plans.find((p) => p.id === session?.user?.planId)?.price ||
                     0) ? (
-                  t("upgrade")
+                  <>
+                    <ArrowRight className="h-4 w-4" />
+                    {t("upgrade")}
+                  </>
                 ) : (
-                  t("select")
+                  <>
+                    <ArrowRight className="h-4 w-4" />
+                    {t("select")}
+                  </>
                 )}
               </button>
             </div>

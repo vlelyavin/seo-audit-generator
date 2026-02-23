@@ -13,7 +13,6 @@ import {
   ChevronDown,
   ChevronUp,
   Play,
-  Copy,
   Check,
   CreditCard,
   ExternalLink,
@@ -26,6 +25,7 @@ import {
   Trash2,
   Key,
   Send,
+  Download,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -1259,11 +1259,7 @@ function SiteCard({
         action();
       } else {
         onVerifyFail();
-        const keyUrl = data.keyUrl ?? `${site.domain}/${site.indexnowKey}.txt`;
-        showToast(
-          t("indexnowVerifyFailedAt", { keyUrl }),
-          false
-        );
+        setIndexNowModal({ action });
       }
     } catch {
       showToast(t("indexnowVerifyNetworkError"), false);
@@ -1282,7 +1278,7 @@ function SiteCard({
         showToast(t("indexnowVerifySuccess"), true);
       } else {
         onVerifyFail();
-        showToast(t("indexnowVerifyFailed"), false);
+        setIndexNowModal({ action: () => {} });
       }
     } catch {
       showToast(t("indexnowVerifyNetworkError"), false);
@@ -1650,16 +1646,16 @@ function SiteCard({
           {activeTab === "urls" && (
             <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-4">
               {/* Filter tabs + search row */}
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div className="flex flex-wrap gap-1">
                   {URL_FILTERS.map((f) => (
                     <button
                       key={f.id}
                       onClick={() => handleFilterChange(f.id)}
                       className={cn(
-                        "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors min-h-[36px]",
+                        "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
                         urlFilter === f.id
-                          ? "bg-copper text-white"
+                          ? "bg-gradient-to-r from-copper to-copper-light text-white"
                           : "bg-gray-800 text-gray-400 hover:text-white"
                       )}
                     >
@@ -2650,18 +2646,10 @@ function IndexNowVerifyModal({
   const [verifying, setVerifying] = useState(false);
   const [verified, setVerified] = useState(false);
   const [verifyError, setVerifyError] = useState<string | null>(null);
-  const [keyCopied, setKeyCopied] = useState(false);
-
   const baseDomain = site.domain.startsWith("sc-domain:")
     ? `https://${site.domain.replace("sc-domain:", "")}`
     : site.domain.replace(/\/$/, "");
   const keyFileUrl = `${baseDomain}/${site.indexnowKey}.txt`;
-
-  const copyKey = async () => {
-    await navigator.clipboard.writeText(site.indexnowKey!);
-    setKeyCopied(true);
-    setTimeout(() => setKeyCopied(false), 2000);
-  };
 
   const verify = async () => {
     setVerifying(true);
@@ -2715,22 +2703,14 @@ function IndexNowVerifyModal({
             <p className="text-xs font-medium text-gray-300 mb-1.5">
               {t("verifyStep1")}
             </p>
-            <div className="flex items-center gap-2 rounded-md border border-gray-800 bg-gray-950 px-3 py-2">
-              <code className="flex-1 text-xs text-green-400 break-all">
-                {site.indexnowKey}
-              </code>
-              <button
-                onClick={copyKey}
-                className="shrink-0 text-gray-400 hover:text-white transition"
-                title={t("copyKey")}
-              >
-                {keyCopied ? (
-                  <Check className="h-4 w-4 text-green-400" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
-              </button>
-            </div>
+            <a
+              href={`/api/indexing/sites/${site.id}/download-key`}
+              download
+              className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              <Download className="h-4 w-4" />
+              {t("downloadKeyFile")}
+            </a>
           </div>
 
           {/* Step 2 */}

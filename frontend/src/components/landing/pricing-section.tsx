@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Check, Zap } from "lucide-react";
+import { Check, Zap, Rocket, Building2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PLANS = [
@@ -11,6 +11,12 @@ const PLANS = [
   { id: "pro", price: 9, auditsPerMonth: -1, maxPages: 200 },
   { id: "agency", price: 29, auditsPerMonth: -1, maxPages: 1000 },
 ] as const;
+
+const PLAN_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  free: Zap,
+  pro: Rocket,
+  agency: Building2,
+};
 
 export function PricingSection() {
   const t = useTranslations("marketing.landing.pricing");
@@ -64,13 +70,14 @@ export function PricingSection() {
                   isAgency ? "border-copper/50" : "border-gray-800"
                 )}
               >
-                {isAgency && (
-                  <div className="absolute -top-3 right-4">
-                    <Zap className="h-6 w-6 text-copper" />
-                  </div>
-                )}
+                {(() => {
+                  const PlanIcon = PLAN_ICONS[plan.id];
+                  return PlanIcon ? (
+                    <PlanIcon className={cn("h-6 w-6", isAgency ? "text-copper" : "text-gray-400")} />
+                  ) : null;
+                })()}
 
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="mt-2 text-lg font-semibold text-white">
                   {pt(plan.id)}
                 </h3>
                 <div className="mt-4 flex items-baseline">
@@ -92,12 +99,13 @@ export function PricingSection() {
                 <Link
                   href={ctaHref}
                   className={cn(
-                    "mt-8 block rounded-md px-4 py-3.5 text-center text-sm font-semibold transition-opacity",
+                    "mt-8 flex items-center justify-center gap-2 rounded-md px-4 py-3.5 text-center text-sm font-semibold transition-opacity",
                     isAgency
                       ? "bg-gradient-to-r from-copper to-copper-light text-white hover:opacity-90"
                       : "border border-gray-700 text-white hover:bg-gray-900"
                   )}
                 >
+                  <ArrowRight className="h-4 w-4" />
                   {plan.price === 0 ? t("ctaFree") : t("ctaPaid")}
                 </Link>
               </div>

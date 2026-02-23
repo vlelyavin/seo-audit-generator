@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { Save, Upload, Lock, ImageOff } from "lucide-react";
+import { Save, Lock, ImageOff, ImageIcon } from "lucide-react";
 
 function normalizeLogoUrl(url: string): string {
   if (!url) return "";
@@ -34,6 +34,7 @@ export default function BrandingPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
   const [logoVersion, setLogoVersion] = useState<number>(0);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const isAgency = session?.user?.planId === "agency";
 
@@ -91,21 +92,12 @@ export default function BrandingPage() {
     setSaving(false);
   }
 
-  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const fileInput = e.currentTarget;
-    const file = fileInput.files?.[0];
-    fileInput.value = "";
-    if (!file) return;
-
-    // Show preview immediately with a blob URL.
+  async function uploadFile(file: File) {
     setPreviewUrl((prev) => {
-      if (prev?.startsWith("blob:")) {
-        URL.revokeObjectURL(prev);
-      }
+      if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev);
       return URL.createObjectURL(file);
     });
 
-    // Clear previous errors and start upload
     setUploadError("");
     setImageError(false);
     setUploading(true);
@@ -123,9 +115,7 @@ export default function BrandingPage() {
         const data = await res.json();
         setLogoUrl(normalizeLogoUrl(data.url));
         setPreviewUrl((prev) => {
-          if (prev?.startsWith("blob:")) {
-            URL.revokeObjectURL(prev);
-          }
+          if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev);
           return null;
         });
         setLogoVersion(Date.now());
@@ -134,22 +124,35 @@ export default function BrandingPage() {
         const data = await res.json();
         setUploadError(data.error || t("uploadFailed"));
         setPreviewUrl((prev) => {
-          if (prev?.startsWith("blob:")) {
-            URL.revokeObjectURL(prev);
-          }
+          if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev);
           return null;
         });
       }
     } catch {
       setUploadError(t("networkError"));
       setPreviewUrl((prev) => {
-        if (prev?.startsWith("blob:")) {
-          URL.revokeObjectURL(prev);
-        }
+        if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev);
         return null;
       });
     } finally {
       setUploading(false);
+    }
+  }
+
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const fileInput = e.currentTarget;
+    const file = fileInput.files?.[0];
+    fileInput.value = "";
+    if (!file) return;
+    uploadFile(file);
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    setIsDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      uploadFile(file);
     }
   }
 
@@ -168,10 +171,6 @@ export default function BrandingPage() {
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-gray-400">
-        {t("description")}
-      </p>
-
       {message && (
         <div className="rounded-lg border border-gray-800 bg-gray-900 px-4 py-2 text-sm text-gray-300">
           {message}
@@ -179,10 +178,13 @@ export default function BrandingPage() {
       )}
 
       <form onSubmit={handleSave} className="rounded-xl border border-gray-800 bg-gray-900 p-6 space-y-5">
+        <h2 className="mb-4 text-lg font-semibold text-white">{t("title")}</h2>
+
         <div>
           <label className="mb-1.5 block text-sm font-medium text-gray-300">
             {t("companyName")}
           </label>
+          <p className="mb-2 text-xs text-gray-500">{t("companyNameDescription")}</p>
           <input
             type="text"
             value={companyName}
@@ -196,54 +198,69 @@ export default function BrandingPage() {
           <label className="mb-1.5 block text-sm font-medium text-gray-300">
             {t("logo")}
           </label>
-          <div className="flex flex-wrap items-center gap-3">
-            {logoSrc && !imageError && (
-              <div className="relative">
+          <p className="mb-2 text-xs text-gray-500">{t("logoDescription")}</p>
+
+          {/* Drop zone */}
+          <label
+            className={`group relative flex h-[180px] w-[250px] cursor-pointer flex-col items-center justify-center rounded-xl border bg-gray-900 transition-colors ${
+              isDragOver
+                ? "border-copper ring-2 ring-copper/20"
+                : "border-gray-700 hover:border-copper hover:ring-2 hover:ring-copper/20"
+            }`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDragOver(true);
+            }}
+            onDragLeave={() => setIsDragOver(false)}
+            onDrop={handleDrop}
+          >
+            <input
+              type="file"
+              accept=".png,.jpg,.jpeg,.gif,.webp,.svg,image/*"
+              onChange={handleLogoUpload}
+              onClick={(event) => {
+                event.currentTarget.value = "";
+              }}
+              disabled={uploading}
+              className="hidden"
+            />
+
+            {logoSrc && !imageError ? (
+              <>
                 <img
                   src={logoSrc}
                   alt={t("logoAlt")}
-                  className="h-16 w-16 rounded border border-gray-700 object-contain"
-                  onError={() => {
-                    console.error("Failed to load logo image:", logoSrc);
-                    setImageError(true);
-                  }}
+                  className="max-h-full max-w-full object-contain p-3"
+                  onError={() => setImageError(true)}
                 />
-                {uploading && (
-                  <div className="absolute inset-0 flex items-center justify-center rounded bg-black/50">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  </div>
-                )}
+                <div className="absolute inset-x-0 bottom-3 flex justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                  <span className="rounded-md bg-gray-800/90 px-3 py-1 text-xs font-medium text-gray-300">
+                    {t("replaceLogo")}
+                  </span>
+                </div>
+              </>
+            ) : imageError && logoSrc ? (
+              <div className="flex flex-col items-center gap-2">
+                <ImageOff className="h-8 w-8 text-gray-500" />
+                <span className="text-xs text-gray-400">{t("failedToLoad")}</span>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-2">
+                <ImageIcon className="h-8 w-8 text-gray-500" />
+                <span className="text-sm text-gray-400">{t("uploadPrompt")}</span>
+                <span className="text-xs text-gray-500">{t("uploadInstruction")}</span>
               </div>
             )}
-            {imageError && logoSrc && (
-              <div className="flex h-16 items-center gap-2 rounded border border-dashed border-gray-700 bg-gray-800 px-3">
-                <ImageOff className="h-4 w-4 text-gray-500" />
-                <span className="text-xs text-gray-400">
-                  {t("failedToLoad")}
-                </span>
+
+            {uploading && (
+              <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/50">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
               </div>
             )}
-            <label className={`flex cursor-pointer items-center gap-2 rounded-lg border border-gray-700 px-3 py-2 text-sm text-gray-300 transition-colors ${
-              uploading
-                ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-gray-800'
-            }`}>
-              <Upload className="h-4 w-4" />
-              {uploading ? t("uploading") : t("uploadLogo")}
-              <input
-                type="file"
-                accept=".png,.jpg,.jpeg,.gif,.webp,.svg,image/*"
-                onChange={handleLogoUpload}
-                onClick={(event) => {
-                  event.currentTarget.value = "";
-                }}
-                disabled={uploading}
-                className="hidden"
-              />
-            </label>
-          </div>
+          </label>
+
           {uploadError && (
-            <p className="mt-1 text-sm text-red-400">{uploadError}</p>
+            <p className="mt-2 text-sm text-red-400">{uploadError}</p>
           )}
         </div>
 
