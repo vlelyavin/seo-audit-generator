@@ -4,7 +4,6 @@ import { IndexingHowItWorks } from "@/components/landing/indexing-how-it-works";
 import { IndexingFeaturesSection } from "@/components/landing/indexing-features-section";
 import { IndexingPricingSection } from "@/components/landing/indexing-pricing-section";
 import { IndexingFaqSection } from "@/components/landing/indexing-faq-section";
-import { IndexingCtaSection } from "@/components/landing/indexing-cta-section";
 
 export const metadata: Metadata = {
   title: "Get Your Pages Indexed by Google in Hours — SEO Audit Online",
@@ -26,7 +25,6 @@ export default function IndexingLandingPage() {
       <IndexingFeaturesSection />
       <IndexingPricingSection />
       <IndexingFaqSection />
-      <IndexingCtaSection />
     </>
   );
 }
