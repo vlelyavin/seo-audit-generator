@@ -26,7 +26,7 @@ export function IndexingHowItWorks() {
 
         <div className="mt-16 grid gap-8 sm:grid-cols-3">
           {steps.map((step) => (
-            <div key={step.num}>
+            <div key={step.num} className="rounded-xl border border-gray-800 bg-gray-950 p-6">
               <span className="text-4xl font-bold text-copper/30">
                 {step.num}
               </span>

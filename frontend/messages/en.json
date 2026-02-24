@@ -519,6 +519,7 @@
       "features": {
         "sectionLabel": "Features",
         "title": "Everything You Need for Faster Indexing",
+        "subtitle": "Automate URL submissions and track indexing across all major search engines.",
         "feature1Title": "Google Search Console Integration",
         "feature1Desc": "Connect your GSC account and pull real index data. See exactly what Google sees — no guessing.",
         "feature2Title": "One-Click Indexing",
