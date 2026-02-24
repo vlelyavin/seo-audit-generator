@@ -224,7 +224,7 @@ function ourStatusColor(status: string, t?: ReturnType<typeof useTranslations<"i
   switch (status) {
     case "submitted":
       return {
-        bg: "bg-copper/10",
+        bg: "bg-copper/35",
         text: "text-copper-light",
         label: l("submitted", "Submitted"),
       };
@@ -2392,7 +2392,7 @@ function GscStatusBadge({
   t: ReturnType<typeof useTranslations<"indexing">>;
 }) {
   const [showTip, setShowTip] = useState(false);
-  const tip = status ? getTip(status, t) : null;
+  const tip = getTip(status, t);
 
   return (
     <div className="relative inline-flex items-center gap-1">
@@ -2405,25 +2405,24 @@ function GscStatusBadge({
       >
         {gsc.label}
       </span>
-      {tip && tip !== status && (
-        <button
-          className="text-gray-500 hover:text-gray-300 transition-colors"
-          onMouseEnter={() => setShowTip(true)}
-          onMouseLeave={() => setShowTip(false)}
-        >
-          <Info className="h-3.5 w-3.5" />
-          {showTip && (
-            <div className="absolute bottom-full left-0 mb-2 w-56 rounded-lg border border-gray-800 bg-black p-2.5 text-xs text-gray-300 shadow-xl z-10 text-left">
-              {tip}
-            </div>
-          )}
-        </button>
-      )}
+      <button
+        className="text-gray-500 hover:text-gray-300 transition-colors"
+        onMouseEnter={() => setShowTip(true)}
+        onMouseLeave={() => setShowTip(false)}
+      >
+        <Info className="h-3.5 w-3.5" />
+        {showTip && (
+          <div className="absolute bottom-full left-0 mb-2 w-56 rounded-lg border border-gray-800 bg-black p-2.5 text-xs text-gray-300 shadow-xl z-10 text-left">
+            {tip}
+          </div>
+        )}
+      </button>
     </div>
   );
 }
 
-function getTip(gscStatus: string, t: ReturnType<typeof useTranslations<"indexing">>): string {
+function getTip(gscStatus: string | null, t: ReturnType<typeof useTranslations<"indexing">>): string {
+  if (!gscStatus) return t("tipStatusUnknown");
   const tips: Record<string, string> = {
     "Crawled - currently not indexed": t("tipCrawledNotIndexed"),
     "Discovered - currently not indexed": t("tipDiscoveredNotIndexed"),
@@ -2435,7 +2434,7 @@ function getTip(gscStatus: string, t: ReturnType<typeof useTranslations<"indexin
     "Submitted and indexed": t("tipIndexed"),
     Indexed: t("tipIndexed"),
   };
-  return tips[gscStatus] ?? gscStatus;
+  return tips[gscStatus] ?? t("tipDefault", { status: gscStatus });
 }
 
 function logActionColor(action: string): { dot: string; text: string } {
