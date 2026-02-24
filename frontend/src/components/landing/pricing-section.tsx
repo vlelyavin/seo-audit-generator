@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Check, Zap, Rocket, Building2, ArrowRight, Key, BarChart3, PlusCircle } from "lucide-react";
+import { Check, Zap, Rocket, Building2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PLANS = [
@@ -27,35 +27,23 @@ export function PricingSection() {
   return (
     <section id="pricing" className="bg-black py-24">
       <div className="mx-auto max-w-6xl px-4 lg:px-6">
-        <p className="mb-4 text-center text-sm font-medium not-italic text-copper">
-          {t("sectionLabel")}
-        </p>
         <h2 className="text-center text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
-          {t("title")}
+          {t("introTitle")}
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-center text-lg text-gray-400">
-          {t("subtitle")}
+        <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-gray-400">
+          {t("introSubtitle")}
         </p>
 
-        <div className="mt-14 grid gap-5 sm:grid-cols-3">
-          <div className="rounded-xl border border-gray-800 bg-gray-950 p-6">
-            <Key className="mb-3 h-5 w-5 text-copper" />
-            <h3 className="text-sm font-semibold text-white">{t("howItWorks.step1Title")}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-gray-400">{t("howItWorks.step1Desc")}</p>
-          </div>
-          <div className="rounded-xl border border-gray-800 bg-gray-950 p-6">
-            <BarChart3 className="mb-3 h-5 w-5 text-copper" />
-            <h3 className="text-sm font-semibold text-white">{t("howItWorks.step2Title")}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-gray-400">{t("howItWorks.step2Desc")}</p>
-          </div>
-          <div className="rounded-xl border border-gray-800 bg-gray-950 p-6">
-            <PlusCircle className="mb-3 h-5 w-5 text-copper" />
-            <h3 className="text-sm font-semibold text-white">{t("howItWorks.step3Title")}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-gray-400">{t("howItWorks.step3Desc")}</p>
-          </div>
+        <div className="mt-20">
+          <h3 className="text-center text-2xl font-semibold text-white sm:text-3xl">
+            {t("auditSectionTitle")}
+          </h3>
+          <p className="mx-auto mt-2 max-w-xl text-center text-gray-400">
+            {t("auditSectionDesc")}
+          </p>
         </div>
 
-        <div className="mt-16 grid gap-8 lg:grid-cols-3">
+        <div className="mt-10 grid gap-8 lg:grid-cols-3">
           {PLANS.map((plan) => {
             const isAgency = plan.id === "agency";
             const isPro = plan.id === "pro";

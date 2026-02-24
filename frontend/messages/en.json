@@ -452,19 +452,12 @@
         "feature6Desc": "Parallel analysis with headless browser crawling ensures accurate results in minutes."
       },
       "pricing": {
-        "sectionLabel": "Pricing",
-        "title": "Simple, Transparent Pricing",
-        "subtitle": "Start free. Upgrade when you need more.",
+        "introTitle": "Two tools. Two pricing models.",
+        "introSubtitle": "Audit subscriptions cover your SEO analysis. Indexing credits cover Google URL submissions. Pick what you need.",
+        "auditSectionTitle": "SEO Audit Plans",
+        "auditSectionDesc": "Run unlimited audits, export reports, white-label for clients.",
         "ctaFree": "Get Started Free",
         "ctaPaid": "Get Started",
-        "howItWorks": {
-          "step1Title": "Choose a Plan",
-          "step1Desc": "Pick the tier that fits your needs. Each plan sets your monthly audit allowance, crawl limits, and which features you can access.",
-          "step2Title": "Use Credits",
-          "step2Desc": "Every audit consumes credits based on pages crawled. Your plan includes a monthly credit allowance — enough for most use cases.",
-          "step3Title": "Need More?",
-          "step3Desc": "Buy additional credit packs anytime without upgrading your plan. Indexing credits are purchased separately."
-        },
         "planAudience": {
           "free": "For individuals exploring SEO",
           "pro": "For freelancers and small teams",
@@ -539,9 +532,9 @@
         "feature6Desc": "Not just data — we tell you why pages aren't indexed and what to do about it. Blocked by robots.txt? Noindex tag? Thin content? We'll flag it."
       },
       "pricing": {
-        "sectionLabel": "Pricing",
-        "title": "Simple Credit-Based Pricing",
-        "subtitle": "No monthly subscription for indexing. Buy credits when you need them. Each credit = 1 URL submitted to Google. IndexNow submissions (Bing, Yandex, DuckDuckGo) are always free.",
+        "title": "Indexing Credits",
+        "sectionDesc": "Submit URLs to Google for indexing.",
+        "oneTime": "one-time",
         "starterName": "Starter",
         "starterPrice": "$5",
         "starterCredits": "50 credits",

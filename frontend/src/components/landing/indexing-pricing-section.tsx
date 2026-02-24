@@ -49,16 +49,13 @@ export function IndexingPricingSection() {
   ];
 
   return (
-    <section id="pricing" className="bg-black py-24">
+    <section id="indexing-pricing" className="bg-gray-950 py-24">
       <div className="mx-auto max-w-6xl px-4 lg:px-6">
-        <p className="mb-4 text-center text-sm font-medium not-italic text-copper">
-          {t("sectionLabel")}
-        </p>
         <h2 className="text-center text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
           {t("title")}
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-gray-400">
-          {t("subtitle")}
+        <p className="mx-auto mt-4 max-w-xl text-center text-lg text-gray-400">
+          {t("sectionDesc")}
         </p>
 
         <div className="mt-16 grid gap-8 lg:grid-cols-3">
@@ -95,7 +92,7 @@ export function IndexingPricingSection() {
 
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="text-5xl font-bold text-white">{pack.price}</span>
-                <span className="text-gray-500">one-time</span>
+                <span className="text-gray-500">{t("oneTime")}</span>
               </div>
 
               <div className="mt-6 space-y-2">
