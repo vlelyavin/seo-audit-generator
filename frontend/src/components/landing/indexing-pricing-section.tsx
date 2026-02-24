@@ -116,8 +116,7 @@ export function IndexingPricingSection() {
           ))}
         </div>
 
-        <div className="mt-10 space-y-2 text-center">
-          <p className="text-sm text-gray-400">{t("freeNote")}</p>
+        <div className="mt-10 text-center">
           <p className="text-sm text-gray-500">{t("quotaNote")}</p>
         </div>
       </div>
