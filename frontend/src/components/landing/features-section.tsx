@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Search, BarChart3, FileText } from "lucide-react";
+import { Search, BarChart3, FileText, Activity, Globe, FileDown, Lightbulb, Zap } from "lucide-react";
 
 const STEP_ICONS = [Search, BarChart3, FileText] as const;
 
@@ -14,13 +14,15 @@ export function FeaturesSection() {
     { num: "03", icon: STEP_ICONS[2], title: t("step3Title"), desc: t("step3Desc") },
   ];
 
+  const FEATURE_ICONS = [BarChart3, Activity, Globe, FileDown, Lightbulb, Zap];
   const features = Array.from({ length: 6 }, (_, i) => ({
     title: t(`feature${i + 1}Title`),
     desc: t(`feature${i + 1}Desc`),
+    icon: FEATURE_ICONS[i],
   }));
 
   return (
-    <section className="border-t border-gray-800 bg-black py-24">
+    <section className="bg-black py-24">
       <div className="mx-auto max-w-6xl px-4 lg:px-6">
         <p className="mb-4 text-sm font-medium not-italic text-copper">
           {t("sectionLabel")}
@@ -57,6 +59,7 @@ export function FeaturesSection() {
               key={feat.title}
               className="rounded-xl border border-gray-800 bg-gray-950 p-6"
             >
+              <feat.icon className="mb-3 h-5 w-5 text-copper" />
               <h3 className="text-lg font-semibold text-white">
                 {feat.title}
               </h3>

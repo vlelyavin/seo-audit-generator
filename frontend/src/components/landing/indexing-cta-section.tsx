@@ -8,7 +8,7 @@ export function IndexingCtaSection() {
   const locale = useLocale();
 
   return (
-    <section className="border-t border-gray-800 bg-black py-24">
+    <section className="bg-black py-24">
       <div className="mx-auto max-w-3xl px-4 text-center lg:px-6">
         <h2 className="text-3xl font-bold text-white sm:text-4xl">
           {t("heading")}

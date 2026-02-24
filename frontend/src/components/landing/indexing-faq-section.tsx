@@ -12,7 +12,7 @@ export function IndexingFaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="border-t border-gray-800 bg-black py-24">
+    <section className="bg-black py-24">
       <div className="mx-auto max-w-3xl px-4 lg:px-6">
         <p className="mb-4 text-center text-sm font-medium not-italic text-copper">
           {t("sectionLabel")}
