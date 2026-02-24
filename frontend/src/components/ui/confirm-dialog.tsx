@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { AlertTriangle, X } from "lucide-react";
+import { AlertTriangle, X, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ConfirmDialogProps {
@@ -77,7 +77,7 @@ export function ConfirmDialog({
           <button
             onClick={onClose}
             disabled={loading}
-            className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-xs font-medium text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+            className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800 disabled:opacity-50"
           >
             {cancelText}
           </button>
@@ -85,7 +85,7 @@ export function ConfirmDialog({
             onClick={onConfirm}
             disabled={loading}
             className={cn(
-              "flex-1 rounded-md px-4 py-2 text-xs font-medium whitespace-nowrap text-white",
+              "flex-1 rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap text-white",
               loading
                 ? "bg-red-600/50"
                 : "bg-red-600 hover:bg-red-700"
@@ -97,7 +97,10 @@ export function ConfirmDialog({
                 {confirmText}
               </span>
             ) : (
-              confirmText
+              <span className="flex items-center justify-center gap-2">
+                <Trash2 className="h-4 w-4" />
+                {confirmText}
+              </span>
             )}
           </button>
         </div>

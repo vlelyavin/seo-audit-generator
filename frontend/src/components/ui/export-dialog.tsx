@@ -140,7 +140,7 @@ export function ExportDialog({
           <button
             onClick={() => onExport(selectedFormat, lang)}
             disabled={loading}
-            className="flex-1 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-xs font-semibold whitespace-nowrap text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="flex-1 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold whitespace-nowrap text-white transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -148,12 +148,15 @@ export function ExportDialog({
                 {t("generating", { format: selectedFormat.toUpperCase() })}
               </span>
             ) : (
-              t("exportDownload")
+              <span className="flex items-center justify-center gap-2">
+                <Download className="h-4 w-4" />
+                {t("exportDownload")}
+              </span>
             )}
           </button>
           <button
             onClick={onClose}
-            className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-xs font-medium text-gray-300 hover:bg-gray-800"
+            className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800"
           >
             {t("cancel")}
           </button>

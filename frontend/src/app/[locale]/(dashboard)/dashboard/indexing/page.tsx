@@ -13,7 +13,7 @@ import {
   ChevronDown,
   ChevronUp,
   Play,
-  Check,
+  ShieldCheck,
   CreditCard,
   ExternalLink,
   Info,
@@ -2706,9 +2706,9 @@ function IndexNowVerifyModal({
             <a
               href={`/api/indexing/sites/${site.id}/download-key`}
               download
-              className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-1.5 text-xs font-medium text-gray-300 transition-colors hover:bg-gray-800"
             >
-              <Download className="h-4 w-4" />
+              <Download className="h-3.5 w-3.5" />
               {t("downloadKeyFile")}
             </a>
           </div>
@@ -2732,14 +2732,14 @@ function IndexNowVerifyModal({
               <button
                 onClick={verify}
                 disabled={verifying || verified}
-                className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+                className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-1.5 text-xs font-medium text-gray-300 transition-colors hover:bg-gray-800 disabled:opacity-50"
               >
                 {verifying ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 ) : verified ? (
-                  <CheckCircle className="h-3 w-3 text-green-400" />
+                  <CheckCircle className="h-3.5 w-3.5 text-green-400" />
                 ) : (
-                  <Check className="h-3 w-3" />
+                  <ShieldCheck className="h-3.5 w-3.5" />
                 )}
                 {verifying ? t("verifyBtnVerifying") : verified ? t("verifyBtnVerified") : t("verifyBtnVerify")}
               </button>
