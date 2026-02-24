@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight, ScanSearch } from "lucide-react";
-import { BrowserFrame } from "./browser-frame";
+import Image from "next/image";
 
 export function HeroSection() {
   const t = useTranslations("marketing.landing");
@@ -40,9 +40,13 @@ export function HeroSection() {
       </div>
 
       <div className="mt-16">
-        <BrowserFrame
-          imageSrc="/images/seo-audit-dashboard-screenshot.png"
-          imageAlt={t("title")}
+        <Image
+          src="/images/seo-audit-dashboard-screenshot.png"
+          alt={t("title")}
+          width={1920}
+          height={1080}
+          className="w-full"
+          priority
         />
       </div>
     </section>

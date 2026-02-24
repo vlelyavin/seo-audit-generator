@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight, Zap } from "lucide-react";
-import { BrowserFrame } from "./browser-frame";
+import Image from "next/image";
 
 export function IndexingHeroSection() {
   const t = useTranslations("marketing.indexingLanding.hero");
@@ -40,9 +40,13 @@ export function IndexingHeroSection() {
       </div>
 
       <div className="mt-16">
-        <BrowserFrame
-          imageSrc="/images/indexing-dashboard-screenshot.png"
-          imageAlt={t("title")}
+        <Image
+          src="/images/indexing-dashboard-screenshot.png"
+          alt={t("title")}
+          width={1920}
+          height={1080}
+          className="w-full"
+          priority
         />
       </div>
     </section>
