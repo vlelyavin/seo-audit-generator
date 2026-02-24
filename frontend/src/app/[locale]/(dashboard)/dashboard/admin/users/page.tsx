@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { Shield, ChevronDown } from "lucide-react";
 import { cn, formatDate } from "@/lib/utils";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 interface UserRow {
   id: string;
@@ -20,6 +21,7 @@ export default function AdminUsersPage() {
   const { data: session } = useSession();
   const t = useTranslations("admin");
   const tPlans = useTranslations("plans");
+  const tBreadcrumbs = useTranslations("breadcrumbs");
   const locale = useLocale();
   const [users, setUsers] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,6 +78,11 @@ export default function AdminUsersPage() {
 
   return (
     <div className="mx-auto max-w-[77rem]">
+      <Breadcrumbs items={[
+        { label: tBreadcrumbs("dashboard"), href: `/${locale}/dashboard` },
+        { label: tBreadcrumbs("admin"), href: `/${locale}/dashboard/admin` },
+        { label: tBreadcrumbs("users") },
+      ]} />
       <h1 className="mb-6 text-2xl font-bold text-white">
         {t("title")} ({users.length})
       </h1>

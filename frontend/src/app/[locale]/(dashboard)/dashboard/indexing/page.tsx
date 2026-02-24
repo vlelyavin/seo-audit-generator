@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import {
   Search,
   RefreshCw,
@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -253,6 +254,8 @@ function ourStatusColor(status: string, t?: ReturnType<typeof useTranslations<"i
 
 export default function IndexingPage() {
   const t = useTranslations("indexing");
+  const tBreadcrumbs = useTranslations("breadcrumbs");
+  const locale = useLocale();
 
   // GSC + sites state
   const [gscStatus, setGscStatus] = useState<GscStatus | null>(null);
@@ -685,7 +688,13 @@ export default function IndexingPage() {
         </div>
       )}
 
-      {/* Header */}
+      {/* Breadcrumbs + Header */}
+      <div>
+        <Breadcrumbs items={[
+          { label: tBreadcrumbs("dashboard"), href: `/${locale}/dashboard` },
+          { label: tBreadcrumbs("indexing") },
+        ]} />
+      </div>
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
 

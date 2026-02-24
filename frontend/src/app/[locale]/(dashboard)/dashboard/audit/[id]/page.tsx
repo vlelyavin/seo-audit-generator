@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useAuditProgress } from "@/hooks/use-audit-progress";
 import { AuditProgressView } from "@/components/audit/audit-progress";
 import { AuditResultsView } from "@/components/audit/audit-results";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import type { AuditResults } from "@/types/audit";
 
 export default function AuditPage({
@@ -25,6 +26,7 @@ export default function AuditPage({
   const [auditMeta, setAuditMeta] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState<string | null>(null);
+  const [auditUrl, setAuditUrl] = useState<string | null>(null);
 
   useEffect(() => {
     params.then(({ id }) => {
@@ -35,6 +37,7 @@ export default function AuditPage({
 
   const { progress, connected, done, error, isStalled } = useAuditProgress(fastApiId, auditId);
   const tAudit = useTranslations("audit");
+  const tBreadcrumbs = useTranslations("breadcrumbs");
 
   // Check if audit is in progress when opening without fastApiId
   useEffect(() => {
@@ -49,6 +52,7 @@ export default function AuditPage({
 
         const audit = await res.json();
         console.log('[Audit] Status check:', { status: audit.status, fastApiId: audit.fastApiId, startedAt: audit.startedAt });
+        if (audit.url) setAuditUrl(audit.url);
 
         // Determine if audit is in progress
         const isInProgress = ['crawling', 'analyzing', 'generating_report', 'screenshots'].includes(audit.status);
@@ -148,6 +152,7 @@ export default function AuditPage({
           if (!cancelled) {
             setResults(data.results);
             setAuditMeta(data);
+            if (data.url) setAuditUrl(data.url);
           }
         }
       } catch (err) {
@@ -190,6 +195,7 @@ export default function AuditPage({
           const data = await res.json();
           setResults(data.results);
           setAuditMeta(data);
+          if (data.url) setAuditUrl(data.url);
         }
       } catch (err) {
         console.error('[Audit] Failed to load cached results:', err);
@@ -200,22 +206,21 @@ export default function AuditPage({
     loadCached();
   }, [auditId, locale, fastApiId]);
 
-  // Breadcrumbs component
-  const Breadcrumbs = () => (
-    <nav className="mb-6 flex items-center gap-2 text-sm">
-      <Link href={`/${locale}/dashboard`} className="text-gray-400 hover:text-white transition-colors">
-        {tAudit("audits")}
-      </Link>
-      <span className="text-gray-600">/</span>
-      <span className="font-medium text-white">{tAudit("currentAudit")}</span>
-    </nav>
-  );
+  const breadcrumbLabel = auditUrl
+    ? `${tBreadcrumbs("audit")} ${auditUrl}`
+    : tBreadcrumbs("audit");
+
+  const breadcrumbItems = [
+    { label: tBreadcrumbs("dashboard"), href: `/${locale}/dashboard` },
+    { label: breadcrumbLabel },
+  ];
 
   // Still in progress - show progress if we have fastApiId and audit is not done yet
   if (fastApiId && !done) {
     return (
       <div>
-        <Breadcrumbs />
+        <Breadcrumbs items={breadcrumbItems} />
+        <h1 className="mb-6 text-2xl font-bold text-white">{breadcrumbLabel}</h1>
         {error && (
           <div className="mb-4 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
             <p className="text-yellow-500">{error}</p>
@@ -258,7 +263,8 @@ export default function AuditPage({
   if (results && auditMeta) {
     return (
       <div>
-        <Breadcrumbs />
+        <Breadcrumbs items={breadcrumbItems} />
+        <h1 className="mb-6 text-2xl font-bold text-white">{breadcrumbLabel}</h1>
         <AuditResultsView
           results={results}
           meta={auditMeta}

@@ -47,6 +47,16 @@
     "criticalLabel": "critical",
     "warningsLabel": "warnings"
   },
+  "breadcrumbs": {
+    "dashboard": "Dashboard",
+    "audit": "Audit",
+    "newAudit": "New Audit",
+    "indexing": "Indexing",
+    "plans": "Plans",
+    "settings": "Settings",
+    "admin": "Admin",
+    "users": "Users"
+  },
   "audit": {
     "title": "SEO Audit",
     "newAudit": "New Audit",

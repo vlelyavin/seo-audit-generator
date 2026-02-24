@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 export default function SettingsLayout({
   children,
@@ -11,6 +12,7 @@ export default function SettingsLayout({
   children: React.ReactNode;
 }) {
   const t = useTranslations("settings");
+  const tBreadcrumbs = useTranslations("breadcrumbs");
   const locale = useLocale();
   const pathname = usePathname();
 
@@ -23,9 +25,15 @@ export default function SettingsLayout({
 
   return (
     <div className="mx-auto max-w-[50rem] space-y-6 overflow-hidden">
-      <h1 className="text-2xl font-bold text-white">
-        {t("title")}
-      </h1>
+      <div>
+        <Breadcrumbs items={[
+          { label: tBreadcrumbs("dashboard"), href: `/${locale}/dashboard` },
+          { label: tBreadcrumbs("settings") },
+        ]} />
+        <h1 className="text-2xl font-bold text-white">
+          {t("title")}
+        </h1>
+      </div>
 
       <div className="flex gap-1 overflow-x-auto overflow-y-hidden border-b border-gray-800">
         {tabs.map((tab) => {

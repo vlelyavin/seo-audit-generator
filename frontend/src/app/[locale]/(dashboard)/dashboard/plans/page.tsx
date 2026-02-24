@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Check, Loader2, Zap, Rocket, Building2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import type { Plan } from "@/types/plan";
 
 export default function PlansPage() {
   const t = useTranslations("plans");
+  const tBreadcrumbs = useTranslations("breadcrumbs");
+  const locale = useLocale();
   const { data: session, update } = useSession();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,6 +69,10 @@ export default function PlansPage() {
   return (
     <div className="mx-auto max-w-[77rem] space-y-6">
       <div>
+        <Breadcrumbs items={[
+          { label: tBreadcrumbs("dashboard"), href: `/${locale}/dashboard` },
+          { label: tBreadcrumbs("plans") },
+        ]} />
         <h1 className="text-2xl font-bold text-white">
           {t("title")}
         </h1>

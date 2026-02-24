@@ -47,6 +47,16 @@
     "criticalLabel": "критических",
     "warningsLabel": "предупреждений"
   },
+  "breadcrumbs": {
+    "dashboard": "Панель",
+    "audit": "Аудит",
+    "newAudit": "Новый аудит",
+    "indexing": "Индексация",
+    "plans": "Тарифы",
+    "settings": "Настройки",
+    "admin": "Админ",
+    "users": "Пользователи"
+  },
   "audit": {
     "title": "SEO Аудит",
     "newAudit": "Новый аудит",

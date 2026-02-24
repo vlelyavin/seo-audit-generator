@@ -8,11 +8,13 @@ import { Globe, Play, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { ANALYZER_NAMES, ANALYZER_LABELS } from "@/types/audit";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 const REAL_ANALYZER_NAMES = ANALYZER_NAMES.filter((n) => n !== "speed_screenshots");
 
 export default function NewAuditPage() {
   const t = useTranslations("audit");
+  const tBreadcrumbs = useTranslations("breadcrumbs");
   const locale = useLocale();
   const router = useRouter();
   const { data: session } = useSession();
@@ -105,6 +107,10 @@ export default function NewAuditPage() {
 
   return (
     <div className="mx-auto max-w-[50rem]">
+      <Breadcrumbs items={[
+        { label: tBreadcrumbs("dashboard"), href: `/${locale}/dashboard` },
+        { label: tBreadcrumbs("newAudit") },
+      ]} />
       <h1 className="mb-6 text-2xl font-bold text-white">
         {t("newAudit")}
       </h1>

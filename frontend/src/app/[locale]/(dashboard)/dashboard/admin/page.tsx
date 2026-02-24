@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { cn, formatDate } from "@/lib/utils";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 interface AdminUser {
   id: string;
@@ -51,6 +52,7 @@ export default function AdminDashboardPage() {
   const t = useTranslations("admin");
   const tCommon = useTranslations("common");
   const tPlans = useTranslations("plans");
+  const tBreadcrumbs = useTranslations("breadcrumbs");
   const locale = useLocale();
 
   const isAdmin = session?.user?.role === "admin";
@@ -284,7 +286,13 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="mx-auto max-w-[77rem] space-y-6">
-      <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+      <div>
+        <Breadcrumbs items={[
+          { label: tBreadcrumbs("dashboard"), href: `/${locale}/dashboard` },
+          { label: tBreadcrumbs("admin") },
+        ]} />
+        <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
+      </div>
 
       {/* Stats cards */}
       {stats && (

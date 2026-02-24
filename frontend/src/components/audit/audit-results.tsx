@@ -9,10 +9,8 @@ import {
   Download,
   Search,
   Filter,
-  ArrowLeft,
   Loader2,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { AnalyzerSection } from "./analyzer-section";
@@ -30,7 +28,6 @@ interface AuditResultsViewProps {
 type FilterMode = "all" | "error" | "warning" | "success";
 
 export function AuditResultsView({ results, meta, auditId }: AuditResultsViewProps) {
-  const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("audit");
   const { data: session } = useSession();
@@ -124,24 +121,15 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
 
   return (
     <div>
-      {/* Back button */}
-      <button
-        onClick={() => router.push(`/${locale}/dashboard`)}
-        className="mb-4 flex items-center gap-2 text-sm text-gray-400 hover:text-white"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        {t("backToDashboard")}
-      </button>
-
       <div className="flex gap-6">
         {/* Left sidebar nav */}
         <aside className="hidden w-56 shrink-0 xl:block">
-        <div className="sticky top-20 space-y-1">
+        <div className="sticky top-0 space-y-1">
           {Object.entries(results).map(([name, result]) => (
             <button
               key={name}
               onClick={() => scrollTo(name)}
-              className="flex w-full items-center gap-2 rounded-lg px-2 py-[calc(var(--spacing)*0.8)] text-left text-sm text-gray-300 hover:bg-gray-800"
+              className="flex w-full items-center gap-2 rounded-lg px-2 py-[calc(var(--spacing)*1)] text-left text-sm text-gray-300 hover:bg-gray-800"
             >
               <span
                 className={cn(
