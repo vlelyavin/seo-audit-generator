@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ScanSearch } from "lucide-react";
 import { BrowserFrame } from "./browser-frame";
 
 export function HeroSection() {
@@ -27,7 +27,7 @@ export function HeroSection() {
             href={`/${locale}/dashboard/audit/new`}
             className="inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-8 py-3.5 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
-            <ArrowRight className="h-4 w-4" />
+            <ScanSearch className="h-4 w-4" />
             {t("cta")}
           </Link>
           <Link
