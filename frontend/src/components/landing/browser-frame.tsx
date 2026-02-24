@@ -8,7 +8,7 @@ interface BrowserFrameProps {
 export function BrowserFrame({ imageSrc, imageAlt }: BrowserFrameProps) {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-800 bg-gray-950 shadow-2xl">
-      <div className="flex items-center gap-2 border-b border-gray-800 bg-gray-900 px-4 py-3">
+      <div className="flex items-center gap-2 border-b border-gray-800 bg-black px-4 py-3">
         <span className="h-3 w-3 rounded-full bg-red-500" />
         <span className="h-3 w-3 rounded-full bg-yellow-500" />
         <span className="h-3 w-3 rounded-full bg-green-500" />

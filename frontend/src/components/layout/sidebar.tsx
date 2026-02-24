@@ -111,8 +111,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-gray-800 text-white"
-                  : "text-gray-300 hover:bg-gray-800"
+                  ? "bg-gray-900 text-white"
+                  : "text-gray-300 hover:bg-gray-900"
               )}
             >
               <item.icon className="h-4 w-4" />
@@ -137,8 +137,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     isActive
-                      ? "bg-gray-800 text-white"
-                      : "text-gray-300 hover:bg-gray-800"
+                      ? "bg-gray-900 text-white"
+                      : "text-gray-300 hover:bg-gray-900"
                   )}
                 >
                   <item.icon className="h-4 w-4" />
@@ -155,7 +155,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           <Link
             href={`/${locale}/dashboard/plans`}
             onClick={closeOnMobile}
-            className="block rounded-lg bg-gray-900 p-3 transition-colors hover:bg-gray-800"
+            className="block rounded-lg bg-black p-3 transition-colors hover:bg-gray-900"
           >
             <p className="text-xs font-medium text-gray-400">
               {t("currentPlan")}

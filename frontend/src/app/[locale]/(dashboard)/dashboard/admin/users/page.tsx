@@ -90,7 +90,7 @@ export default function AdminUsersPage() {
       <div className="overflow-x-auto rounded-xl border border-gray-800">
         <table className="w-full text-sm">
           <thead className="sticky top-0 z-10">
-            <tr className="border-b border-gray-700 bg-gray-800">
+            <tr className="border-b border-gray-700 bg-gray-900">
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t("email")}</th>
               <th className="hidden sm:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500">{t("name")}</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">{t("role")}</th>
@@ -101,14 +101,14 @@ export default function AdminUsersPage() {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="border-b border-gray-700 hover:bg-gray-800/50">
+              <tr key={user.id} className="border-b border-gray-700 hover:bg-gray-900/50">
                 <td className="px-4 py-2 text-white truncate max-w-[200px]">{user.email}</td>
                 <td className="hidden sm:table-cell px-4 py-2 text-gray-400">{user.name || "—"}</td>
                 <td className="px-4 py-2">
                   <select
                     value={user.role}
                     onChange={(e) => updateUser(user.id, { role: e.target.value })}
-                    className="rounded border border-gray-600 bg-gray-800 px-1.5 py-1.5 text-base md:text-xs text-gray-300"
+                    className="rounded border border-gray-600 bg-gray-900 px-1.5 py-1.5 text-base md:text-xs text-gray-300"
                   >
                     <option value="user">{t("roleUser")}</option>
                     <option value="admin">{t("roleAdmin")}</option>
@@ -118,7 +118,7 @@ export default function AdminUsersPage() {
                   <select
                     value={user.planId}
                     onChange={(e) => updateUser(user.id, { planId: e.target.value })}
-                    className="rounded border border-gray-600 bg-gray-800 px-1.5 py-1.5 text-base md:text-xs text-gray-300"
+                    className="rounded border border-gray-600 bg-gray-900 px-1.5 py-1.5 text-base md:text-xs text-gray-300"
                   >
                     <option value="free">{tPlans("free")}</option>
                     <option value="pro">{tPlans("pro")}</option>

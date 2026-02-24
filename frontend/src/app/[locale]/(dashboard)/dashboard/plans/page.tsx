@@ -133,7 +133,7 @@ export default function PlansPage() {
                   ? "border-copper/50 bg-gray-950"
                   : isAgency
                   ? "border-copper/30 bg-gray-950"
-                  : "border-gray-800 bg-gray-900"
+                  : "border-gray-800 bg-black"
               )}
             >
               {isCurrent && (
@@ -186,10 +186,10 @@ export default function PlansPage() {
                 className={cn(
                   "mt-auto flex w-full items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-opacity",
                   isCurrent
-                    ? "cursor-not-allowed bg-gray-800 text-gray-500"
+                    ? "cursor-not-allowed bg-gray-900 text-gray-500"
                     : isAgency
                     ? "bg-gradient-to-r from-copper to-copper-light text-white hover:opacity-90"
-                    : "border border-gray-700 text-white hover:bg-gray-800"
+                    : "border border-gray-700 text-white hover:bg-gray-900"
                 )}
               >
                 {isSwitching ? (
@@ -221,7 +221,7 @@ export default function PlansPage() {
         })}
       </div>
 
-      <div className="rounded-lg border border-gray-800 bg-gray-900 p-4">
+      <div className="rounded-lg border border-gray-800 bg-black p-4">
         <p className="text-sm text-gray-400">
           {t("noBilling")}
         </p>

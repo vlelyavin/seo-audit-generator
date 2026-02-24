@@ -165,7 +165,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent audits */}
-      <div className="rounded-xl border border-gray-800 bg-gray-900">
+      <div className="rounded-xl border border-gray-800 bg-black">
         <div className="border-b border-gray-800 p-4">
           <h2 className="text-lg font-semibold text-white">
             {t("recentAudits")}
@@ -194,7 +194,7 @@ export default function DashboardPage() {
             {audits.map((audit) => (
               <div
                 key={audit.id}
-                className="group relative flex items-center gap-2 px-3 py-2 sm:gap-4 sm:px-4 sm:py-3 hover:bg-gray-800/50 transition-colors"
+                className="group relative flex items-center gap-2 px-3 py-2 sm:gap-4 sm:px-4 sm:py-3 hover:bg-gray-900/50 transition-colors"
               >
                 <Link
                   href={`/${locale}/dashboard/audit/${audit.id}`}
@@ -320,14 +320,14 @@ function StatCard({
   color: "gray" | "green" | "yellow" | "red";
 }) {
   const colorClasses = {
-    gray: "bg-gray-800 text-white",
+    gray: "bg-gray-900 text-white",
     green: "bg-green-900/20 text-green-400",
     yellow: "bg-yellow-900/20 text-yellow-400",
     red: "bg-red-900/20 text-red-400",
   };
 
   return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
+    <div className="rounded-xl border border-gray-800 bg-black p-4">
       <div className="flex items-center gap-3">
         <div className={cn("rounded-lg p-2", colorClasses[color])}>
           <Icon className="h-5 w-5" />

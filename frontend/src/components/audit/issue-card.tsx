@@ -23,7 +23,7 @@ export function IssueCard({ issue }: IssueCardProps) {
         onClick={() => hasDetails && setExpanded(!expanded)}
         className={cn(
           "flex w-full items-center gap-2 px-3 py-2 text-left text-sm",
-          hasDetails && "cursor-pointer hover:bg-gray-800/50"
+          hasDetails && "cursor-pointer hover:bg-gray-900/50"
         )}
       >
         <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", {
@@ -36,7 +36,7 @@ export function IssueCard({ issue }: IssueCardProps) {
           {issue.message}
         </span>
         {issue.count > 1 && (
-          <span className="shrink-0 rounded-full border border-gray-700 bg-gray-800 px-1.5 py-0.5 text-xs text-gray-400">
+          <span className="shrink-0 rounded-full border border-gray-700 bg-gray-900 px-1.5 py-0.5 text-xs text-gray-400">
             {issue.count}
           </span>
         )}
@@ -58,7 +58,7 @@ export function IssueCard({ issue }: IssueCardProps) {
           )}
 
           {issue.recommendation && (
-            <div className="mb-2 rounded border border-gray-700 bg-gray-800 px-2 py-1.5 text-xs text-gray-200">
+            <div className="mb-2 rounded border border-gray-700 bg-gray-900 px-2 py-1.5 text-xs text-gray-200">
               <span className="font-medium">{t("recommendation")} </span>
               {issue.recommendation}
             </div>

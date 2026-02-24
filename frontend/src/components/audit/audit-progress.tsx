@@ -52,7 +52,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
 
   return (
     <div className="mx-auto max-w-xl py-6 sm:py-16">
-      <div className="rounded-xl border border-gray-800 bg-gray-900 p-4 sm:p-8">
+      <div className="rounded-xl border border-gray-800 bg-black p-4 sm:p-8">
         <div className="mb-6 flex items-center justify-center">
           <Loader2 className="h-10 w-10 animate-spin text-copper" />
         </div>
@@ -91,8 +91,8 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
                     isPast
                       ? "bg-green-900/30 text-green-400"
                       : isActive
-                        ? "bg-gray-800 text-white"
-                        : "bg-gray-800 text-gray-400"
+                        ? "bg-gray-900 text-white"
+                        : "bg-gray-900 text-gray-400"
                   }`}
                 >
                   {isPast ? "\u2713" : i + 1}
@@ -113,7 +113,7 @@ export function AuditProgressView({ progress }: AuditProgressViewProps) {
 
         {/* Current URL */}
         {progress?.current_url && (
-          <div className="mt-4 overflow-hidden text-ellipsis whitespace-nowrap rounded-lg bg-gray-800 px-3 py-2 text-xs text-gray-400">
+          <div className="mt-4 overflow-hidden text-ellipsis whitespace-nowrap rounded-lg bg-gray-900 px-3 py-2 text-xs text-gray-400">
             {progress.current_url}
           </div>
         )}

@@ -111,7 +111,7 @@ export function PricingSection() {
                     "mt-8 flex items-center justify-center gap-2 rounded-md px-4 py-3.5 text-center text-sm font-semibold transition-opacity",
                     isAgency
                       ? "bg-gradient-to-r from-copper to-copper-light text-white hover:opacity-90"
-                      : "border border-gray-700 text-white hover:bg-gray-900"
+                      : "border border-gray-700 text-white hover:bg-black"
                   )}
                 >
                   <ArrowRight className="h-4 w-4" />

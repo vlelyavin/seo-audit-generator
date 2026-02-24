@@ -43,13 +43,13 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       {message && (
-        <div className="rounded-lg border border-gray-800 bg-gray-900 px-4 py-2 text-sm text-gray-300">
+        <div className="rounded-lg border border-gray-800 bg-black px-4 py-2 text-sm text-gray-300">
           {message}
         </div>
       )}
 
       {/* Profile */}
-      <form onSubmit={handleSaveProfile} className="rounded-xl border border-gray-800 bg-gray-900 p-6">
+      <form onSubmit={handleSaveProfile} className="rounded-xl border border-gray-800 bg-black p-6">
         <h2 className="mb-4 text-lg font-semibold text-white">
           {t("profile")}
         </h2>
@@ -62,7 +62,7 @@ export default function SettingsPage() {
             type="email"
             value={session?.user?.email || ""}
             disabled
-            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-base md:text-sm text-gray-500"
+            className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-base md:text-sm text-gray-500"
           />
         </div>
 
@@ -74,7 +74,7 @@ export default function SettingsPage() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-base md:text-sm text-white outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
+            className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-base md:text-sm text-white outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
           />
         </div>
 

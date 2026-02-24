@@ -181,7 +181,7 @@ function gscStatusColor(
 ): { bg: string; text: string; label: string } {
   const l = (key: string, fallback: string) => t ? t(key as Parameters<typeof t>[0]) : fallback;
   if (!status)
-    return { bg: "bg-gray-800", text: "text-gray-400", label: l("statusUnknown", "Unknown") };
+    return { bg: "bg-gray-900", text: "text-gray-400", label: l("statusUnknown", "Unknown") };
   const s = status.toLowerCase();
   if (s.includes("submitted and indexed") || s === "indexed")
     return { bg: "bg-green-900/20", text: "text-green-400", label: l("statusIndexed", "Indexed") };
@@ -211,7 +211,7 @@ function gscStatusColor(
       text: "text-yellow-400",
       label: l("statusRedirect", "Redirect"),
     };
-  return { bg: "bg-gray-800", text: "text-gray-400", label: l("statusUnknown", "Unknown") };
+  return { bg: "bg-gray-900", text: "text-gray-400", label: l("statusUnknown", "Unknown") };
 }
 
 function ourStatusColor(status: string, t?: ReturnType<typeof useTranslations<"indexing">>): {
@@ -243,7 +243,7 @@ function ourStatusColor(status: string, t?: ReturnType<typeof useTranslations<"i
       };
     default:
       return {
-        bg: "bg-gray-800",
+        bg: "bg-gray-900",
         text: "text-gray-500",
         label: l("notSubmitted", "Not submitted"),
       };
@@ -707,7 +707,7 @@ export default function IndexingPage() {
                 ? "border-red-800 bg-red-900/20 text-red-400"
                 : creditsLow
                   ? "border-orange-800 bg-orange-900/20 text-orange-400"
-                  : "border-gray-700 bg-gray-900 text-gray-300"
+                  : "border-gray-700 bg-black text-gray-300"
             )}
           >
             <CreditCard className="h-4 w-4" />
@@ -720,7 +720,7 @@ export default function IndexingPage() {
       </div>
 
       {/* GSC Connection Card */}
-      <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
+      <div className="rounded-xl border border-gray-800 bg-black p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold text-white">
@@ -814,7 +814,7 @@ export default function IndexingPage() {
           <h2 className="text-lg font-semibold text-white">{t("sites")}</h2>
 
           {sites.length === 0 ? (
-            <div className="rounded-xl border border-gray-800 bg-gray-900 p-10 text-center">
+            <div className="rounded-xl border border-gray-800 bg-black p-10 text-center">
               <Search className="mx-auto h-10 w-10 text-gray-600 mb-3" />
               <p className="text-gray-400 text-sm">{t("noSites")}</p>
               <p className="text-gray-600 text-xs mt-1">
@@ -859,11 +859,11 @@ export default function IndexingPage() {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setShowCreditModal(false)}
           />
-          <div className="relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-gray-800 bg-gray-900 p-6 shadow-xl">
+          <div className="relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
             {/* Close button */}
             <button
               onClick={() => setShowCreditModal(false)}
-              className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-800 hover:text-gray-200 transition-colors"
+              className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
@@ -925,12 +925,12 @@ export default function IndexingPage() {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => !submitting && setConfirmState(null)}
           />
-          <div className="relative z-10 w-full max-w-sm rounded-xl border border-gray-800 bg-gray-900 p-6 shadow-xl">
+          <div className="relative z-10 w-full max-w-sm rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
             {/* Close button */}
             <button
               onClick={() => !submitting && setConfirmState(null)}
               disabled={submitting}
-              className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-800 hover:text-gray-200 disabled:opacity-50 transition-colors"
+              className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-900 hover:text-gray-200 disabled:opacity-50 transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
@@ -969,7 +969,7 @@ export default function IndexingPage() {
               <button
                 onClick={() => setConfirmState(null)}
                 disabled={submitting}
-                className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-sm font-semibold text-gray-300 transition-colors hover:bg-gray-800 disabled:opacity-50"
+                className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-sm font-semibold text-gray-300 transition-colors hover:bg-gray-900 disabled:opacity-50"
               >
                 {t("cancel")}
               </button>
@@ -985,12 +985,12 @@ export default function IndexingPage() {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => !disconnectMode && setShowDisconnectModal(false)}
           />
-          <div className="relative z-10 w-full max-w-md rounded-xl border border-gray-800 bg-gray-900 p-6 shadow-xl">
+          <div className="relative z-10 w-full max-w-md rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
             {/* Close button */}
             <button
               onClick={() => !disconnectMode && setShowDisconnectModal(false)}
               disabled={!!disconnectMode}
-              className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-800 hover:text-gray-200 transition-colors disabled:opacity-50"
+              className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-colors disabled:opacity-50"
             >
               <X className="h-4 w-4" />
             </button>
@@ -1375,11 +1375,11 @@ function SiteCard({
   ];
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-800 bg-gray-900">
+    <div className="overflow-hidden rounded-xl border border-gray-800 bg-black">
       {/* Header row */}
       <button
         onClick={onToggle}
-        className="flex w-full items-center justify-between px-3 sm:px-6 py-4 text-left hover:bg-gray-800/50 transition-colors"
+        className="flex w-full items-center justify-between px-3 sm:px-6 py-4 text-left hover:bg-gray-900/50 transition-colors"
       >
         <div className="flex items-center gap-3">
           <Search className="h-5 w-5 text-copper shrink-0" />
@@ -1487,7 +1487,7 @@ function SiteCard({
                 <button
                   onClick={onSyncUrls}
                   disabled={syncingUrls}
-                  className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+                  className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-900 disabled:opacity-50"
                 >
                   <RefreshCw
                     className={cn(
@@ -1524,7 +1524,7 @@ function SiteCard({
                       )
                     }
                     disabled={!stats?.notIndexed}
-                    className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+                    className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-900 disabled:opacity-50"
                   >
                     {t("submitAllNotIndexed")} (Bing)
                   </button>
@@ -1534,7 +1534,7 @@ function SiteCard({
                   <button
                     onClick={onRunNow}
                     disabled={running}
-                    className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+                    className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-900 disabled:opacity-50"
                   >
                     {running ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -1666,7 +1666,7 @@ function SiteCard({
                         "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
                         urlFilter === f.id
                           ? "bg-gradient-to-r from-copper to-copper-light text-white"
-                          : "bg-gray-800 text-gray-400 hover:text-white"
+                          : "bg-gray-900 text-gray-400 hover:text-white"
                       )}
                     >
                       {f.label}
@@ -1679,11 +1679,11 @@ function SiteCard({
                     value={urlSearch}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     placeholder={t("searchUrls")}
-                    className="flex-1 min-w-0 rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-base md:text-xs text-white placeholder-gray-500 outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
+                    className="flex-1 min-w-0 rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-base md:text-xs text-white placeholder-gray-500 outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
                   />
                   <button
                     onClick={() => loadUrls(urlFilter, urlCurrentPage, urlSearch)}
-                    className="shrink-0 rounded-md border border-gray-700 p-2 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+                    className="shrink-0 rounded-md border border-gray-700 p-2 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors"
                   >
                     <RefreshCw className="h-3.5 w-3.5" />
                   </button>
@@ -1692,7 +1692,7 @@ function SiteCard({
 
               {/* Bulk action bar */}
               {selectedUrls.size > 0 && (
-                <div className="flex flex-wrap items-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-4 py-2.5">
+                <div className="flex flex-wrap items-center gap-2 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5">
                   <span className="text-sm text-gray-300 mr-1">
                     {t("selectedCount", { count: selectedUrls.size })}
                   </span>
@@ -1815,7 +1815,7 @@ function SiteCard({
                                 onClick={() => inspectUrl(url.url)}
                                 disabled={isInspecting || !gscConnected}
                                 title={!gscConnected ? t("reconnectRequired") : t("inspect")}
-                                className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-700 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white disabled:opacity-50"
+                                className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-700 text-gray-400 transition-colors hover:bg-gray-900 hover:text-white disabled:opacity-50"
                               >
                                 {isInspecting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Search className="h-3.5 w-3.5" />}
                               </button>
@@ -1831,7 +1831,7 @@ function SiteCard({
                                 <button
                                   onClick={() => bingSubmit(() => onRequestSubmit(site.id, [url.id], ["bing"], 1))}
                                   title={t("submitToBing")}
-                                  className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-700 text-xs font-semibold text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+                                  className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-700 text-xs font-semibold text-gray-400 transition-colors hover:bg-gray-900 hover:text-white"
                                 >
                                   B
                                 </button>
@@ -1888,7 +1888,7 @@ function SiteCard({
                           return (
                             <tr
                               key={url.id}
-                              className="hover:bg-gray-800/50 transition-colors"
+                              className="hover:bg-gray-900/50 transition-colors"
                             >
                               <td className="px-3 py-3">
                                 <Checkbox
@@ -1970,7 +1970,7 @@ function SiteCard({
                                     onClick={() => inspectUrl(url.url)}
                                     disabled={isInspecting || !gscConnected}
                                     title={!gscConnected ? t("reconnectRequired") : t("inspect")}
-                                    className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-700 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white disabled:opacity-50"
+                                    className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-700 text-gray-400 transition-colors hover:bg-gray-900 hover:text-white disabled:opacity-50"
                                   >
                                     {isInspecting ? (
                                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -2004,7 +2004,7 @@ function SiteCard({
                                         )
                                       }
                                       title={t("submitToBing")}
-                                      className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-700 text-xs font-semibold text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+                                      className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-700 text-xs font-semibold text-gray-400 transition-colors hover:bg-gray-900 hover:text-white"
                                     >
                                       B
                                     </button>
@@ -2050,7 +2050,7 @@ function SiteCard({
                             setUrlCurrentPage((p) => Math.max(1, p - 1));
                           }}
                           disabled={urlCurrentPage <= 1}
-                          className="flex items-center gap-1 rounded-md border border-gray-700 px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-40"
+                          className="flex items-center gap-1 rounded-md border border-gray-700 px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-gray-900 disabled:opacity-40"
                         >
                           <ChevronLeft className="h-3 w-3" />
                           {t("prevPage")}
@@ -2062,7 +2062,7 @@ function SiteCard({
                             );
                           }}
                           disabled={urlCurrentPage >= urlPage.totalPages}
-                          className="flex items-center gap-1 rounded-md border border-gray-700 px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-40"
+                          className="flex items-center gap-1 rounded-md border border-gray-700 px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-gray-900 disabled:opacity-40"
                         >
                           {t("nextPage")}
                           <ChevronRight className="h-3 w-3" />
@@ -2093,7 +2093,7 @@ function SiteCard({
                         "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
                         logFilter === f.id
                           ? "bg-gradient-to-r from-copper to-copper-light text-white"
-                          : "bg-gray-800 text-gray-400 hover:text-white"
+                          : "bg-gray-900 text-gray-400 hover:text-white"
                       )}
                     >
                       {f.label}
@@ -2105,7 +2105,7 @@ function SiteCard({
                     setLogPage(null);
                     loadLog(logFilter, logCurrentPage);
                   }}
-                  className="rounded-md border border-gray-700 px-2 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+                  className="rounded-md border border-gray-700 px-2 text-gray-400 hover:bg-gray-900 hover:text-white transition-colors"
                 >
                   <RefreshCw className="h-3.5 w-3.5" />
                 </button>
@@ -2134,7 +2134,7 @@ function SiteCard({
                       return (
                         <div
                           key={entry.id}
-                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-800/40 transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-gray-900/40 transition-colors"
                         >
                           {/* Colored dot */}
                           <span className={cn("h-2 w-2 shrink-0 rounded-full", dot)} />
@@ -2186,7 +2186,7 @@ function SiteCard({
                         <button
                           onClick={() => setLogCurrentPage((p) => Math.max(1, p - 1))}
                           disabled={logCurrentPage <= 1}
-                          className="flex items-center gap-1 rounded-md border border-gray-700 px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-40"
+                          className="flex items-center gap-1 rounded-md border border-gray-700 px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-gray-900 disabled:opacity-40"
                         >
                           <ChevronLeft className="h-3 w-3" />
                           {t("prevPage")}
@@ -2196,7 +2196,7 @@ function SiteCard({
                             setLogCurrentPage((p) => Math.min(logPage.totalPages, p + 1))
                           }
                           disabled={logCurrentPage >= logPage.totalPages}
-                          className="flex items-center gap-1 rounded-md border border-gray-700 px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-gray-800 disabled:opacity-40"
+                          className="flex items-center gap-1 rounded-md border border-gray-700 px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-gray-900 disabled:opacity-40"
                         >
                           {t("nextPage")}
                           <ChevronRight className="h-3 w-3" />
@@ -2241,7 +2241,7 @@ function SiteCard({
                       })}
                     </p>
                     {report.overall.total > 0 && (
-                      <div className="h-2 w-full rounded-full bg-gray-800">
+                      <div className="h-2 w-full rounded-full bg-gray-900">
                         <div
                           className="h-2 rounded-full bg-gradient-to-r from-copper to-copper-light transition-all"
                           style={{
@@ -2373,7 +2373,7 @@ function GscStatusBadge({
         >
           <Info className="h-3.5 w-3.5" />
           {showTip && (
-            <div className="absolute bottom-full left-0 mb-2 w-56 rounded-lg border border-gray-800 bg-gray-900 p-2.5 text-xs text-gray-300 shadow-xl z-10 text-left">
+            <div className="absolute bottom-full left-0 mb-2 w-56 rounded-lg border border-gray-800 bg-black p-2.5 text-xs text-gray-300 shadow-xl z-10 text-left">
               {tip}
             </div>
           )}
@@ -2556,7 +2556,7 @@ function QuotaBar({
           <span>{limitLabel ?? `${limit} limit`}</span>
         </div>
       )}
-      <div className="h-1.5 w-full rounded-full bg-gray-800">
+      <div className="h-1.5 w-full rounded-full bg-gray-900">
         <div
           className={cn(
             "h-1.5 rounded-full transition-all",
@@ -2623,7 +2623,7 @@ function Toggle({
             <Info className="h-3.5 w-3.5" />
           </button>
           {showTooltip && (
-            <div className="absolute bottom-full left-0 mb-2 w-64 rounded-lg border border-gray-800 bg-gray-900 p-2.5 text-xs text-gray-300 shadow-xl z-10">
+            <div className="absolute bottom-full left-0 mb-2 w-64 rounded-lg border border-gray-800 bg-black p-2.5 text-xs text-gray-300 shadow-xl z-10">
               {tooltip}
             </div>
           )}
@@ -2681,11 +2681,11 @@ function IndexNowVerifyModal({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div className="relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-800 hover:text-gray-200 transition-colors"
+          className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-colors"
         >
           <X className="h-4 w-4" />
         </button>
@@ -2711,7 +2711,7 @@ function IndexNowVerifyModal({
             <a
               href={`/api/indexing/sites/${site.id}/download-key`}
               download
-              className="inline-flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-1.5 text-xs font-medium text-gray-300 transition-colors hover:bg-gray-800"
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-1.5 text-xs font-medium text-gray-300 transition-colors hover:bg-gray-900"
             >
               <Download className="h-3.5 w-3.5" />
               {t("downloadKeyFile")}
@@ -2737,7 +2737,7 @@ function IndexNowVerifyModal({
               <button
                 onClick={verify}
                 disabled={verifying || verified}
-                className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-1.5 text-xs font-medium text-gray-300 transition-colors hover:bg-gray-800 disabled:opacity-50"
+                className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-1.5 text-xs font-medium text-gray-300 transition-colors hover:bg-gray-900 disabled:opacity-50"
               >
                 {verifying ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -2772,7 +2772,7 @@ function IndexNowVerifyModal({
           </button>
           <button
             onClick={onClose}
-            className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-sm font-semibold text-gray-300 transition-colors hover:bg-gray-800"
+            className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-sm font-semibold text-gray-300 transition-colors hover:bg-gray-900"
           >
             {t("cancel")}
           </button>

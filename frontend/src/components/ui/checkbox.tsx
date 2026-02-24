@@ -29,7 +29,7 @@ export function Checkbox({ checked, onChange, className, disabled }: CheckboxPro
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-copper/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900",
         checked
           ? "border-copper bg-gradient-to-r from-copper to-copper-light"
-          : "border-gray-600 bg-gray-800 hover:border-gray-500",
+          : "border-gray-600 bg-gray-900 hover:border-gray-500",
         disabled && "cursor-not-allowed opacity-50",
         className
       )}

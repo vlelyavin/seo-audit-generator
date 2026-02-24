@@ -47,12 +47,12 @@ export function ConfirmDialog({
       />
 
       {/* Dialog */}
-      <div className="relative z-10 mx-5 w-full max-w-md rounded-xl border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div className="relative z-10 mx-5 w-full max-w-md rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
         {/* Close button */}
         <button
           onClick={onClose}
           disabled={loading}
-          className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-800 hover:text-gray-200 disabled:opacity-50"
+          className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-900 hover:text-gray-200 disabled:opacity-50"
         >
           <X className="h-4 w-4" />
         </button>
@@ -77,7 +77,7 @@ export function ConfirmDialog({
           <button
             onClick={onClose}
             disabled={loading}
-            className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+            className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900 disabled:opacity-50"
           >
             {cancelText}
           </button>

@@ -325,7 +325,7 @@ export default function AdminDashboardPage() {
       )}
 
       {/* User management */}
-      <div className="rounded-xl border border-gray-800 bg-gray-900">
+      <div className="rounded-xl border border-gray-800 bg-black">
         <div className="border-b border-gray-800 p-4">
           <h2 className="text-lg font-semibold text-white">
             {t("userManagement")} ({total})
@@ -340,7 +340,7 @@ export default function AdminDashboardPage() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder={t("searchByEmail")}
-                className="w-full rounded-lg border border-gray-700 bg-gray-800 py-2 pl-9 pr-3 text-base md:text-sm text-white placeholder-gray-500 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
+                className="w-full rounded-lg border border-gray-700 bg-gray-900 py-2 pl-9 pr-3 text-base md:text-sm text-white placeholder-gray-500 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
               />
             </div>
             <select
@@ -349,7 +349,7 @@ export default function AdminDashboardPage() {
                 setPlanFilter(e.target.value);
                 setPage(1);
               }}
-              className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-base md:text-sm text-gray-300 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
+              className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-base md:text-sm text-gray-300 focus:border-copper focus:outline-none focus:ring-2 focus:ring-copper/20"
             >
               <option value="">{t("allPlans")}</option>
               <option value="free">{tPlans("free")}</option>
@@ -363,7 +363,7 @@ export default function AdminDashboardPage() {
         <div className="overflow-x-auto pb-4">
           <table className="w-full text-sm">
             <thead className="sticky top-0 z-10">
-              <tr className="border-b border-gray-700 bg-gray-800">
+              <tr className="border-b border-gray-700 bg-gray-900">
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">
                   {t("email")}
                 </th>
@@ -414,7 +414,7 @@ export default function AdminDashboardPage() {
                 users.map((user) => (
                   <tr
                     key={user.id}
-                    className="border-b border-gray-700 last:border-b-0 hover:bg-gray-800/50"
+                    className="border-b border-gray-700 last:border-b-0 hover:bg-gray-900/50"
                   >
                     {/* Email */}
                     <td className="px-4 py-2">
@@ -438,7 +438,7 @@ export default function AdminDashboardPage() {
                         onChange={(e) =>
                           handlePlanChange(user.id, e.target.value)
                         }
-                        className="rounded border border-gray-600 bg-gray-800 px-1.5 py-0.5 text-xs text-gray-300"
+                        className="rounded border border-gray-600 bg-gray-900 px-1.5 py-0.5 text-xs text-gray-300"
                       >
                         <option value="free">{tPlans("free")}</option>
                         <option value="pro">{tPlans("pro")}</option>
@@ -461,7 +461,7 @@ export default function AdminDashboardPage() {
                               if (e.key === "Escape")
                                 setEditingCredits(null);
                             }}
-                            className="w-20 rounded border border-gray-600 bg-gray-800 px-2 py-0.5 text-base md:text-xs text-white"
+                            className="w-20 rounded border border-gray-600 bg-gray-900 px-2 py-0.5 text-base md:text-xs text-white"
                             autoFocus
                           />
                           <button
@@ -472,7 +472,7 @@ export default function AdminDashboardPage() {
                           </button>
                           <button
                             onClick={() => setEditingCredits(null)}
-                            className="rounded p-0.5 text-gray-400 hover:bg-gray-800"
+                            className="rounded p-0.5 text-gray-400 hover:bg-gray-900"
                           >
                             <X className="h-3.5 w-3.5" />
                           </button>
@@ -510,7 +510,7 @@ export default function AdminDashboardPage() {
                           "inline-flex rounded-full px-2 py-0.5 text-[11px] font-medium",
                           user.gscConnected
                             ? "bg-green-900/20 text-green-400"
-                            : "bg-gray-800 text-gray-500"
+                            : "bg-gray-900 text-gray-500"
                         )}
                       >
                         {user.gscConnected ? t("yes") : t("no")}
@@ -544,7 +544,7 @@ export default function AdminDashboardPage() {
                               setActionMenu(user.id);
                             }
                           }}
-                          className="rounded-md p-2.5 text-gray-400 hover:bg-gray-800 hover:text-gray-200"
+                          className="rounded-md p-2.5 text-gray-400 hover:bg-gray-900 hover:text-gray-200"
                         >
                           <MoreHorizontal className="h-4 w-4" />
                         </button>
@@ -565,7 +565,7 @@ export default function AdminDashboardPage() {
                             {/* Menu */}
                             <div
                               className={cn(
-                                "fixed z-50 border-gray-700 bg-gray-800 shadow-xl",
+                                "fixed z-50 border-gray-700 bg-gray-900 shadow-xl",
                                 menuPosition
                                   ? "w-48 rounded-lg border py-1"
                                   : "inset-x-0 bottom-0 rounded-t-xl border-t p-4"
@@ -698,14 +698,14 @@ export default function AdminDashboardPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="rounded-md border border-gray-700 px-3 py-1 text-xs text-gray-300 hover:bg-gray-800 disabled:opacity-40"
+                className="rounded-md border border-gray-700 px-3 py-1 text-xs text-gray-300 hover:bg-gray-900 disabled:opacity-40"
               >
                 {t("prev")}
               </button>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="rounded-md border border-gray-700 px-3 py-1 text-xs text-gray-300 hover:bg-gray-800 disabled:opacity-40"
+                className="rounded-md border border-gray-700 px-3 py-1 text-xs text-gray-300 hover:bg-gray-900 disabled:opacity-40"
               >
                 {t("next")}
               </button>
@@ -747,14 +747,14 @@ function StatCard({
   color: "gray" | "green" | "yellow" | "red";
 }) {
   const colorClasses = {
-    gray: "bg-gray-800 text-white",
+    gray: "bg-gray-900 text-white",
     green: "bg-green-900/20 text-green-400",
     yellow: "bg-yellow-900/20 text-yellow-400",
     red: "bg-red-900/20 text-red-400",
   };
 
   return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
+    <div className="rounded-xl border border-gray-800 bg-black p-4">
       <div className="flex items-center gap-3">
         <div className={cn("rounded-lg p-2", colorClasses[color])}>
           <Icon className="h-5 w-5" />

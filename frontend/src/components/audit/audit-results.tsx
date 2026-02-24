@@ -129,7 +129,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
             <button
               key={name}
               onClick={() => scrollTo(name)}
-              className="flex w-full items-center gap-2 rounded-lg px-2 py-[calc(var(--spacing)*1)] text-left text-sm text-gray-300 hover:bg-gray-800"
+              className="flex w-full items-center gap-2 rounded-lg px-2 py-[calc(var(--spacing)*1)] text-left text-sm text-gray-300 hover:bg-gray-900"
             >
               <span
                 className={cn(
@@ -159,7 +159,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
         {/* Filter bar */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-4">
           <div className="w-full overflow-x-auto sm:w-auto">
-            <div className="inline-flex h-11 items-center gap-1 whitespace-nowrap rounded-lg border border-gray-800 bg-gray-900 p-1">
+            <div className="inline-flex h-11 items-center gap-1 whitespace-nowrap rounded-lg border border-gray-800 bg-black p-1">
               {filterButtons.map((fb) => (
                 <button
                   key={fb.key}
@@ -167,7 +167,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
                   className={cn(
                     "inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition-colors",
                     filter === fb.key
-                      ? "border border-gray-700 bg-gray-800 text-white shadow-sm"
+                      ? "border border-gray-700 bg-gray-900 text-white shadow-sm"
                       : "border border-transparent text-gray-400 hover:text-gray-200"
                   )}
                 >
@@ -186,7 +186,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder={t("searchIssues")}
-                className="h-11 w-full rounded-lg border border-gray-800 bg-gray-900 py-1.5 pl-9 pr-3 text-base md:text-sm text-white outline-none placeholder-gray-500 transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
+                className="h-11 w-full rounded-lg border border-gray-800 bg-black py-1.5 pl-9 pr-3 text-base md:text-sm text-white outline-none placeholder-gray-500 transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
               />
             </div>
 
@@ -200,7 +200,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
                   "flex h-11 items-center gap-1.5 rounded-lg border px-3 text-sm font-medium transition-colors",
                   exportingFormat
                     ? "cursor-not-allowed opacity-50 border-gray-700 text-gray-500"
-                    : "border-gray-800 bg-gray-900 text-gray-300 hover:bg-gray-800"
+                    : "border-gray-800 bg-black text-gray-300 hover:bg-gray-900"
                 )}
               >
                 {exportingFormat ? (
@@ -275,14 +275,14 @@ function StatCard({
   color: "gray" | "green" | "yellow" | "red";
 }) {
   const colorClasses = {
-    gray: "bg-gray-800 text-white",
+    gray: "bg-gray-900 text-white",
     green: "bg-green-900/20 text-green-400",
     yellow: "bg-yellow-900/20 text-yellow-400",
     red: "bg-red-900/20 text-red-400",
   };
 
   return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
+    <div className="rounded-xl border border-gray-800 bg-black p-4">
       <div className="flex items-center gap-3">
         <div className={cn("rounded-lg p-2", colorClasses[color])}>
           <Icon className="h-5 w-5" />

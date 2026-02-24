@@ -31,7 +31,7 @@ export function IndexingHeroSection() {
           </Link>
           <a
             href="#pricing"
-            className="rounded-md border border-gray-700 px-8 py-3.5 text-center text-sm font-semibold text-white transition-colors hover:bg-gray-900"
+            className="rounded-md border border-gray-700 px-8 py-3.5 text-center text-sm font-semibold text-white transition-colors hover:bg-black"
           >
             {t("ctaSecondary")} <ArrowRight className="ml-1 inline h-4 w-4" />
           </a>

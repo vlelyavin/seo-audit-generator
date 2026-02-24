@@ -67,11 +67,11 @@ export function ExportDialog({
       />
 
       {/* Dialog */}
-      <div className="relative z-10 mx-5 w-full max-w-md rounded-xl border border-gray-800 bg-gray-900 p-6 shadow-xl">
+      <div className="relative z-10 mx-5 w-full max-w-md rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-800 hover:text-gray-200"
+          className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-900 hover:text-gray-200"
         >
           <X className="h-4 w-4" />
         </button>
@@ -100,7 +100,7 @@ export function ExportDialog({
             value={selectedFormat}
             onChange={(e) => setFormat(e.target.value as ExportFormat)}
             disabled={loading}
-            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2.5 text-base md:text-sm text-white outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20 disabled:opacity-50"
+            className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-base md:text-sm text-white outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20 disabled:opacity-50"
           >
             {resolvedFormatOptions.map((opt) => (
               <option key={opt} value={opt}>
@@ -120,7 +120,7 @@ export function ExportDialog({
               value={lang}
               onChange={(e) => setLang(e.target.value)}
               disabled={loading}
-              className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2.5 text-base md:text-sm text-white outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20 disabled:opacity-50"
+              className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-base md:text-sm text-white outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20 disabled:opacity-50"
             >
               {LANGUAGE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -156,7 +156,7 @@ export function ExportDialog({
           </button>
           <button
             onClick={onClose}
-            className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800"
+            className="flex-1 rounded-md border border-gray-700 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-900"
           >
             {t("cancel")}
           </button>

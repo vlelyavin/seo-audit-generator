@@ -186,12 +186,12 @@ export default function BrandingPage() {
   return (
     <div className="space-y-6">
       {message && (
-        <div className="rounded-lg border border-gray-800 bg-gray-900 px-4 py-2 text-sm text-gray-300">
+        <div className="rounded-lg border border-gray-800 bg-black px-4 py-2 text-sm text-gray-300">
           {message}
         </div>
       )}
 
-      <form onSubmit={handleSave} className="rounded-xl border border-gray-800 bg-gray-900 p-6 space-y-5">
+      <form onSubmit={handleSave} className="rounded-xl border border-gray-800 bg-black p-6 space-y-5">
         <h2 className="mb-4 text-lg font-semibold text-white">{t("title")}</h2>
 
         <div>
@@ -204,7 +204,7 @@ export default function BrandingPage() {
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
             placeholder={t("companyNamePlaceholder")}
-            className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-base md:text-sm text-white outline-none placeholder-gray-500 transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
+            className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-base md:text-sm text-white outline-none placeholder-gray-500 transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
           />
         </div>
 
@@ -216,7 +216,7 @@ export default function BrandingPage() {
 
           {/* Drop zone */}
           <label
-            className={`group relative flex h-[180px] w-[250px] cursor-pointer flex-col items-center justify-center rounded-xl border bg-gray-900 transition-colors ${
+            className={`group relative flex h-[180px] w-[250px] cursor-pointer flex-col items-center justify-center rounded-xl border bg-black transition-colors ${
               isDragOver
                 ? "border-copper ring-2 ring-copper/20"
                 : "border-gray-700 hover:border-copper hover:ring-2 hover:ring-copper/20"
@@ -248,7 +248,7 @@ export default function BrandingPage() {
                   onError={() => setImageError(true)}
                 />
                 <div className="absolute inset-x-0 bottom-3 flex justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                  <span className="rounded-md bg-gray-800/90 px-3 py-1 text-xs font-medium text-gray-300">
+                  <span className="rounded-md bg-gray-900/90 px-3 py-1 text-xs font-medium text-gray-300">
                     {t("replaceLogo")}
                   </span>
                 </div>
