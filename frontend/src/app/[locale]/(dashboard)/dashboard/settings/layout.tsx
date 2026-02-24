@@ -22,7 +22,7 @@ export default function SettingsLayout({
   ];
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 overflow-hidden">
+    <div className="mx-auto max-w-[50rem] space-y-6 overflow-hidden">
       <h1 className="text-2xl font-bold text-white">
         {t("title")}
       </h1>

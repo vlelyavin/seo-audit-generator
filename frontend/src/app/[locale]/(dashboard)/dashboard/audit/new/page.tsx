@@ -104,7 +104,7 @@ export default function NewAuditPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-[50rem]">
       <h1 className="mb-6 text-2xl font-bold text-white">
         {t("newAudit")}
       </h1>

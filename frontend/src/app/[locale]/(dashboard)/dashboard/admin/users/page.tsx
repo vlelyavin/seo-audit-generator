@@ -75,7 +75,7 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto max-w-[77rem]">
       <h1 className="mb-6 text-2xl font-bold text-white">
         {t("title")} ({users.length})
       </h1>

@@ -242,7 +242,7 @@ export default function AuditPage({
   // Failed
   if (progress?.status === "failed") {
     return (
-      <div className="mx-auto max-w-2xl py-12 text-center">
+      <div className="mx-auto max-w-[50rem] py-12 text-center">
         <div className="mb-4 text-5xl">&#10060;</div>
         <h1 className="text-xl font-bold text-white">
           {tAudit("failed")}
@@ -271,7 +271,7 @@ export default function AuditPage({
   // Page error
   if (pageError) {
     return (
-      <div className="mx-auto max-w-2xl py-12 text-center">
+      <div className="mx-auto max-w-[50rem] py-12 text-center">
         <div className="mb-4 text-5xl">&#10060;</div>
         <h1 className="text-xl font-bold text-white">
           {tAudit("error")}

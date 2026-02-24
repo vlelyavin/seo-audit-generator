@@ -64,7 +64,7 @@ export default function PlansPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="mx-auto max-w-[77rem] space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white">
           {t("title")}

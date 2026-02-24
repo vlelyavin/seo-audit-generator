@@ -283,7 +283,7 @@ export default function AdminDashboardPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <div className="mx-auto max-w-[77rem] space-y-6">
       <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
 
       {/* Stats cards */}
