@@ -12,13 +12,13 @@ export function MarketingHeader() {
   const locale = useLocale();
   const { data: session } = useSession();
 
+  const user = session?.user;
+
   const navLinks = [
     ...(user ? [{ href: `/${locale}/dashboard`, label: t("dashboard") }] : []),
     { href: `/${locale}/indexing`, label: t("indexing") },
     { href: `/${locale}/pricing`, label: t("pricing") },
   ];
-
-  const user = session?.user;
   const rawName = user?.name?.trim();
   const firstName = rawName ? rawName.split(/\s+/)[0] : undefined;
   const emailLocal = user?.email?.split("@")[0];
