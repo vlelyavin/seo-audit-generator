@@ -121,7 +121,7 @@ export function AuditResultsView({ results, meta, auditId }: AuditResultsViewPro
 
   return (
     <div>
-      <div className="flex flex-col-reverse gap-6">
+      <div className="flex flex-row-reverse gap-6">
         {/* Left sidebar nav */}
         <aside className="hidden w-56 shrink-0 xl:block">
         <div className="sticky top-0 space-y-1">
