@@ -13,6 +13,7 @@ export function MarketingHeader() {
   const { data: session } = useSession();
 
   const navLinks = [
+    ...(user ? [{ href: `/${locale}/dashboard`, label: t("dashboard") }] : []),
     { href: `/${locale}/indexing`, label: t("indexing") },
     { href: `/${locale}/pricing`, label: t("pricing") },
   ];
@@ -56,12 +57,6 @@ export function MarketingHeader() {
           <LocaleSwitcher />
           {user ? (
             <div className="flex items-center gap-2">
-              <Link
-                href={`/${locale}/dashboard`}
-                className="rounded-md bg-gradient-to-r from-copper to-copper-light px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
-              >
-                {t("dashboard")}
-              </Link>
               {user.image ? (
                 <Image
                   src={user.image}
