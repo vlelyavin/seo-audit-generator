@@ -4,9 +4,10 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
-import { Globe, Play, ChevronDown, ChevronUp } from "lucide-react";
+import { Globe, Play, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { ANALYZER_NAMES, ANALYZER_LABELS } from "@/types/audit";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const REAL_ANALYZER_NAMES = ANALYZER_NAMES.filter((n) => n !== "speed_screenshots");
 
@@ -207,11 +208,9 @@ export default function NewAuditPage() {
                       key={name}
                       className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm hover:bg-gray-800"
                     >
-                      <input
-                        type="checkbox"
+                      <Checkbox
                         checked={selectedAnalyzers.includes(name)}
                         onChange={() => toggleAnalyzer(name)}
-                        className="rounded border-gray-600 text-copper focus:ring-copper/50"
                       />
                       <span className="text-gray-300">
                         {ANALYZER_LABELS[name]}
@@ -223,11 +222,9 @@ export default function NewAuditPage() {
                 {/* PageSpeed Screenshots option */}
                 <div className="mt-3 border-t border-gray-700 pt-3">
                   <label className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm hover:bg-gray-800">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={includeScreenshots}
                       onChange={() => toggleAnalyzer("speed_screenshots")}
-                      className="rounded border-gray-600 text-copper focus:ring-copper/50"
                     />
                     <span className="text-gray-300">
                       {ANALYZER_LABELS["speed_screenshots"]}
@@ -244,11 +241,9 @@ export default function NewAuditPage() {
           {/* Show pages crawled option */}
           <div className="mt-4">
             <label className="flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm hover:bg-gray-800">
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={showPagesCrawled}
                 onChange={() => setShowPagesCrawled((prev) => !prev)}
-                className="rounded border-gray-600 text-copper focus:ring-copper/50"
               />
               <span className="text-gray-300">
                 {t("showPagesCrawled")}
@@ -262,8 +257,8 @@ export default function NewAuditPage() {
           disabled={loading || !url || realSelected.length === 0}
           className="flex w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          <Play className="h-4 w-4" />
-          {loading ? "..." : t("startAudit")}
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
+          {loading ? t("startingAudit") : t("startAudit")}
         </button>
       </form>
     </div>

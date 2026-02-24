@@ -28,6 +28,7 @@ import {
   Download,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -1762,11 +1763,10 @@ function SiteCard({
                         <div key={url.id} className="rounded-lg border border-gray-800 bg-gray-950 p-3">
                           <div className="flex items-start gap-2.5">
                             {/* Checkbox */}
-                            <input
-                              type="checkbox"
+                            <Checkbox
                               checked={selectedUrls.has(url.id)}
                               onChange={() => toggleUrl(url.id)}
-                              className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-600 bg-gray-800"
+                              className="mt-0.5"
                             />
                             {/* Content */}
                             <div className="flex-1 min-w-0 space-y-1.5">
@@ -1848,11 +1848,9 @@ function SiteCard({
                       <thead className="sticky top-0 z-10">
                         <tr className="border-b border-gray-800 bg-gray-950">
                           <th className="w-10 px-3 py-3 text-left">
-                            <input
-                              type="checkbox"
+                            <Checkbox
                               checked={allOnPageSelected}
                               onChange={toggleSelectAll}
-                              className="rounded border-gray-600 bg-gray-800 text-white"
                             />
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
@@ -1884,11 +1882,9 @@ function SiteCard({
                               className="hover:bg-gray-800/50 transition-colors"
                             >
                               <td className="px-3 py-3">
-                                <input
-                                  type="checkbox"
+                                <Checkbox
                                   checked={selectedUrls.has(url.id)}
                                   onChange={() => toggleUrl(url.id)}
-                                  className="rounded border-gray-600 bg-gray-800"
                                 />
                               </td>
                               <td className="px-4 py-3 max-w-xs">
