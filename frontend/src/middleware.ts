@@ -58,17 +58,26 @@ export default async function middleware(req: NextRequest) {
   // All other routes (landing, pricing, indexator, etc.): pass through
   const response = intlMiddleware(req);
 
-  // Fix rewrite origin: next-intl builds rewrite URLs using a mix of the
-  // forwarded protocol (https) and the actual server host (localhost:3000).
-  // Next.js sees this as a different origin from its perceived host
-  // (seo-audit.online) and converts the rewrite to a redirect → loop.
-  // Rebuild the rewrite URL using the request's own origin so Next.js
-  // recognizes it as an internal rewrite.
+  // Fix: intlMiddleware may return a response with BOTH x-middleware-rewrite
+  // and location/307 headers (origin mismatch between rewrite URL and
+  // Next.js initUrl behind reverse proxy, or Next.js 16 middleware changes).
+  // When a rewrite is intended, create a fresh NextResponse.rewrite() to
+  // guarantee status 200 with no location header.
   const rewrite = response.headers.get("x-middleware-rewrite");
   if (rewrite) {
     const rewriteUrl = new URL(rewrite);
-    const fixedUrl = new URL(rewriteUrl.pathname + rewriteUrl.search, req.url);
-    response.headers.set("x-middleware-rewrite", fixedUrl.toString());
+    const target = req.nextUrl.clone();
+    target.pathname = rewriteUrl.pathname;
+    target.search = rewriteUrl.search;
+
+    const cleanResponse = NextResponse.rewrite(target);
+
+    // Preserve cookies set by intlMiddleware (e.g. NEXT_LOCALE)
+    for (const cookie of response.cookies.getAll()) {
+      cleanResponse.cookies.set(cookie);
+    }
+
+    return cleanResponse;
   }
 
   return response;
