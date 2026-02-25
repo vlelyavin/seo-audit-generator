@@ -18,7 +18,7 @@ export function IndexingHowItWorks() {
         <p className="mb-4 text-center text-sm font-medium not-italic text-copper">
           {t("sectionLabel")}
         </p>
-        <h2 className="text-center text-4xl font-bold bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent sm:text-5xl lg:text-6xl">
+        <h2 className="text-center font-bold text-white" style={{ fontSize: "clamp(2rem, 4vw, 4rem)" }}>
           {t("title")}
         </h2>
 
@@ -33,12 +33,12 @@ export function IndexingHowItWorks() {
             >
               {/* Divider line with dot accents */}
               <div className="relative flex items-center">
-                <div className="h-px flex-1 bg-gradient-to-r from-copper/40 via-copper/20 to-transparent" />
-                <div className="mx-1 h-1.5 w-1.5 rounded-full bg-copper/40" />
-                <div className="h-px w-16 bg-gradient-to-r from-copper/20 to-transparent" />
+                <div className="h-px flex-1 bg-gradient-to-r from-gray-700 via-gray-800 to-transparent" />
+                <div className="mx-1 h-1.5 w-1.5 rounded-full bg-gray-600" />
+                <div className="h-px w-16 bg-gradient-to-r from-gray-800 to-transparent" />
                 <div className="flex-1" />
-                <div className="mx-1 h-1.5 w-1.5 rounded-full bg-copper/30" />
-                <div className="h-px flex-1 bg-gradient-to-l from-copper/40 via-copper/20 to-transparent" />
+                <div className="mx-1 h-1.5 w-1.5 rounded-full bg-gray-700" />
+                <div className="h-px flex-1 bg-gradient-to-l from-gray-700 via-gray-800 to-transparent" />
               </div>
 
               {/* Step content */}
@@ -59,12 +59,12 @@ export function IndexingHowItWorks() {
               {/* Bottom divider for last item */}
               {i === steps.length - 1 && (
                 <div className="relative flex items-center">
-                  <div className="h-px flex-1 bg-gradient-to-r from-copper/40 via-copper/20 to-transparent" />
-                  <div className="mx-1 h-1.5 w-1.5 rounded-full bg-copper/40" />
-                  <div className="h-px w-16 bg-gradient-to-r from-copper/20 to-transparent" />
+                  <div className="h-px flex-1 bg-gradient-to-r from-gray-700 via-gray-800 to-transparent" />
+                  <div className="mx-1 h-1.5 w-1.5 rounded-full bg-gray-600" />
+                  <div className="h-px w-16 bg-gradient-to-r from-gray-800 to-transparent" />
                   <div className="flex-1" />
-                  <div className="mx-1 h-1.5 w-1.5 rounded-full bg-copper/30" />
-                  <div className="h-px flex-1 bg-gradient-to-l from-copper/40 via-copper/20 to-transparent" />
+                  <div className="mx-1 h-1.5 w-1.5 rounded-full bg-gray-700" />
+                  <div className="h-px flex-1 bg-gradient-to-l from-gray-700 via-gray-800 to-transparent" />
                 </div>
               )}
             </motion.div>

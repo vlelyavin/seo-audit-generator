@@ -19,7 +19,7 @@ export function IndexingCtaSection() {
 
       <div className="relative mx-auto max-w-3xl px-4 text-center lg:px-6">
         <div className="rounded-2xl border border-gray-800 bg-gray-950/80 px-8 py-16 backdrop-blur-sm">
-          <h2 className="text-4xl font-bold bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent sm:text-5xl lg:text-6xl">
+          <h2 className="font-bold text-white" style={{ fontSize: "clamp(2rem, 4vw, 4rem)" }}>
             {t("heading")}
           </h2>
           <p className="mt-4 text-lg text-gray-400">{t("subheading")}</p>
