@@ -26,6 +26,7 @@ import {
   Send,
   Download,
   ArrowUpDown,
+  Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -252,7 +253,6 @@ export default function IndexingPage() {
   const [gscStatus, setGscStatus] = useState<GscStatus | null>(null);
   const [sites, setSites] = useState<Site[]>([]);
   const [loadingStatus, setLoadingStatus] = useState(true);
-  const [syncingSites, setSyncingSites] = useState(false);
   const [expandedSite, setExpandedSite] = useState<string | null>(null);
   const [siteStats, setSiteStats] = useState<Record<string, SiteStats>>({});
   const [siteQuotas, setSiteQuotas] = useState<Record<string, Quota>>({});
@@ -269,7 +269,19 @@ export default function IndexingPage() {
 
   // Disconnect modal state
   const [showDisconnectModal, setShowDisconnectModal] = useState(false);
-  const [disconnectMode, setDisconnectMode] = useState<"keep" | "delete" | null>(null);
+  const [disconnecting, setDisconnecting] = useState(false);
+
+  // Add Website modal state
+  const [showAddSiteModal, setShowAddSiteModal] = useState(false);
+  const [availableGscSites, setAvailableGscSites] = useState<Array<{ siteUrl: string; permissionLevel: string }>>([]);
+  const [loadingAvailable, setLoadingAvailable] = useState(false);
+  const [selectedDomain, setSelectedDomain] = useState("");
+  const [addingSite, setAddingSite] = useState(false);
+  const [maxSites, setMaxSites] = useState(1);
+
+  // Delete site state
+  const [deletingSiteId, setDeletingSiteId] = useState<string | null>(null);
+  const [deletingSiteLoading, setDeletingSiteLoading] = useState(false);
 
   // Polling refs
   const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -302,10 +314,21 @@ export default function IndexingPage() {
     }
   }, []);
 
+  // ── Load plan limit ──────────────────────────────────────────────────────
+
+  const loadPlanLimit = useCallback(async () => {
+    const res = await fetch("/api/user/plan");
+    if (res.ok) {
+      const data = await res.json();
+      setMaxSites(data.plan?.maxSites ?? 1);
+    }
+  }, []);
+
   useEffect(() => {
     loadStatus();
     loadSites();
-  }, [loadStatus, loadSites]);
+    loadPlanLimit();
+  }, [loadStatus, loadSites, loadPlanLimit]);
 
   // ── Reconnect / Disconnect ────────────────────────────────────────────────
 
@@ -321,43 +344,81 @@ export default function IndexingPage() {
     setShowDisconnectModal(true);
   };
 
-  const handleDisconnectConfirm = async (deleteData: boolean) => {
-    setDisconnectMode(deleteData ? "delete" : "keep");
+  const handleDisconnectConfirm = async () => {
+    setDisconnecting(true);
     try {
-      const res = await fetch(
-        `/api/indexing/gsc/disconnect?deleteData=${deleteData}`,
-        { method: "DELETE" }
-      );
+      const res = await fetch("/api/indexing/gsc/disconnect", {
+        method: "DELETE",
+      });
       if (res.ok) {
         await loadStatus();
-        if (deleteData) setSites([]);
-        showToast(
-          deleteData
-            ? t("disconnectedDeleteData")
-            : t("disconnectedKeepData")
-        );
+        showToast(t("disconnectedKeepData"));
       }
     } finally {
-      setDisconnectMode(null);
+      setDisconnecting(false);
       setShowDisconnectModal(false);
     }
   };
 
-  // ── Sync sites from GSC ───────────────────────────────────────────────────
+  // ── Add Website ─────────────────────────────────────────────────────────
 
-  const syncSites = async () => {
-    setSyncingSites(true);
+  const openAddSiteModal = async () => {
+    setShowAddSiteModal(true);
+    setLoadingAvailable(true);
+    setSelectedDomain("");
     try {
       const res = await fetch("/api/indexing/sites/sync", { method: "POST" });
       if (res.ok) {
-        await loadSites();
-        await loadStatus();
-        showToast(t("successSync"));
+        const data = await res.json();
+        setAvailableGscSites(data.available ?? []);
       } else {
         showToast(t("errorSync"), false);
       }
     } finally {
-      setSyncingSites(false);
+      setLoadingAvailable(false);
+    }
+  };
+
+  const addSite = async () => {
+    if (!selectedDomain) return;
+    setAddingSite(true);
+    try {
+      const res = await fetch("/api/indexing/sites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ domain: selectedDomain }),
+      });
+      if (res.ok) {
+        await loadSites();
+        setShowAddSiteModal(false);
+        showToast(t("siteAdded"));
+      } else {
+        const data = await res.json();
+        showToast(data.error || t("errorAddSite"), false);
+      }
+    } finally {
+      setAddingSite(false);
+    }
+  };
+
+  // ── Delete site ─────────────────────────────────────────────────────────
+
+  const deleteSite = async (siteId: string) => {
+    setDeletingSiteLoading(true);
+    try {
+      const res = await fetch(`/api/indexing/sites/${siteId}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setSites((prev) => prev.filter((s) => s.id !== siteId));
+        if (expandedSite === siteId) setExpandedSite(null);
+        showToast(t("siteDeleted"));
+      } else {
+        showToast(t("errorDeleteSite"), false);
+      }
+    } finally {
+      setDeletingSiteLoading(false);
+      setDeletingSiteId(null);
     }
   };
 
@@ -675,14 +736,13 @@ export default function IndexingPage() {
           ) : (
             <>
               <button
-                onClick={syncSites}
-                disabled={syncingSites}
+                onClick={openAddSiteModal}
+                disabled={sites.length >= maxSites}
+                title={sites.length >= maxSites ? t("upgradePlanToAddSites") : undefined}
                 className="flex items-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
               >
-                <RefreshCw
-                  className={cn("h-4 w-4", syncingSites && "animate-spin")}
-                />
-                {syncingSites ? t("syncing") : t("syncSites")}
+                <Plus className="h-4 w-4" />
+                {t("addWebsite")}
               </button>
               <button
                 onClick={handleDisconnect}
@@ -725,7 +785,7 @@ export default function IndexingPage() {
               <Search className="mx-auto h-10 w-10 text-gray-600 mb-3" />
               <p className="text-gray-400 text-sm">{t("noSites")}</p>
               <p className="text-gray-600 text-xs mt-1">
-                {t("connectDesc")}
+                {t("noSitesDesc")}
               </p>
             </div>
           ) : (
@@ -751,6 +811,7 @@ export default function IndexingPage() {
                 onCopyKey={(k) => copyKey(k)}
                 onVerifySuccess={() => handleVerifySuccess(site.id)}
                 onVerifyFail={() => handleVerifyFail(site.id)}
+                onDelete={() => setDeletingSiteId(site.id)}
                 showToast={showToast}
               />
             ))
@@ -822,49 +883,151 @@ export default function IndexingPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => !disconnectMode && setShowDisconnectModal(false)}
+            onClick={() => !disconnecting && setShowDisconnectModal(false)}
           />
           <div className="relative z-10 w-full max-w-md rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
-            {/* Close button */}
             <button
-              onClick={() => !disconnectMode && setShowDisconnectModal(false)}
-              disabled={!!disconnectMode}
+              onClick={() => !disconnecting && setShowDisconnectModal(false)}
+              disabled={disconnecting}
               className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-colors disabled:opacity-50"
             >
               <X className="h-4 w-4" />
             </button>
-            {/* Icon */}
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
               <Link2Off className="h-6 w-6 text-red-400" />
             </div>
-            {/* Title + description */}
             <h3 className="mb-2 text-base font-semibold text-white">
               {t("disconnectTitle")}
             </h3>
             <p className="mb-6 text-sm text-gray-400">
-              {t("disconnectDescription")}
+              {t("disconnectDescriptionNew")}
             </p>
-            {/* Buttons: Keep Data (left, accent) | Delete All Data (right, red) */}
             <div className="flex gap-3">
               <button
-                onClick={() => handleDisconnectConfirm(false)}
-                disabled={!!disconnectMode}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-copper to-copper-light px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-              >
-                {disconnectMode === "keep" && (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                )}
-                {t("keepData")}
-              </button>
-              <button
-                onClick={() => handleDisconnectConfirm(true)}
-                disabled={!!disconnectMode}
+                onClick={handleDisconnectConfirm}
+                disabled={disconnecting}
                 className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-red-800 bg-red-950/50 px-4 py-2.5 text-sm font-semibold text-red-400 transition-colors hover:bg-red-900/30 disabled:opacity-50"
               >
-                {disconnectMode === "delete" && (
+                {disconnecting && (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 )}
-                {t("deleteAllData")}
+                {t("disconnect")}
+              </button>
+              <button
+                onClick={() => setShowDisconnectModal(false)}
+                disabled={disconnecting}
+                className="flex-1 rounded-lg border border-gray-700 px-4 py-2.5 text-sm font-semibold text-gray-300 transition-colors hover:bg-gray-900 disabled:opacity-50"
+              >
+                {t("cancel")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Website modal */}
+      {showAddSiteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => !addingSite && setShowAddSiteModal(false)}
+          />
+          <div className="relative z-10 w-full max-w-sm rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
+            <button
+              onClick={() => !addingSite && setShowAddSiteModal(false)}
+              disabled={addingSite}
+              className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-colors disabled:opacity-50"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-copper/10">
+              <Plus className="h-6 w-6 text-copper" />
+            </div>
+            <h3 className="mb-2 text-base font-semibold text-white">
+              {t("addWebsite")}
+            </h3>
+            <p className="mb-1 text-xs text-gray-500">
+              {t("sitesUsed", { used: sites.length, max: maxSites })}
+            </p>
+            {loadingAvailable ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+              </div>
+            ) : availableGscSites.length === 0 ? (
+              <p className="py-6 text-center text-sm text-gray-400">
+                {t("noAvailableSites")}
+              </p>
+            ) : (
+              <>
+                <select
+                  value={selectedDomain}
+                  onChange={(e) => setSelectedDomain(e.target.value)}
+                  className="mt-3 w-full rounded-md border border-gray-700 bg-gray-950 px-3 py-2 text-sm text-white focus:border-copper focus:outline-none"
+                >
+                  <option value="">{t("selectSite")}</option>
+                  {availableGscSites.map((s) => (
+                    <option key={s.siteUrl} value={s.siteUrl}>
+                      {s.siteUrl}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={addSite}
+                  disabled={!selectedDomain || addingSite}
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                >
+                  {addingSite && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {t("add")}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Delete site confirmation */}
+      {deletingSiteId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => !deletingSiteLoading && setDeletingSiteId(null)}
+          />
+          <div className="relative z-10 w-full max-w-sm rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
+            <button
+              onClick={() => !deletingSiteLoading && setDeletingSiteId(null)}
+              disabled={deletingSiteLoading}
+              className="absolute right-4 top-4 rounded-md p-2 text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-colors disabled:opacity-50"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
+              <Trash2 className="h-6 w-6 text-red-400" />
+            </div>
+            <h3 className="mb-2 text-base font-semibold text-white">
+              {t("deleteSiteTitle")}
+            </h3>
+            <p className="mb-5 text-sm text-gray-400">
+              {t("deleteSiteDescription", {
+                domain: sites.find((s) => s.id === deletingSiteId)?.domain ?? "",
+              })}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => deleteSite(deletingSiteId)}
+                disabled={deletingSiteLoading}
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-red-800 bg-red-950/50 px-4 py-2.5 text-sm font-semibold text-red-400 transition-colors hover:bg-red-900/30 disabled:opacity-50"
+              >
+                {deletingSiteLoading && (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                )}
+                {t("delete")}
+              </button>
+              <button
+                onClick={() => setDeletingSiteId(null)}
+                disabled={deletingSiteLoading}
+                className="flex-1 rounded-lg border border-gray-700 px-4 py-2.5 text-sm font-semibold text-gray-300 transition-colors hover:bg-gray-900 disabled:opacity-50"
+              >
+                {t("cancel")}
               </button>
             </div>
           </div>
@@ -896,6 +1059,7 @@ function SiteCard({
   onCopyKey,
   onVerifySuccess,
   onVerifyFail,
+  onDelete,
   showToast,
 }: {
   site: Site;
@@ -922,6 +1086,7 @@ function SiteCard({
   onCopyKey: (k: string) => void;
   onVerifySuccess: () => void;
   onVerifyFail: () => void;
+  onDelete: () => void;
   showToast: (msg: string, ok?: boolean) => void;
 }) {
   const [activeTab, setActiveTab] = useState<"overview" | "urls" | "report" | "log">(
@@ -1240,7 +1405,7 @@ function SiteCard({
   ];
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-800 bg-black">
+    <div className="relative overflow-hidden rounded-xl border border-gray-800 bg-black">
       {/* Header row */}
       <button
         onClick={onToggle}
@@ -1276,6 +1441,16 @@ function SiteCard({
           )}
         </div>
       </button>
+      {/* Delete site button — outside the toggle button so it doesn't expand/collapse */}
+      <div className="absolute right-12 top-4">
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(); }}
+          className="rounded-md p-1.5 text-gray-600 transition-colors hover:bg-red-950/50 hover:text-red-400"
+          title={t("deleteSite")}
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
 
       {/* Expanded content */}
       {expanded && (
