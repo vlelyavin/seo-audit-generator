@@ -1,12 +1,13 @@
 "use client";
 
-import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
-import { ArrowRight, Zap } from "lucide-react";
-import Image from "next/image";
+import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { ArrowRight } from "lucide-react";
+import { BrowserFrame } from "./browser-frame";
 
 export function IndexingHeroSection() {
   const t = useTranslations("marketing.indexingLanding.hero");
+  const locale = useLocale();
 
   return (
     <section className="mx-auto max-w-5xl px-4 pt-24 pb-20 lg:px-6">
@@ -23,10 +24,9 @@ export function IndexingHeroSection() {
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
-            href="/dashboard/indexator"
-            className="inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-8 py-3.5 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            href={`/${locale}/dashboard/indexing`}
+            className="rounded-md bg-gradient-to-r from-copper to-copper-light px-8 py-3.5 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
-            <Zap className="h-4 w-4" />
             {t("ctaPrimary")}
           </Link>
           <a
@@ -39,13 +39,9 @@ export function IndexingHeroSection() {
       </div>
 
       <div className="mt-16">
-        <Image
-          src="/images/indexing-dashboard-screenshot.png"
-          alt={t("title")}
-          width={1920}
-          height={1080}
-          className="w-full"
-          priority
+        <BrowserFrame
+          imageSrc="/images/indexing-dashboard-screenshot.png"
+          imageAlt={t("title")}
         />
       </div>
     </section>

@@ -1,12 +1,32 @@
 "use client";
 
-import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
-import { ArrowRight, ScanSearch } from "lucide-react";
-import Image from "next/image";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { ArrowRight, Globe } from "lucide-react";
+import { BrowserFrame } from "./browser-frame";
 
 export function HeroSection() {
   const t = useTranslations("marketing.landing");
+  const locale = useLocale();
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [url, setUrl] = useState("");
+
+  function handleAuditSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!url.trim()) return;
+    const encoded = encodeURIComponent(url.trim());
+    if (session?.user) {
+      router.push(`/${locale}/dashboard/audit/new?url=${encoded}`);
+    } else {
+      router.push(
+        `/${locale}/login?callbackUrl=/${locale}/dashboard/audit/new?url=${encoded}`
+      );
+    }
+  }
 
   return (
     <section className="mx-auto max-w-5xl px-4 pt-24 pb-20 lg:px-6">
@@ -21,31 +41,41 @@ export function HeroSection() {
           {t("subtitle")}
         </p>
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <form onSubmit={handleAuditSubmit} className="mt-8 w-full max-w-xl">
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="relative flex-1">
+              <Globe className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-500" />
+              <input
+                type="url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder={t("urlPlaceholder")}
+                className="w-full rounded-lg border border-gray-800 bg-gray-950 py-3 pl-11 pr-4 text-base text-white placeholder-gray-500 outline-none transition-colors focus:border-copper md:text-sm"
+              />
+            </div>
+            <button
+              type="submit"
+              className="rounded-md bg-gradient-to-r from-copper to-copper-light px-8 py-3.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              {t("cta")}
+            </button>
+          </div>
+        </form>
+
+        <div className="mt-4">
           <Link
-            href="/dashboard/auditor/new"
-            className="inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-8 py-3.5 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            href={`/${locale}/pricing`}
+            className="inline-flex items-center gap-1 text-sm text-gray-400 transition-colors hover:text-white"
           >
-            <ScanSearch className="h-4 w-4" />
-            {t("cta")}
-          </Link>
-          <Link
-            href="/pricing"
-            className="inline-flex items-center justify-center gap-1 rounded-md border border-gray-700 px-8 py-3.5 text-center text-sm font-semibold text-white transition-colors hover:bg-black"
-          >
-            {t("viewPricing")} <ArrowRight className="ml-1 h-4 w-4" />
+            {t("viewPricing")} <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </div>
 
       <div className="mt-16">
-        <Image
-          src="/images/seo-audit-dashboard-screenshot.png"
-          alt={t("title")}
-          width={1920}
-          height={1080}
-          className="w-full"
-          priority
+        <BrowserFrame
+          imageSrc="/images/seo-audit-dashboard-screenshot.png"
+          imageAlt={t("title")}
         />
       </div>
     </section>

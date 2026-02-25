@@ -21,8 +21,7 @@ export async function GET(request: Request) {
   const locale = cookieStore.get("NEXT_LOCALE")?.value ?? "en";
 
   const baseUrl = process.env.AUTH_URL ?? "http://localhost:3000";
-  const prefix = locale === "en" ? "" : `/${locale}`;
-  const dashboardUrl = new URL(`${prefix}/dashboard/indexator`, baseUrl);
+  const dashboardUrl = new URL(`/${locale}/dashboard/indexing`, baseUrl);
 
   // Handle errors from Google
   if (error) {
@@ -37,7 +36,7 @@ export async function GET(request: Request) {
   // Verify user is logged in
   const session = await auth();
   if (!session?.user) {
-    const loginUrl = new URL(`${prefix}/login`, baseUrl);
+    const loginUrl = new URL(`/${locale}/login`, baseUrl);
     return NextResponse.redirect(loginUrl);
   }
 

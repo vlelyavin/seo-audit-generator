@@ -1,8 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
-import { localePath } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useSession, signOut, signIn } from "next-auth/react";
 import { LogOut } from "lucide-react";
@@ -73,7 +72,7 @@ export function Header({ sidebarOpen, onSidebarToggle }: HeaderProps) {
       </button>
 
       <Link
-        href="/dashboard"
+        href={`/${locale}/dashboard`}
         className="flex items-center gap-2 font-semibold"
       >
         <span className="text-white font-bold text-lg">SEO Audit</span>
@@ -101,7 +100,7 @@ export function Header({ sidebarOpen, onSidebarToggle }: HeaderProps) {
               {displayName}
             </span>
             <button
-              onClick={() => signOut({ callbackUrl: localePath(locale, "/") })}
+              onClick={() => signOut({ callbackUrl: `/${locale}` })}
               className="rounded-md p-3 text-white hover:bg-gray-950"
               title={t("logout")}
             >
@@ -110,7 +109,7 @@ export function Header({ sidebarOpen, onSidebarToggle }: HeaderProps) {
           </div>
         ) : (
           <button
-            onClick={() => signIn("google", { callbackUrl: localePath(locale, "/dashboard") })}
+            onClick={() => signIn("google", { callbackUrl: `/${locale}/dashboard` })}
             className="rounded-md bg-gradient-to-r from-copper to-copper-light px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
           >
             {t("login")}

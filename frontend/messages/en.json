@@ -413,8 +413,8 @@
   },
   "marketing": {
     "nav": {
-      "auditor": "Auditor",
-      "indexator": "Indexator",
+      "audit": "SEO Audit",
+      "indexing": "Indexing",
       "pricing": "Pricing",
       "dashboard": "Dashboard",
       "signIn": "Sign In",
@@ -438,9 +438,6 @@
         "step2Desc": "We crawl your pages and run 20+ SEO checks in parallel — meta tags, speed, links, structured data, and more.",
         "step3Title": "Download Report",
         "step3Desc": "Get a detailed PDF, HTML, or DOCX report with issues, recommendations, and priority scores.",
-        "featuresSectionLabel": "Features",
-        "featuresTitle": "Why Choose Our SEO Audit Tool",
-        "featuresSubtitle": "Everything you need to analyze, understand, and improve your website's search performance.",
         "feature1Title": "20+ SEO Metrics",
         "feature1Desc": "Meta tags, headings, images, speed, security, structured data, broken links, and more.",
         "feature2Title": "Real-Time Progress",
@@ -506,7 +503,7 @@
         "sectionLabel": "URL Indexing Tool",
         "title": "Get Your Pages Indexed by Google in Hours, Not Weeks",
         "subtitle": "Connect Google Search Console, see which pages aren't indexed, and submit them to Google, Bing, and Yandex with one click. Monitor everything automatically.",
-        "ctaPrimary": "Start Indexing for Free",
+        "ctaPrimary": "Start Indexing — Free",
         "ctaSecondary": "View Pricing"
       },
       "howItWorks": {

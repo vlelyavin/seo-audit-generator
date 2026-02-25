@@ -1,7 +1,8 @@
 "use client";
 
-import { Link, usePathname } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import {
   CreditCard,
@@ -21,6 +22,7 @@ interface SidebarProps {
 export function Sidebar({ open, onClose }: SidebarProps) {
   const t = useTranslations("nav");
   const tPlans = useTranslations("plans");
+  const locale = useLocale();
   const pathname = usePathname();
   const { data: session } = useSession();
 
@@ -28,27 +30,27 @@ export function Sidebar({ open, onClose }: SidebarProps) {
 
   const navItems = [
     {
-      href: "/dashboard",
+      href: `/${locale}/dashboard`,
       label: t("dashboard"),
       icon: LayoutDashboard,
     },
     {
-      href: "/dashboard/auditor/new",
+      href: `/${locale}/dashboard/audit/new`,
       label: t("newAudit"),
       icon: Plus,
     },
     {
-      href: "/dashboard/indexator",
+      href: `/${locale}/dashboard/indexing`,
       label: t("indexing"),
       icon: Search,
     },
     {
-      href: "/dashboard/plans",
+      href: `/${locale}/dashboard/plans`,
       label: t("plans"),
       icon: CreditCard,
     },
     {
-      href: "/dashboard/settings",
+      href: `/${locale}/dashboard/settings`,
       label: t("settings"),
       icon: Settings,
     },
@@ -57,7 +59,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   const adminItems = isAdmin
     ? [
         {
-          href: "/dashboard/admin",
+          href: `/${locale}/dashboard/admin`,
           label: t("admin"),
           icon: Users,
         },
@@ -151,7 +153,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       {session?.user && (
         <div className="border-t border-gray-800 p-3">
           <Link
-            href="/dashboard/plans"
+            href={`/${locale}/dashboard/plans`}
             onClick={closeOnMobile}
             className="block rounded-lg bg-black p-3 transition-colors hover:bg-gray-900"
           >

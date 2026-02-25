@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { Globe, Play, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { ANALYZER_NAMES, ANALYZER_LABELS } from "@/types/audit";
@@ -98,7 +97,7 @@ export default function NewAuditPage() {
       }
 
       // Navigate to progress page
-      router.push(`/dashboard/auditor/${data.id}?fastApiId=${data.fastApiId}`);
+      router.push(`/${locale}/dashboard/audit/${data.id}?fastApiId=${data.fastApiId}`);
     } catch {
       setError(t("connectionError"));
     } finally {
@@ -109,7 +108,7 @@ export default function NewAuditPage() {
   return (
     <div className="mx-auto max-w-[50rem]">
       <Breadcrumbs items={[
-        { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
+        { label: tBreadcrumbs("dashboard"), href: `/${locale}/dashboard` },
         { label: tBreadcrumbs("newAudit") },
       ]} />
       <h1 className="mb-6 text-2xl font-bold text-white">

@@ -1,18 +1,19 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
 import { Zap, Rocket, Building2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function IndexingPricingSection() {
   const t = useTranslations("marketing.indexingLanding.pricing");
+  const locale = useLocale();
   const { data: session } = useSession();
 
   const ctaHref = session?.user
-    ? "/dashboard/indexator"
-    : "/login";
+    ? `/${locale}/dashboard/indexing`
+    : `/${locale}/login`;
 
   const packs = [
     {
@@ -115,7 +116,8 @@ export function IndexingPricingSection() {
           ))}
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-10 space-y-2 text-center">
+          <p className="text-sm text-gray-400">{t("freeNote")}</p>
           <p className="text-sm text-gray-500">{t("quotaNote")}</p>
         </div>
       </div>

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import createIntlMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
-import { localePath } from "./i18n/navigation";
 
 const intlMiddleware = createIntlMiddleware(routing);
 
@@ -43,7 +42,7 @@ export default async function middleware(req: NextRequest) {
   if (path.startsWith("/dashboard")) {
     if (!hasSessionCookie(req)) {
       const locale = getLocale(pathname);
-      return NextResponse.redirect(new URL(localePath(locale, "/login"), req.url));
+      return NextResponse.redirect(new URL(`/${locale}/login`, req.url));
     }
   }
 
@@ -51,36 +50,12 @@ export default async function middleware(req: NextRequest) {
   if (path === "/login" || path === "/register") {
     if (hasSessionCookie(req)) {
       const locale = getLocale(pathname);
-      return NextResponse.redirect(new URL(localePath(locale, "/dashboard"), req.url));
+      return NextResponse.redirect(new URL(`/${locale}/dashboard`, req.url));
     }
   }
 
-  // All other routes (landing, pricing, indexator, etc.): pass through
-  const response = intlMiddleware(req);
-
-  // Fix: intlMiddleware may return a response with BOTH x-middleware-rewrite
-  // and location/307 headers (origin mismatch between rewrite URL and
-  // Next.js initUrl behind reverse proxy, or Next.js 16 middleware changes).
-  // When a rewrite is intended, create a fresh NextResponse.rewrite() to
-  // guarantee status 200 with no location header.
-  const rewrite = response.headers.get("x-middleware-rewrite");
-  if (rewrite) {
-    const rewriteUrl = new URL(rewrite);
-    const target = req.nextUrl.clone();
-    target.pathname = rewriteUrl.pathname;
-    target.search = rewriteUrl.search;
-
-    const cleanResponse = NextResponse.rewrite(target);
-
-    // Preserve cookies set by intlMiddleware (e.g. NEXT_LOCALE)
-    for (const cookie of response.cookies.getAll()) {
-      cleanResponse.cookies.set(cookie);
-    }
-
-    return cleanResponse;
-  }
-
-  return response;
+  // All other routes (landing, pricing, indexing, etc.): pass through
+  return intlMiddleware(req);
 }
 
 export const config = {

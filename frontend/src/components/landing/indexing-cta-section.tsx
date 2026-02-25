@@ -1,10 +1,11 @@
 "use client";
 
-import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 
 export function IndexingCtaSection() {
   const t = useTranslations("marketing.indexingLanding.cta");
+  const locale = useLocale();
 
   return (
     <section className="bg-black py-24">
@@ -14,7 +15,7 @@ export function IndexingCtaSection() {
         </h2>
         <p className="mt-4 text-lg text-gray-400">{t("subheading")}</p>
         <Link
-          href="/dashboard/indexator"
+          href={`/${locale}/dashboard/indexing`}
           className="mt-8 inline-block rounded-md bg-gradient-to-r from-copper to-copper-light px-10 py-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           {t("button")}
