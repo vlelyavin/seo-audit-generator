@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations, useLocale } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import {
   Plus,
   BarChart3,
@@ -148,7 +148,7 @@ export default function DashboardPage() {
           )}
         </div>
         <Link
-          href={`/${locale}/dashboard/audit/new`}
+          href={"/dashboard/auditor/new"}
           className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           <Plus className="h-4 w-4" />
@@ -183,7 +183,7 @@ export default function DashboardPage() {
               {t("noAudits")}
             </p>
             <Link
-              href={`/${locale}/dashboard/audit/new`}
+              href={"/dashboard/auditor/new"}
               className="mt-4 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               {t("startAudit")}
@@ -197,7 +197,7 @@ export default function DashboardPage() {
                 className="group relative flex items-center gap-2 px-3 py-2 sm:gap-4 sm:px-4 sm:py-3 hover:bg-gray-900/50 transition-colors"
               >
                 <Link
-                  href={`/${locale}/dashboard/audit/${audit.id}`}
+                  href={`/dashboard/auditor/${audit.id}`}
                   className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4"
                 >
                   <StatusDot status={audit.status} />

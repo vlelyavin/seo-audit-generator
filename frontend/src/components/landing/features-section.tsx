@@ -53,7 +53,19 @@ export function FeaturesSection() {
           ))}
         </div>
 
-        <div className="mt-20 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-20">
+          <p className="mb-4 text-center text-sm font-medium not-italic text-copper">
+            {t("featuresSectionLabel")}
+          </p>
+          <h2 className="text-center text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
+            {t("featuresTitle")}
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-gray-400">
+            {t("featuresSubtitle")}
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feat) => (
             <div
               key={feat.title}

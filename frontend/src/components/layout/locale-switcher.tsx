@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { Globe } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
@@ -31,10 +31,7 @@ export function LocaleSwitcher() {
   }, []);
 
   function switchLocale(newLocale: string) {
-    // Replace the locale segment in the pathname
-    const segments = pathname.split("/");
-    segments[1] = newLocale;
-    router.push(segments.join("/"));
+    router.replace(pathname, { locale: newLocale });
     setOpen(false);
   }
 

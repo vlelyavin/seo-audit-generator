@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 export function Footer() {
   const t = useTranslations("marketing.footer");
-  const locale = useLocale();
   const year = new Date().getFullYear();
 
   return (
@@ -14,7 +13,7 @@ export function Footer() {
         <p className="text-sm text-gray-500">
           {t("copyright", { year })}
         </p>
-        <Link href={`/${locale}/terms`} className="text-sm text-gray-400 transition-colors hover:text-white">
+        <Link href="/terms" className="text-sm text-gray-400 transition-colors hover:text-white">
           {t("terms")}
         </Link>
       </div>

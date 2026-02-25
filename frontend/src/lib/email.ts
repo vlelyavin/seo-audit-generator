@@ -135,7 +135,7 @@ export async function sendDailyReportEmail(
       ? `${data.totalIndexed}/${data.totalUrls} (${Math.round((data.totalIndexed / data.totalUrls) * 100)}%)`
       : "N/A";
 
-  const dashboardUrl = `${APP_URL}/dashboard/indexing`;
+  const dashboardUrl = `${APP_URL}/dashboard/indexator`;
 
   const body = `
     <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Indexing Report</h2>
@@ -168,7 +168,7 @@ export async function sendLowCreditsEmail(
   userEmail: string,
   balance: number
 ): Promise<boolean> {
-  const dashboardUrl = `${APP_URL}/dashboard/indexing`;
+  const dashboardUrl = `${APP_URL}/dashboard/indexator`;
 
   const body = `
     <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Low Indexing Credits</h2>
@@ -206,7 +206,7 @@ export async function send404AlertEmail(
 ): Promise<boolean> {
   const displayUrls = urls404.slice(0, 20);
   const remaining = urls404.length - displayUrls.length;
-  const dashboardUrl = `${APP_URL}/dashboard/indexing`;
+  const dashboardUrl = `${APP_URL}/dashboard/indexator`;
 
   const urlList = displayUrls
     .map((url) => `<li style="padding:4px 0;color:#374151;font-size:13px;word-break:break-all;">${url}</li>`)
@@ -242,7 +242,7 @@ export async function sendTokenExpiredEmail(
   userEmail: string,
   domain: string
 ): Promise<boolean> {
-  const reconnectUrl = `${APP_URL}/dashboard/indexing`;
+  const reconnectUrl = `${APP_URL}/dashboard/indexator`;
 
   const body = `
     <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Google Search Console Disconnected</h2>

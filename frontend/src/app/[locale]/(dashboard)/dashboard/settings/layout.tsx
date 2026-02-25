@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
@@ -13,10 +12,9 @@ export default function SettingsLayout({
 }) {
   const t = useTranslations("settings");
   const tBreadcrumbs = useTranslations("breadcrumbs");
-  const locale = useLocale();
   const pathname = usePathname();
 
-  const basePath = `/${locale}/dashboard/settings`;
+  const basePath = "/dashboard/settings";
 
   const tabs = [
     { href: basePath, label: t("tabGeneral") },
@@ -27,7 +25,7 @@ export default function SettingsLayout({
     <div className="mx-auto max-w-[50rem] space-y-6 overflow-hidden">
       <div>
         <Breadcrumbs items={[
-          { label: tBreadcrumbs("dashboard"), href: `/${locale}/dashboard` },
+          { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
           { label: tBreadcrumbs("settings") },
         ]} />
         <h1 className="text-2xl font-bold text-white">

@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
+import { Link } from "@/i18n/navigation";
+import { localePath } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { LogOut } from "lucide-react";
@@ -15,9 +16,10 @@ export function MarketingHeader() {
   const user = session?.user;
 
   const navLinks = [
-    ...(user ? [{ href: `/${locale}/dashboard`, label: t("dashboard") }] : []),
-    { href: `/${locale}/indexing`, label: t("indexing") },
-    { href: `/${locale}/pricing`, label: t("pricing") },
+    ...(user ? [{ href: "/dashboard" as const, label: t("dashboard") }] : []),
+    { href: "/" as const, label: t("auditor") },
+    { href: "/indexator" as const, label: t("indexator") },
+    { href: "/pricing" as const, label: t("pricing") },
   ];
   const rawName = user?.name?.trim();
   const firstName = rawName ? rawName.split(/\s+/)[0] : undefined;
@@ -36,7 +38,7 @@ export function MarketingHeader() {
     <header className="sticky top-0 z-50 border-b border-gray-800 bg-black/80 backdrop-blur-sm">
       <div className="relative mx-auto flex h-14 max-w-6xl items-center px-4 lg:px-6">
         <div className="flex flex-1 items-center">
-          <Link href={`/${locale}`} className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <span className="text-lg font-bold text-white">SEO Audit</span>
           </Link>
         </div>
@@ -74,7 +76,7 @@ export function MarketingHeader() {
                 {displayName}
               </span>
               <button
-                onClick={() => signOut({ callbackUrl: `/${locale}` })}
+                onClick={() => signOut({ callbackUrl: localePath(locale, "/") })}
                 className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-900 hover:text-white"
                 title={t("logout")}
               >
@@ -83,7 +85,7 @@ export function MarketingHeader() {
             </div>
           ) : (
             <button
-              onClick={() => signIn("google", { callbackUrl: `/${locale}/dashboard` })}
+              onClick={() => signIn("google", { callbackUrl: localePath(locale, "/dashboard") })}
               className="flex items-center gap-2 rounded-md border border-gray-700 px-3 py-1.5 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-900"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24">

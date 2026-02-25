@@ -288,7 +288,7 @@ export default function AdminDashboardPage() {
     <div className="space-y-6">
       <div>
         <Breadcrumbs items={[
-          { label: tBreadcrumbs("dashboard"), href: `/${locale}/dashboard` },
+          { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
           { label: tBreadcrumbs("admin") },
         ]} />
         <h1 className="text-2xl font-bold text-white">{t("title")}</h1>

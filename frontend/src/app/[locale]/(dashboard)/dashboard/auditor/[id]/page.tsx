@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useAuditProgress } from "@/hooks/use-audit-progress";
 import { AuditProgressView } from "@/components/audit/audit-progress";
 import { AuditResultsView } from "@/components/audit/audit-results";
@@ -86,7 +86,7 @@ export default function AuditPage({
         if (audit.fastApiId && isInProgress) {
           // Audit is in progress - add fastApiId to URL
           console.log('[Audit] Redirecting to progress view');
-          router.push(`/${locale}/dashboard/audit/${auditId}?fastApiId=${audit.fastApiId}`);
+          router.push(`/dashboard/auditor/${auditId}?fastApiId=${audit.fastApiId}`);
         } else if (audit.status === 'completed') {
           // Audit completed - load cached results (handled by loadCached effect)
           setLoading(true);
@@ -214,7 +214,7 @@ export default function AuditPage({
     : tBreadcrumbs("audit");
 
   const breadcrumbItems = [
-    { label: tBreadcrumbs("dashboard"), href: `/${locale}/dashboard` },
+    { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
     { label: breadcrumbLabel },
   ];
 
@@ -289,7 +289,7 @@ export default function AuditPage({
           {pageError}
         </p>
         <Link
-          href={`/${locale}/dashboard`}
+          href={"/dashboard"}
           className="mt-4 inline-block text-gray-400 hover:text-white transition-colors"
         >
           {tAudit("backToDashboard")}

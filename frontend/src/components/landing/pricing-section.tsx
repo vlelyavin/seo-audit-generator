@@ -1,8 +1,8 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Check, Zap, Rocket, Building2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +21,6 @@ const PLAN_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
 export function PricingSection({ showIntro = true }: { showIntro?: boolean }) {
   const t = useTranslations("marketing.landing.pricing");
   const pt = useTranslations("plans");
-  const locale = useLocale();
   const { data: session } = useSession();
 
   return (
@@ -32,7 +31,7 @@ export function PricingSection({ showIntro = true }: { showIntro?: boolean }) {
             <p className="mb-4 text-center text-sm font-medium not-italic text-copper">
               {t("sectionLabel")}
             </p>
-            <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <h2 className="text-center text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
               {t("introTitle")}
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-center text-lg text-gray-400">
@@ -72,8 +71,8 @@ export function PricingSection({ showIntro = true }: { showIntro?: boolean }) {
             ];
 
             const ctaHref = session?.user
-              ? `/${locale}/dashboard/plans`
-              : `/${locale}/login`;
+              ? "/dashboard/plans"
+              : "/login";
 
             return (
               <div

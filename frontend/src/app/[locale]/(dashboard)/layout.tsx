@@ -66,7 +66,7 @@ export default function DashboardLayout({
   }
 
   if (!session?.user) {
-    redirect(`/${locale}/login`);
+    redirect("/login");
   }
 
   return (
