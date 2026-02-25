@@ -10,8 +10,6 @@ import {
   CheckCircle,
   XCircle,
   AlertTriangle,
-  ChevronDown,
-  ChevronUp,
   Play,
   ShieldCheck,
   ExternalLink,
@@ -313,7 +311,15 @@ export default function IndexingPage() {
     const res = await fetch("/api/indexing/sites");
     if (res.ok) {
       const data = await res.json();
-      setSites(data.sites ?? []);
+      const loaded: Site[] = data.sites ?? [];
+      setSites(loaded);
+      // Auto-select the first site if none selected
+      if (loaded.length > 0) {
+        setExpandedSite((prev) => {
+          if (prev && loaded.some((s) => s.id === prev)) return prev;
+          return loaded[0].id;
+        });
+      }
     }
   }, []);
 
@@ -414,8 +420,13 @@ export default function IndexingPage() {
         method: "DELETE",
       });
       if (res.ok) {
-        setSites((prev) => prev.filter((s) => s.id !== siteId));
-        if (expandedSite === siteId) setExpandedSite(null);
+        setSites((prev) => {
+          const remaining = prev.filter((s) => s.id !== siteId);
+          if (expandedSite === siteId) {
+            setExpandedSite(remaining.length > 0 ? remaining[0].id : null);
+          }
+          return remaining;
+        });
         showToast(t("siteDeleted"));
       } else {
         showToast(t("errorDeleteSite"), false);
@@ -429,10 +440,7 @@ export default function IndexingPage() {
   // ── Expand site — load stats + quota ─────────────────────────────────────
 
   const toggleSite = async (siteId: string) => {
-    if (expandedSite === siteId) {
-      setExpandedSite(null);
-      return;
-    }
+    if (expandedSite === siteId) return;
     setExpandedSite(siteId);
     await Promise.all([loadSiteStats(siteId), loadSiteQuota(siteId)]);
   };
@@ -461,10 +469,14 @@ export default function IndexingPage() {
     }
   }, [sites, globalQuota, loadSiteQuota]);
 
-  // Keep ref in sync with expanded site state (avoids stale closure in polling)
+  // Load stats when expanded site changes (including auto-select on first load)
   useEffect(() => {
     expandedSiteRef.current = expandedSite;
-  }, [expandedSite]);
+    if (expandedSite && !siteStats[expandedSite]) {
+      void loadSiteStats(expandedSite);
+      void loadSiteQuota(expandedSite);
+    }
+  }, [expandedSite, siteStats, loadSiteStats, loadSiteQuota]);
 
   // Poll every 10 s while the page is open; clean up on unmount
   useEffect(() => {
@@ -779,7 +791,7 @@ export default function IndexingPage() {
         )}
       </div>
 
-      {/* Sites list — shown when connected OR when data was retained after disconnect */}
+      {/* Sites — shown when connected OR when data was retained after disconnect */}
       {(isConnected || sites.length > 0) && (
         <div className="space-y-3">
           <h2 className="text-lg font-semibold text-white">{t("sites")}</h2>
@@ -793,33 +805,63 @@ export default function IndexingPage() {
               </p>
             </div>
           ) : (
-            sites.map((site) => (
-              <SiteCard
-                key={site.id}
-                site={site}
-                expanded={expandedSite === site.id}
-                gscConnected={isConnected ?? false}
-                stats={siteStats[site.id]}
-                quota={siteQuotas[site.id]}
-                syncingUrls={syncing[site.id] ?? false}
-                running={running[site.id] ?? false}
-                runStatus={runStatuses[site.id]}
-                copied={copied}
-                t={t}
-                onToggle={() => toggleSite(site.id)}
-                onSyncUrls={() => syncUrls(site.id)}
-                onRequestSubmit={requestSubmit}
-                onToggleAutoGoogle={(v) => toggleAutoIndex(site.id, "google", v)}
-                onToggleAutoBing={(v) => toggleAutoIndex(site.id, "bing", v)}
-                onRunNow={() => runNow(site.id)}
-                onCopyKey={(k) => copyKey(k)}
-                onVerifySuccess={() => handleVerifySuccess(site.id)}
-                onVerifyFail={() => handleVerifyFail(site.id)}
-                onDelete={() => setDeletingSiteId(site.id)}
-                autoIndexEnabled={autoIndexEnabled}
-                showToast={showToast}
-              />
-            ))
+            <>
+              {/* Site selector tabs — shown when 2+ sites */}
+              {sites.length > 1 && (
+                <div className="flex gap-1.5 overflow-x-auto rounded-lg border border-gray-800 bg-gray-950 p-1">
+                  {sites.map((site) => {
+                    const isSelected = expandedSite === site.id;
+                    const domain = site.domain.replace(/^(sc-domain:|https?:\/\/)/, "");
+                    return (
+                      <button
+                        key={site.id}
+                        onClick={() => toggleSite(site.id)}
+                        className={cn(
+                          "shrink-0 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                          isSelected
+                            ? "bg-copper/20 text-copper"
+                            : "text-gray-400 hover:bg-gray-900 hover:text-gray-200"
+                        )}
+                      >
+                        {domain}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Selected site card (always expanded) */}
+              {(() => {
+                const selectedSite = sites.find((s) => s.id === expandedSite) ?? sites[0];
+                return (
+                  <SiteCard
+                    key={selectedSite.id}
+                    site={selectedSite}
+                    expanded={true}
+                    gscConnected={isConnected ?? false}
+                    stats={siteStats[selectedSite.id]}
+                    quota={siteQuotas[selectedSite.id]}
+                    syncingUrls={syncing[selectedSite.id] ?? false}
+                    running={running[selectedSite.id] ?? false}
+                    runStatus={runStatuses[selectedSite.id]}
+                    copied={copied}
+                    t={t}
+                    onToggle={() => {}}
+                    onSyncUrls={() => syncUrls(selectedSite.id)}
+                    onRequestSubmit={requestSubmit}
+                    onToggleAutoGoogle={(v) => toggleAutoIndex(selectedSite.id, "google", v)}
+                    onToggleAutoBing={(v) => toggleAutoIndex(selectedSite.id, "bing", v)}
+                    onRunNow={() => runNow(selectedSite.id)}
+                    onCopyKey={(k) => copyKey(k)}
+                    onVerifySuccess={() => handleVerifySuccess(selectedSite.id)}
+                    onVerifyFail={() => handleVerifyFail(selectedSite.id)}
+                    onDelete={() => setDeletingSiteId(selectedSite.id)}
+                    autoIndexEnabled={autoIndexEnabled}
+                    showToast={showToast}
+                  />
+                );
+              })()}
+            </>
           )}
         </div>
       )}
@@ -1414,10 +1456,7 @@ function SiteCard({
   return (
     <div className="relative overflow-hidden rounded-xl border border-gray-800 bg-black">
       {/* Header row */}
-      <button
-        onClick={onToggle}
-        className="flex w-full items-center justify-between px-3 sm:px-6 py-4 text-left hover:bg-gray-900/50 transition-colors"
-      >
+      <div className="flex w-full items-center justify-between px-3 sm:px-6 py-4">
         <div className="flex items-center gap-3">
           <Search className="h-5 w-5 text-copper shrink-0" />
           <div>
@@ -1441,22 +1480,14 @@ function SiteCard({
               color="red"
             />
           </div>
-          {expanded ? (
-            <ChevronUp className="h-4 w-4 text-gray-400" />
-          ) : (
-            <ChevronDown className="h-4 w-4 text-gray-400" />
-          )}
+          <button
+            onClick={onDelete}
+            className="rounded-md p-1.5 text-gray-600 transition-colors hover:bg-red-950/50 hover:text-red-400"
+            title={t("deleteSite")}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
         </div>
-      </button>
-      {/* Delete site button — outside the toggle button so it doesn't expand/collapse */}
-      <div className="absolute right-12 top-4">
-        <button
-          onClick={(e) => { e.stopPropagation(); onDelete(); }}
-          className="rounded-md p-1.5 text-gray-600 transition-colors hover:bg-red-950/50 hover:text-red-400"
-          title={t("deleteSite")}
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
       </div>
 
       {/* Expanded content */}
