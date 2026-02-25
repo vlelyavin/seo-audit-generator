@@ -55,6 +55,11 @@ export default async function middleware(req: NextRequest) {
     }
   }
 
+  // Force internal protocol to http so next-intl rewrites don't inherit
+  // https from X-Forwarded-Proto (which causes EPROTO errors when Next.js
+  // tries to proxy the rewrite to its own HTTP server).
+  req.nextUrl.protocol = "http:";
+
   // All other routes (landing, pricing, indexator, etc.): pass through
   return intlMiddleware(req);
 }
