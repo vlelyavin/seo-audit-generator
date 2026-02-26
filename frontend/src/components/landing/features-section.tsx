@@ -1,17 +1,15 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Search, BarChart3, FileText, Activity, Globe, FileDown, Lightbulb, Zap } from "lucide-react";
-
-const STEP_ICONS = [Search, BarChart3, FileText] as const;
+import { BarChart3, Activity, Globe, FileDown, Lightbulb, Zap } from "lucide-react";
 
 export function FeaturesSection() {
   const t = useTranslations("marketing.landing.features");
 
   const steps = [
-    { num: "01", icon: STEP_ICONS[0], title: t("step1Title"), desc: t("step1Desc") },
-    { num: "02", icon: STEP_ICONS[1], title: t("step2Title"), desc: t("step2Desc") },
-    { num: "03", icon: STEP_ICONS[2], title: t("step3Title"), desc: t("step3Desc") },
+    { num: "01", title: t("step1Title"), desc: t("step1Desc") },
+    { num: "02", title: t("step2Title"), desc: t("step2Desc") },
+    { num: "03", title: t("step3Title"), desc: t("step3Desc") },
   ];
 
   const FEATURE_ICONS = [BarChart3, Activity, Globe, FileDown, Lightbulb, Zap];
@@ -34,21 +32,26 @@ export function FeaturesSection() {
           {t("subtitle")}
         </p>
 
-        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {steps.map((step) => (
-            <div key={step.num} className="rounded-xl border border-gray-800 bg-gray-950 p-6">
-              <span className="text-4xl font-bold text-copper/30">
-                {step.num}
-              </span>
-              <div className="mt-4 flex items-center gap-3">
-                <step.icon className="h-6 w-6 text-copper" />
-                <h3 className="text-xl font-semibold text-white">
-                  {step.title}
-                </h3>
+        <div className="mx-auto mt-16 max-w-3xl flex flex-col">
+          {steps.map((step, i) => (
+            <div key={step.num}>
+              <div className="border-t border-[#282828]" />
+              <div className="flex gap-6 py-10 sm:gap-10">
+                <span className="shrink-0 text-5xl font-bold leading-none bg-gradient-to-b from-copper to-copper-light bg-clip-text text-transparent sm:text-6xl lg:text-7xl">
+                  {step.num}
+                </span>
+                <div className="pt-1">
+                  <h3 className="text-xl font-semibold text-white sm:text-2xl">
+                    {step.title}
+                  </h3>
+                  <p className="mt-2 font-medium text-[#e9e9e9]" style={{ fontSize: "clamp(.8rem, 1.25vw, 1.25rem)", lineHeight: "150%" }}>
+                    {step.desc}
+                  </p>
+                </div>
               </div>
-              <p className="mt-3 font-medium text-[#e9e9e9]" style={{ fontSize: "clamp(.8rem, 1.25vw, 1.25rem)", lineHeight: "150%" }}>
-                {step.desc}
-              </p>
+              {i === steps.length - 1 && (
+                <div className="border-t border-[#282828]" />
+              )}
             </div>
           ))}
         </div>
