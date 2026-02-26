@@ -731,17 +731,18 @@ export default function IndexingPage() {
 
               {/* Inline quota pills */}
               {globalQuota && (
-                <div className="flex items-center gap-3 ml-auto text-xs text-gray-400">
-                  <span>
-                    {t("googleQuota")}{" "}
+                <>
+                  <span className="flex items-center gap-1.5 rounded-full border border-gray-800 px-3 py-1.5 text-xs text-gray-400">
+                    <Send className="h-3 w-3" />
+                    {t("googleQuota")}
                     <span className="text-gray-200">{globalQuota.googleSubmissions.used}/{globalQuota.googleSubmissions.limit}</span>
                   </span>
-                  <span className="text-gray-700">&middot;</span>
-                  <span>
-                    {t("inspectionQuota")}{" "}
+                  <span className="flex items-center gap-1.5 rounded-full border border-gray-800 px-3 py-1.5 text-xs text-gray-400">
+                    <Search className="h-3 w-3" />
+                    {t("inspectionQuota")}
                     <span className="text-gray-200">{globalQuota.inspections.used}/{globalQuota.inspections.limit}</span>
                   </span>
-                </div>
+                </>
               )}
             </>
           )}
