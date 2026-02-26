@@ -9,7 +9,7 @@ export default function LoginPage() {
   const locale = useLocale();
 
   useEffect(() => {
-    signIn("google", { callbackUrl: localePath(locale, "/dashboard") });
+    signIn("google", { callbackUrl: localePath(locale, "/dashboard/indexator") });
   }, [locale]);
 
   return null;

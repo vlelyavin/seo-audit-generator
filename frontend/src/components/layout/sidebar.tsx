@@ -27,17 +27,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   const isAdmin = session?.user?.role === "admin";
 
   const navItems = [
-    {
-      href: "/dashboard",
-      label: t("dashboard"),
-      icon: LayoutDashboard,
-    },
+    // HIDDEN: Dashboard (auditor list) — /dashboard now redirects to /dashboard/indexator
+    // { href: "/dashboard", label: t("dashboard"), icon: LayoutDashboard },
     // HIDDEN: Auditor feature hidden from nav (route still works)
-    // {
-    //   href: "/dashboard/auditor/new",
-    //   label: t("newAudit"),
-    //   icon: Plus,
-    // },
+    // { href: "/dashboard/auditor/new", label: t("newAudit"), icon: Plus },
     {
       href: "/dashboard/indexator",
       label: t("indexing"),

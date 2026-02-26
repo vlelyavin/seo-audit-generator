@@ -46,11 +46,11 @@ export default async function middleware(req: NextRequest) {
     }
   }
 
-  // Auth pages: redirect authenticated users to dashboard
+  // Auth pages: redirect authenticated users to indexator
   if (path === "/login" || path === "/register") {
     if (hasSessionCookie(req)) {
       const locale = getLocale(pathname);
-      return NextResponse.redirect(new URL(`/${locale}/dashboard`, req.url));
+      return NextResponse.redirect(new URL(`/${locale}/dashboard/indexator`, req.url));
     }
   }
 

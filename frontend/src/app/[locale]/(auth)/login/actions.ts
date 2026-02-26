@@ -5,5 +5,5 @@ import { localePath } from "@/i18n/navigation";
 
 export async function signInWithGoogle(formData: FormData) {
   const locale = (formData.get("locale") as string) || "en";
-  await signIn("google", { redirectTo: localePath(locale, "/dashboard") });
+  await signIn("google", { redirectTo: localePath(locale, "/dashboard/indexator") });
 }

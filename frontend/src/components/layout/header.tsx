@@ -36,7 +36,8 @@ export function Header() {
     : emailLocal?.[0]?.toUpperCase() || "?";
 
   const navItems = [
-    { href: "/dashboard", label: t("dashboard") },
+    // HIDDEN: Dashboard (auditor list) — /dashboard now redirects to /dashboard/indexator
+    // { href: "/dashboard", label: t("dashboard") },
     { href: "/dashboard/indexator", label: t("indexing") },
     { href: "/dashboard/plans", label: t("plans") },
     { href: "/dashboard/settings", label: t("settings") },
@@ -60,7 +61,7 @@ export function Header() {
         <div className="mx-auto flex h-14 max-w-6xl items-center px-4 lg:px-6">
           {/* Logo - left */}
           <Link
-            href="/dashboard"
+            href="/dashboard/indexator"
             className="flex shrink-0 items-center gap-2 font-semibold"
           >
             <Image src="/images/Indexator-logo.png" alt="Indexator" width={200} height={50} className="h-4 w-auto -mt-[2px] md:h-5 md:-mt-[6px]" />
@@ -120,7 +121,7 @@ export function Header() {
               <button
                 onClick={() =>
                   signIn("google", {
-                    callbackUrl: localePath(locale, "/dashboard"),
+                    callbackUrl: localePath(locale, "/dashboard/indexator"),
                   })
                 }
                 className="rounded-md bg-gradient-to-r from-copper to-copper-light px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
