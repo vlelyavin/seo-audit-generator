@@ -229,9 +229,11 @@
     "noWatermark": "No watermark in exported reports",
     "maxSites": "{count, plural, one {# site} other {# sites}}",
     "autoIndexing": "Auto-indexing enabled",
+    "autoIndexingDisabled": "Auto-indexing disabled",
     "manualOnly": "Manual submissions only",
     "urlHealthMonitoring": "URL health monitoring",
     "reportFrequency": "{frequency} email reports",
+    "noEmailReports": "No email reports",
     "weekly": "Weekly",
     "daily": "Daily"
   },

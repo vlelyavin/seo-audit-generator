@@ -28,10 +28,10 @@ export function PricingSection() {
   return (
     <section id="pricing" className="bg-black py-24">
       <div className="mx-auto max-w-6xl px-4 lg:px-6">
-        <p className="mb-2 text-center text-sm font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent">
+        <p className="mb-2 text-center text-base md:text-2xl font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent">
           {t("sectionLabel")}
         </p>
-        <h2 className="text-center text-4xl md:text-5xl font-bold text-white">
+        <h2 className="mx-auto max-w-3xl text-center text-4xl md:text-6xl font-bold text-white">
           {t.rich("title", { br: () => <br /> })}
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-center text-base text-gray-400">
@@ -65,11 +65,11 @@ export function PricingSection() {
 
             const indexatorFeatures: { text: string; present: boolean }[] = [
               { text: pt("maxSites", { count: plan.maxSites }), present: true },
-              { text: pt("autoIndexing"), present: plan.autoIndexing },
+              { text: plan.autoIndexing ? pt("autoIndexing") : pt("autoIndexingDisabled"), present: plan.autoIndexing },
               {
                 text: plan.reportFrequency !== "none"
                   ? pt("reportFrequency", { frequency: pt(plan.reportFrequency) })
-                  : pt("reportFrequency", { frequency: "—" }),
+                  : pt("noEmailReports"),
                 present: plan.reportFrequency !== "none",
               },
             ];

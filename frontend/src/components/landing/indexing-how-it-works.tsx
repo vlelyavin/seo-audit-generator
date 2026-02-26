@@ -15,7 +15,7 @@ export function IndexingHowItWorks() {
   return (
     <section className="bg-black py-24">
       <div className="mx-auto max-w-3xl px-4 lg:px-6">
-        <p className="mb-2 text-center text-sm font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent">
+        <p className="mb-2 text-center text-base md:text-2xl font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent">
           {t("sectionLabel")}
         </p>
         <h2 className="text-center text-4xl md:text-5xl font-bold text-white">

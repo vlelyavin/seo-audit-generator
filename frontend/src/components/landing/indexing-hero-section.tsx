@@ -15,7 +15,7 @@ export function IndexingHeroSection() {
 
       <div className="relative mx-auto max-w-6xl px-4 lg:px-6">
         <div className="flex flex-col items-center text-center">
-          <p className="mb-2 text-sm font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent">
+          <p className="mb-2 text-base md:text-2xl font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent">
             {t("sectionLabel")}
           </p>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white">

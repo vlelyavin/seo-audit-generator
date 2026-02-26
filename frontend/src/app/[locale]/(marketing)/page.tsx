@@ -1,15 +1,17 @@
-import { HeroSection } from "@/components/landing/hero-section";
-import { FeaturesSection } from "@/components/landing/features-section";
+import { IndexingHeroSection } from "@/components/landing/indexing-hero-section";
+import { IndexingHowItWorks } from "@/components/landing/indexing-how-it-works";
+import { IndexingFeaturesSection } from "@/components/landing/indexing-features-section";
 import { PricingSection } from "@/components/landing/pricing-section";
-import { FaqSection } from "@/components/landing/faq-section";
+import { IndexingFaqSection } from "@/components/landing/indexing-faq-section";
 
 export default function LandingPage() {
   return (
     <>
-      <HeroSection />
-      <FeaturesSection />
+      <IndexingHeroSection />
+      <IndexingHowItWorks />
+      <IndexingFeaturesSection />
       <PricingSection />
-      <FaqSection />
+      <IndexingFaqSection />
     </>
   );
 }

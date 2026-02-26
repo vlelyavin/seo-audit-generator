@@ -15,16 +15,12 @@ export function HeroSection() {
 
       <div className="relative mx-auto max-w-6xl px-4 lg:px-6">
         <div className="flex flex-col items-center text-center">
-          <p className="mb-2 font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent" style={{ fontSize: "clamp(1rem, 1.8vw, 1.8rem)" }}>
+          <p className="mb-2 text-base md:text-2xl font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent">
             {t("sectionLabel")}
           </p>
-          <h1 className="font-bold tracking-tight text-white" style={{ fontSize: "clamp(2rem, 4vw, 4rem)", lineHeight: 1.2 }}>
+          <h1 className="mx-auto max-w-3xl font-bold tracking-tight text-white" style={{ fontSize: "clamp(2rem, 4vw, 4rem)", lineHeight: 1.2 }}>
             {t("title")}
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl font-medium text-[#e9e9e9]" style={{ fontSize: "clamp(.8rem, 1.25vw, 1.25rem)", lineHeight: "150%" }}>
-            {t("subtitle")}
-          </p>
-
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/dashboard/auditor/new"

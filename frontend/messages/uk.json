@@ -229,9 +229,11 @@
     "noWatermark": "Без водяного знака у звітах",
     "maxSites": "{count, plural, one {# сайт} few {# сайти} other {# сайтів}}",
     "autoIndexing": "Авто-індексація увімкнена",
+    "autoIndexingDisabled": "Авто-індексація вимкнена",
     "manualOnly": "Тільки ручне надсилання",
     "urlHealthMonitoring": "Моніторинг стану URL",
     "reportFrequency": "{frequency} звіти на email",
+    "noEmailReports": "Без email-звітів",
     "weekly": "Щотижневі",
     "daily": "Щоденні"
   },

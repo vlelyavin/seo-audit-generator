@@ -63,7 +63,7 @@ export function Header() {
             href="/dashboard"
             className="flex shrink-0 items-center gap-2 font-semibold"
           >
-            <span className="text-lg font-bold text-white">SEO Audit</span>
+            <Image src="/images/Indexator-logo.png" alt="Indexator" width={200} height={50} className="h-7 w-auto md:h-10" />
           </Link>
 
           {/* Nav links - centered (desktop) */}

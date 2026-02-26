@@ -229,9 +229,11 @@
     "noWatermark": "Без водяного знака в отчётах",
     "maxSites": "{count, plural, one {# сайт} few {# сайта} other {# сайтов}}",
     "autoIndexing": "Авто-индексация включена",
+    "autoIndexingDisabled": "Авто-индексация отключена",
     "manualOnly": "Только ручная отправка",
     "urlHealthMonitoring": "Мониторинг состояния URL",
     "reportFrequency": "{frequency} отчёты на email",
+    "noEmailReports": "Без email-отчётов",
     "weekly": "Еженедельные",
     "daily": "Ежедневные"
   },
