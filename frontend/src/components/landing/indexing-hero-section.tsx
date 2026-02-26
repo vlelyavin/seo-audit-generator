@@ -18,7 +18,7 @@ export function IndexingHeroSection() {
           <p className="mb-2 text-base md:text-2xl font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent">
             {t("sectionLabel")}
           </p>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
+          <h1 className="mx-auto max-w-3xl text-4xl md:text-5xl font-bold tracking-tight text-white">
             {t("title")}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base text-gray-400">
@@ -42,7 +42,7 @@ export function IndexingHeroSection() {
           </div>
         </div>
 
-        <div className="mt-16">
+        <div className="mt-16 hidden sm:block">
           <Image
             src="/images/indexing-dashboard-screenshot.png"
             alt={t("title")}

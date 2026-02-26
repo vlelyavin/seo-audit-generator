@@ -63,7 +63,7 @@ export function Header() {
             href="/dashboard"
             className="flex shrink-0 items-center gap-2 font-semibold"
           >
-            <Image src="/images/Indexator-logo.png" alt="Indexator" width={200} height={50} className="h-7 w-auto md:h-10" />
+            <Image src="/images/Indexator-logo.png" alt="Indexator" width={200} height={50} className="h-4 w-auto -mt-[2px] md:h-6 md:-mt-[6px]" />
           </Link>
 
           {/* Nav links - centered (desktop) */}

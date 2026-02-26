@@ -15,13 +15,6 @@ export function MarketingHeader() {
 
   const user = session?.user;
 
-  const navLinks = [
-    ...(user ? [{ href: "/dashboard" as const, label: t("dashboard") }] : []),
-    // HIDDEN: Auditor link hidden from marketing nav (route still works)
-    // { href: "/" as const, label: t("auditor") },
-    { href: "/indexator" as const, label: t("indexator") },
-    { href: "/pricing" as const, label: t("pricing") },
-  ];
   const rawName = user?.name?.trim();
   const firstName = rawName ? rawName.split(/\s+/)[0] : undefined;
   const emailLocal = user?.email?.split("@")[0];
@@ -40,23 +33,11 @@ export function MarketingHeader() {
       <div className="relative mx-auto flex h-14 max-w-6xl items-center px-4 lg:px-6">
         <div className="flex flex-1 items-center">
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/images/Indexator-logo.png" alt="Indexator" width={200} height={50} className="h-7 w-auto md:h-10" priority />
+            <Image src="/images/Indexator-logo.png" alt="Indexator" width={200} height={50} className="h-4 w-auto -mt-[2px] md:h-6 md:-mt-[6px]" priority />
           </Link>
         </div>
 
-        <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-1 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="rounded-md px-3 py-2 text-sm font-medium text-gray-400 transition-colors hover:text-white"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex flex-1 items-center justify-end gap-3">
+<div className="flex flex-1 items-center justify-end gap-3">
           <LocaleSwitcher />
           {user ? (
             <div className="flex items-center gap-2">

@@ -28,7 +28,7 @@ export function IndexingFeaturesSection() {
         <p className="mb-2 text-center text-base md:text-2xl font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent">
           {t("sectionLabel")}
         </p>
-        <h2 className="text-center text-4xl md:text-5xl font-bold text-white">
+        <h2 className="mx-auto max-w-3xl text-center text-4xl md:text-5xl font-bold text-white">
           {t("title")}
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-center text-base text-gray-400">
