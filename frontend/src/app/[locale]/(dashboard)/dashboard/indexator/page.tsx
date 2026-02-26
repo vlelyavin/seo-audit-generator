@@ -251,7 +251,6 @@ export default function IndexingPage() {
   const [gscStatus, setGscStatus] = useState<GscStatus | null>(null);
   const [sites, setSites] = useState<Site[]>([]);
   const [loadingStatus, setLoadingStatus] = useState(true);
-  const [expandedSite, setExpandedSite] = useState<string | null>(null);
   const [siteStats, setSiteStats] = useState<Record<string, SiteStats>>({});
   const [siteQuotas, setSiteQuotas] = useState<Record<string, Quota>>({});
   const [globalQuota, setGlobalQuota] = useState<Quota | null>(null);
@@ -286,7 +285,6 @@ export default function IndexingPage() {
 
   // Polling refs
   const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const expandedSiteRef = useRef<string | null>(null);
 
   const showToast = useCallback((msg: string, ok = true) => {
     setToast({ msg, ok });
@@ -305,6 +303,23 @@ export default function IndexingPage() {
     }
   }, []);
 
+  const loadSiteStats = useCallback(async (siteId: string) => {
+    const res = await fetch(`/api/indexing/sites/${siteId}/stats`);
+    if (res.ok) {
+      const data = await res.json();
+      setSiteStats((prev) => ({ ...prev, [siteId]: data }));
+    }
+  }, []);
+
+  const loadSiteQuota = useCallback(async (siteId: string) => {
+    const res = await fetch(`/api/indexing/sites/${siteId}/quota`);
+    if (res.ok) {
+      const data = await res.json();
+      setSiteQuotas((prev) => ({ ...prev, [siteId]: data }));
+      setGlobalQuota(data);
+    }
+  }, []);
+
   // ── Load sites ────────────────────────────────────────────────────────────
 
   const loadSites = useCallback(async () => {
@@ -313,15 +328,13 @@ export default function IndexingPage() {
       const data = await res.json();
       const loaded: Site[] = data.sites ?? [];
       setSites(loaded);
-      // Auto-select the first site if none selected
-      if (loaded.length > 0) {
-        setExpandedSite((prev) => {
-          if (prev && loaded.some((s) => s.id === prev)) return prev;
-          return loaded[0].id;
-        });
+      // Load stats & quota for all sites
+      for (const s of loaded) {
+        void loadSiteStats(s.id);
+        void loadSiteQuota(s.id);
       }
     }
-  }, []);
+  }, [loadSiteStats, loadSiteQuota]);
 
   // ── Load plan limit ──────────────────────────────────────────────────────
 
@@ -420,13 +433,7 @@ export default function IndexingPage() {
         method: "DELETE",
       });
       if (res.ok) {
-        setSites((prev) => {
-          const remaining = prev.filter((s) => s.id !== siteId);
-          if (expandedSite === siteId) {
-            setExpandedSite(remaining.length > 0 ? remaining[0].id : null);
-          }
-          return remaining;
-        });
+        setSites((prev) => prev.filter((s) => s.id !== siteId));
         showToast(t("siteDeleted"));
       } else {
         showToast(t("errorDeleteSite"), false);
@@ -437,62 +444,16 @@ export default function IndexingPage() {
     }
   };
 
-  // ── Expand site — load stats + quota ─────────────────────────────────────
-
-  const toggleSite = async (siteId: string) => {
-    if (expandedSite === siteId) return;
-    setExpandedSite(siteId);
-    await Promise.all([loadSiteStats(siteId), loadSiteQuota(siteId)]);
-  };
-
-  const loadSiteStats = useCallback(async (siteId: string) => {
-    const res = await fetch(`/api/indexing/sites/${siteId}/stats`);
-    if (res.ok) {
-      const data = await res.json();
-      setSiteStats((prev) => ({ ...prev, [siteId]: data }));
-    }
-  }, []);
-
-  const loadSiteQuota = useCallback(async (siteId: string) => {
-    const res = await fetch(`/api/indexing/sites/${siteId}/quota`);
-    if (res.ok) {
-      const data = await res.json();
-      setSiteQuotas((prev) => ({ ...prev, [siteId]: data }));
-      setGlobalQuota(data);
-    }
-  }, []);
-
-  // Load global quota from the first available site when sites load
-  useEffect(() => {
-    if (sites.length > 0 && !globalQuota) {
-      loadSiteQuota(sites[0].id);
-    }
-  }, [sites, globalQuota, loadSiteQuota]);
-
-  // Load stats when expanded site changes (including auto-select on first load)
-  useEffect(() => {
-    expandedSiteRef.current = expandedSite;
-    if (expandedSite && !siteStats[expandedSite]) {
-      void loadSiteStats(expandedSite);
-      void loadSiteQuota(expandedSite);
-    }
-  }, [expandedSite, siteStats, loadSiteStats, loadSiteQuota]);
-
   // Poll every 10 s while the page is open; clean up on unmount
   useEffect(() => {
     pollIntervalRef.current = setInterval(() => {
       void loadSites();
-      const siteId = expandedSiteRef.current;
-      if (siteId) {
-        void loadSiteStats(siteId);
-        void loadSiteQuota(siteId);
-      }
     }, 10_000);
 
     return () => {
       if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
     };
-  }, [loadSites, loadSiteStats, loadSiteQuota]);
+  }, [loadSites]);
 
   // ── Sync URLs for a site ──────────────────────────────────────────────────
 
@@ -805,63 +766,35 @@ export default function IndexingPage() {
               </p>
             </div>
           ) : (
-            <>
-              {/* Site selector tabs — shown when 2+ sites */}
-              {sites.length > 1 && (
-                <div className="flex gap-1.5 overflow-x-auto rounded-lg border border-gray-800 bg-gray-950 p-1">
-                  {sites.map((site) => {
-                    const isSelected = expandedSite === site.id;
-                    const domain = site.domain.replace(/^(sc-domain:|https?:\/\/)/, "");
-                    return (
-                      <button
-                        key={site.id}
-                        onClick={() => toggleSite(site.id)}
-                        className={cn(
-                          "shrink-0 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-                          isSelected
-                            ? "bg-copper/20 text-copper"
-                            : "text-gray-400 hover:bg-gray-900 hover:text-gray-200"
-                        )}
-                      >
-                        {domain}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Selected site card (always expanded) */}
-              {(() => {
-                const selectedSite = sites.find((s) => s.id === expandedSite) ?? sites[0];
-                return (
-                  <SiteCard
-                    key={selectedSite.id}
-                    site={selectedSite}
-                    expanded={true}
-                    gscConnected={isConnected ?? false}
-                    stats={siteStats[selectedSite.id]}
-                    quota={siteQuotas[selectedSite.id]}
-                    syncingUrls={syncing[selectedSite.id] ?? false}
-                    running={running[selectedSite.id] ?? false}
-                    runStatus={runStatuses[selectedSite.id]}
-                    copied={copied}
-                    t={t}
-                    onToggle={() => {}}
-                    onSyncUrls={() => syncUrls(selectedSite.id)}
-                    onRequestSubmit={requestSubmit}
-                    onToggleAutoGoogle={(v) => toggleAutoIndex(selectedSite.id, "google", v)}
-                    onToggleAutoBing={(v) => toggleAutoIndex(selectedSite.id, "bing", v)}
-                    onRunNow={() => runNow(selectedSite.id)}
-                    onCopyKey={(k) => copyKey(k)}
-                    onVerifySuccess={() => handleVerifySuccess(selectedSite.id)}
-                    onVerifyFail={() => handleVerifyFail(selectedSite.id)}
-                    onDelete={() => setDeletingSiteId(selectedSite.id)}
-                    autoIndexEnabled={autoIndexEnabled}
-                    showToast={showToast}
-                  />
-                );
-              })()}
-            </>
+            <div className="flex flex-col gap-4">
+              {sites.map((site) => (
+                <SiteCard
+                  key={site.id}
+                  site={site}
+                  expanded={true}
+                  gscConnected={isConnected ?? false}
+                  stats={siteStats[site.id]}
+                  quota={siteQuotas[site.id]}
+                  syncingUrls={syncing[site.id] ?? false}
+                  running={running[site.id] ?? false}
+                  runStatus={runStatuses[site.id]}
+                  copied={copied}
+                  t={t}
+                  onToggle={() => {}}
+                  onSyncUrls={() => syncUrls(site.id)}
+                  onRequestSubmit={requestSubmit}
+                  onToggleAutoGoogle={(v) => toggleAutoIndex(site.id, "google", v)}
+                  onToggleAutoBing={(v) => toggleAutoIndex(site.id, "bing", v)}
+                  onRunNow={() => runNow(site.id)}
+                  onCopyKey={(k) => copyKey(k)}
+                  onVerifySuccess={() => handleVerifySuccess(site.id)}
+                  onVerifyFail={() => handleVerifyFail(site.id)}
+                  onDelete={() => setDeletingSiteId(site.id)}
+                  autoIndexEnabled={autoIndexEnabled}
+                  showToast={showToast}
+                />
+              ))}
+            </div>
           )}
         </div>
       )}
