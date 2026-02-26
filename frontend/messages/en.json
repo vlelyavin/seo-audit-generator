@@ -590,15 +590,15 @@
     },
     "terms": {
       "title": "Terms of Service",
-      "lastUpdated": "Last updated: February 23, 2026",
+      "lastUpdated": "Last updated: February 27, 2026",
       "sections": {
         "introduction": {
           "heading": "Introduction",
-          "body": "Welcome to indexator.lvdev.co (\"Service\"), operated by SEO Audit Online. By accessing or using our Service, you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree, do not use the Service."
+          "body": "Welcome to Indexator (indexator.lvdev.co) (\"Service\"). By accessing or using our Service, you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree, do not use the Service."
         },
         "serviceDescription": {
           "heading": "Service Description",
-          "body": "SEO Audit Tool: Automated website analysis generating comprehensive SEO reports covering meta tags, headings, images, links, structured data, security, performance, and more.\n\nURL Indexing Service: Submission of website URLs to Google, Bing, and Yandex search engines for faster indexing, with monitoring of index coverage via Google Search Console integration."
+          "body": "URL Indexing Service: Submit your website URLs to Google and Bing (via IndexNow) for faster indexing. Monitor index coverage through Google Search Console integration, configure auto-indexing, and track your full submission history.\n\nSEO Audit Tool: Automated website analysis covering meta tags, headings, images, links, structured data, security, and performance. Available as an additional feature."
         },
         "accounts": {
           "heading": "Accounts & Registration",
@@ -614,7 +614,7 @@
         },
         "freeTier": {
           "heading": "Free Tier Limitations",
-          "body": "3 audits per month. Maximum 20 pages per audit. PDF export with watermark. No indexing credits included."
+          "body": "1 connected site. Manual URL submission only — auto-indexing not included. No scheduled indexing runs. No email reports."
         },
         "noWarranty": {
           "heading": "Service Limitations & No Warranty",
@@ -630,11 +630,11 @@
         },
         "dataPrivacy": {
           "heading": "Data & Privacy",
-          "body": "We crawl websites you submit for the purpose of generating audit reports. We do not sell, share, or distribute your data to third parties. Google OAuth data is used solely for authentication purposes. Audit and crawl data is retained for 30 days, then automatically deleted. You may request deletion of your data at any time by contacting us."
+          "body": "We access URL and coverage data from your connected sites via Google Search Console integration to power the indexing service. We do not sell, share, or distribute your data to third parties. Google OAuth data is used solely for authentication purposes. URL data and indexing history are retained for 30 days, then automatically deleted. You may request deletion of your data at any time by contacting us."
         },
         "intellectualProperty": {
           "heading": "Intellectual Property",
-          "body": "The Service, including its design, code, and content, is owned by SEO Audit Online. Audit reports generated for your websites are yours to use, share, and distribute. White-label reports (Agency plan) may be branded with your own logo and presented to your clients."
+          "body": "The Service, including its design, code, and content, is owned by Indexator. Reports and indexing data generated for your websites are yours to use, share, and distribute. White-label features (Agency plan) may be branded with your own logo and presented to your clients."
         },
         "refundPolicy": {
           "heading": "Refund Policy",

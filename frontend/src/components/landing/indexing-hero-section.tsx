@@ -13,12 +13,12 @@ export function IndexingHeroSection() {
 
       <div className="relative mx-auto max-w-6xl px-4 lg:px-6">
         <div className="flex flex-col items-center text-center">
-          <p className="mb-2 text-base md:text-2xl font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent">
-            {t("sectionLabel")}
-          </p>
           <h1 className="mx-auto max-w-3xl text-4xl md:text-5xl font-bold tracking-tight text-white">
             {t("title")}
           </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-base text-gray-400">
+            {t("subtitle")}
+          </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/dashboard/indexator"
