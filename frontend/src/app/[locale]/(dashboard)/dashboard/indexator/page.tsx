@@ -1446,27 +1446,86 @@ function SiteCard({
           {/* ── Overview Tab ─────────────────────────────────────────────── */}
           {activeTab === "overview" && (
             <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-5">
-              {/* Stats strip */}
-              {stats ? (
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-                  {[
-                    { label: t("total"), value: stats.total, color: "text-gray-200" },
-                    { label: t("indexed"), value: stats.indexed, color: "text-green-400" },
-                    { label: t("notIndexed"), value: stats.notIndexed, color: "text-red-400" },
-                    { label: t("pending"), value: stats.pending, color: "text-yellow-400" },
-                    { label: t("submitted"), value: stats.submittedGoogle + stats.submittedBing, color: "text-blue-400" },
-                    { label: t("failed"), value: stats.failed, color: "text-red-400" },
-                    { label: t("pages404"), value: stats.is404s, color: "text-orange-400" },
-                  ].map((s, i, arr) => (
-                    <span key={s.label} className="flex items-center gap-1.5">
-                      <span className="text-gray-400">{s.label}</span>
-                      <span className={cn("font-semibold", s.color)}>{s.value}</span>
-                      {i < arr.length - 1 && <span className="text-gray-700 ml-2">&middot;</span>}
-                    </span>
-                  ))}
+              {/* Stats section */}
+              {stats ? (() => {
+                const total = stats.total || 1;
+                const pctIndexed = Math.round((stats.indexed / total) * 100);
+                const pctNotIndexed = Math.round((stats.notIndexed / total) * 100);
+                const pctPending = Math.round((stats.pending / total) * 100);
+                const submitted = stats.submittedGoogle + stats.submittedBing;
+
+                const segments = [
+                  { pct: stats.indexed / total * 100, bg: "bg-green-500" },
+                  { pct: stats.notIndexed / total * 100, bg: "bg-red-500" },
+                  { pct: stats.pending / total * 100, bg: "bg-yellow-500" },
+                ];
+
+                const pills = [
+                  { label: t("total"), value: stats.total, dot: "bg-gray-400" },
+                  { label: t("submitted"), value: submitted, dot: "bg-blue-400" },
+                  { label: t("failed"), value: stats.failed, dot: "bg-red-400" },
+                  { label: t("pages404"), value: stats.is404s, dot: "bg-orange-400" },
+                ];
+
+                return (
+                  <div className="space-y-4">
+                    {/* Progress bar */}
+                    <div>
+                      <div className="flex h-3 w-full overflow-hidden rounded-full bg-gray-800">
+                        {segments.map((seg, i) =>
+                          seg.pct > 0 ? (
+                            <div
+                              key={i}
+                              className={cn("h-full transition-all", seg.bg)}
+                              style={{ width: `${seg.pct}%` }}
+                            />
+                          ) : null
+                        )}
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs">
+                        <span className="flex items-center gap-1.5">
+                          <span className="h-2.5 w-2.5 rounded-full bg-green-500" />
+                          <span className="text-gray-400">{t("indexed")}</span>
+                          <span className="font-semibold text-green-400">{stats.indexed}</span>
+                          <span className="text-gray-600">({pctIndexed}%)</span>
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
+                          <span className="text-gray-400">{t("notIndexed")}</span>
+                          <span className="font-semibold text-red-400">{stats.notIndexed}</span>
+                          <span className="text-gray-600">({pctNotIndexed}%)</span>
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <span className="h-2.5 w-2.5 rounded-full bg-yellow-500" />
+                          <span className="text-gray-400">{t("pending")}</span>
+                          <span className="font-semibold text-yellow-400">{stats.pending}</span>
+                          <span className="text-gray-600">({pctPending}%)</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Stat pills */}
+                    <div className="flex flex-wrap gap-2">
+                      {pills.map((p) => (
+                        <span
+                          key={p.label}
+                          className="inline-flex items-center gap-1.5 rounded-md border border-gray-800 bg-gray-950 px-3 py-1.5 text-xs"
+                        >
+                          <span className={cn("h-2 w-2 rounded-full", p.dot)} />
+                          <span className="text-gray-400">{p.label}</span>
+                          <span className="font-semibold text-white">{p.value}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })() : (
+                <div className="space-y-3">
+                  <div className="h-3 w-full rounded-full bg-gray-800 animate-pulse" />
+                  <div className="flex gap-2">
+                    {[1,2,3,4].map(i => <div key={i} className="h-8 w-24 rounded-md bg-gray-800 animate-pulse" />)}
+                  </div>
                 </div>
-              ) : (
-                <div className="h-5 w-96 rounded bg-gray-800 animate-pulse" />
               )}
 
               {/* Actions */}
