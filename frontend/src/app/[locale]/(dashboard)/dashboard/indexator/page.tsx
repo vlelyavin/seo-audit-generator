@@ -603,7 +603,7 @@ export default function IndexingPage() {
         await loadSiteStats(siteId);
         await loadSiteQuota(siteId);
         if (newUrls === 0 && submittedGoogle === 0 && submittedBing === 0) {
-          toast(t("noNewUrls"));
+          toast(t("autoIndexNoChanges"));
         } else {
           const parts = [
             t("newCount", { count: newUrls }),
@@ -615,24 +615,28 @@ export default function IndexingPage() {
         }
       } else {
         const data = await res.json().catch(() => ({}));
+        const errorMsg = data.error ?? "Unknown error";
         setRunStatuses((prev) => ({
           ...prev,
           [siteId]: {
             phase: "error",
-            errorMsg: data.error ?? "Unknown error",
+            errorMsg,
             ranAt: new Date().toISOString(),
           },
         }));
+        toast.error(`Auto-index failed: ${errorMsg}`);
       }
     } catch (e) {
+      const errorMsg = e instanceof Error ? e.message : "Network error";
       setRunStatuses((prev) => ({
         ...prev,
         [siteId]: {
           phase: "error",
-          errorMsg: e instanceof Error ? e.message : "Network error",
+          errorMsg,
           ranAt: new Date().toISOString(),
         },
       }));
+      toast.error(`Auto-index failed: ${errorMsg}`);
     } finally {
       setRunning((prev) => ({ ...prev, [siteId]: false }));
     }
@@ -1564,172 +1568,77 @@ function SiteCard({
                     onChange={onToggleAutoGoogle}
                     disabled={!autoIndexEnabled}
                   />
-                  <Toggle
-                    label={t("autoIndexBing")}
-                    tooltip={
-                      !autoIndexEnabled
-                        ? t("upgradeToEnableAutoIndex")
-                        : !site.indexnowKeyVerified
-                          ? t("tooltipAutoBingDisabled")
-                          : t("tooltipAutoBing")
-                    }
-                    checked={site.autoIndexBing}
-                    onChange={onToggleAutoBing}
-                    disabled={!autoIndexEnabled || !site.indexnowKeyVerified}
-                    onDisabledClick={autoIndexEnabled ? () => setIndexNowModal({ action: () => {} }) : undefined}
-                  />
+
+                  {/* Bing toggle row with inline IndexNow status */}
+                  <div className="flex items-center gap-x-3 gap-y-2 flex-wrap">
+                    <Toggle
+                      label={t("autoIndexBing")}
+                      tooltip={
+                        !autoIndexEnabled
+                          ? t("upgradeToEnableAutoIndex")
+                          : !site.indexnowKeyVerified
+                            ? t("tooltipAutoBingDisabled")
+                            : t("tooltipAutoBing")
+                      }
+                      checked={site.autoIndexBing}
+                      onChange={onToggleAutoBing}
+                      disabled={!autoIndexEnabled || !site.indexnowKeyVerified}
+                      onDisabledClick={autoIndexEnabled ? () => setIndexNowModal({ action: () => {} }) : undefined}
+                    />
+                    {site.indexnowKey && (
+                      <div className="flex items-center gap-2 ml-1">
+                        {site.indexnowKeyVerified ? (
+                          <span className="inline-flex items-center gap-1 text-xs font-medium text-green-400">
+                            <CheckCircle className="h-3 w-3" />
+                            {t("indexnowVerified")}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-xs font-medium text-yellow-400">
+                            <AlertTriangle className="h-3 w-3" />
+                            {t("indexnowNotVerified")}
+                          </span>
+                        )}
+                        <button
+                          onClick={reVerify}
+                          disabled={reVerifying}
+                          className="flex items-center gap-1 text-xs text-gray-400 hover:text-white transition-colors disabled:opacity-50"
+                        >
+                          <RefreshCw className={cn("h-3 w-3", reVerifying && "animate-spin")} />
+                          {reVerifying ? t("verifying") : t("reVerify")}
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* Run Auto-Index Now — below toggles, only when at least one is enabled */}
+                {/* Run button + inline Next/Last info */}
                 {(site.autoIndexGoogle || site.autoIndexBing) && (
-                  <button
-                    onClick={onRunNow}
-                    disabled={running}
-                    className="mt-3 flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-900 disabled:opacity-50"
-                  >
-                    {running ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <Play className="h-3.5 w-3.5" />
-                    )}
-                    {running ? t("running") : t("runNow")}
-                  </button>
-                )}
-
-                {/* ── Auto-Index Status Block ───────────────────────────── */}
-                {autoIndexEnabled && (
-                  <div className="border-t border-gray-800 pt-3 mt-3 space-y-1">
-                    {/* Status line */}
-                    <div className="flex items-center gap-1.5">
-                      {site.autoIndexGoogle || site.autoIndexBing ? (
-                        <>
-                          <span className="inline-block w-2 h-2 rounded-full bg-green-500 shrink-0" />
-                          <span className="text-xs text-gray-300">
-                            {t("autoIndexActive")}
-                            {" · "}
-                            {t("nextRun")}: {t("nextRunDaily")}
-                          </span>
-                        </>
+                  <div className="mt-3 flex items-center gap-3 flex-wrap">
+                    <button
+                      onClick={onRunNow}
+                      disabled={running}
+                      className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-900 disabled:opacity-50"
+                    >
+                      {running ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
                       ) : (
-                        <span className="text-xs text-gray-500">
-                          ⏸ {t("autoIndexPaused")}
-                        </span>
+                        <Play className="h-3.5 w-3.5" />
                       )}
-                    </div>
-
-                    {/* Last run info */}
-                    {lastAutoIndex === undefined ? null : lastAutoIndex === null ? (
-                      <p className="text-xs text-gray-500">
-                        {t("lastRun")}: {t("noRunsYet")}
-                      </p>
-                    ) : (
-                      <div className="space-y-0.5">
-                        <p className="text-xs text-gray-400">
-                          {t("lastRun")}:{" "}
-                          <span className="text-gray-300">
-                            {new Date(lastAutoIndex.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-                            {", "}
-                            {new Date(lastAutoIndex.createdAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
-                          </span>
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {t("newCount", { count: lastAutoIndex.newPagesFound })}
-                          {" · "}
-                          {t("googleCount", { count: lastAutoIndex.submittedGoogle })}
-                          {" · "}
-                          {t("bingCount", { count: lastAutoIndex.submittedBing })}
-                          {" · "}
-                          {t("failedCount", { count: lastAutoIndex.submittedGoogleFailed + lastAutoIndex.submittedBingFailed })}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* View full log link */}
-                    <button
-                      onClick={() => setActiveTab("log")}
-                      className="text-xs text-copper hover:underline cursor-pointer"
-                    >
-                      {t("viewFullLog")} →
+                      {running ? t("running") : t("runNow")}
                     </button>
-                  </div>
-                )}
-
-                {/* IndexNow key status + Re-verify button */}
-                {site.indexnowKey && (
-                  <div className="mt-3 flex items-center gap-2 flex-wrap">
-                    {site.indexnowKeyVerified ? (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-green-900/35 px-3 py-1 text-xs font-medium text-green-400">
-                        <CheckCircle className="h-3.5 w-3.5" />
-                        {t("indexnowVerified")}
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-yellow-900/35 px-3 py-1 text-xs font-medium text-yellow-400">
-                        <AlertTriangle className="h-3.5 w-3.5" />
-                        {t("indexnowNotVerified")}
-                      </span>
-                    )}
-                    <button
-                      onClick={reVerify}
-                      disabled={reVerifying}
-                      className="flex items-center gap-1 text-xs text-gray-400 hover:text-white transition-colors disabled:opacity-50"
-                    >
-                      <RefreshCw className={cn("h-3 w-3", reVerifying && "animate-spin")} />
-                      {reVerifying ? t("verifying") : t("reVerify")}
-                    </button>
-                  </div>
-                )}
-
-                {/* Run Now status panel */}
-                {runStatus && (
-                  <div
-                    className={cn(
-                      "mt-3 rounded-lg border px-4 py-3 text-sm",
-                      runStatus.phase === "running" && "border-gray-700 bg-gray-950 text-gray-300",
-                      runStatus.phase === "done" && "border-green-900/40 bg-green-900/10 text-green-300",
-                      runStatus.phase === "error" && "border-red-900/40 bg-red-900/10 text-red-400"
-                    )}
-                  >
-                    {runStatus.phase === "running" && (
-                      <span className="flex items-center gap-2">
-                        <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
-                        {t("runStatusRunning")}
-                      </span>
-                    )}
-                    {runStatus.phase === "done" && (
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 font-medium">
-                          <CheckCircle className="h-3.5 w-3.5 shrink-0" />
-                          <span>
-                            {t("runStatusCompleted")}{" "}
-                            <span className="text-xs font-normal text-green-500/70">
-                              {formatTimestamp(runStatus.ranAt)}
-                            </span>
-                          </span>
-                        </div>
-                        <p className="text-xs text-green-400/80 pl-5">
-                          {t("runStatusSummary", { newUrls: runStatus.newUrls ?? 0, changedUrls: runStatus.changedUrls ?? 0, removedUrls: runStatus.removedUrls ?? 0, submittedGoogle: runStatus.submittedGoogle ?? 0, submittedBing: runStatus.submittedBing ?? 0 })}
-                          {(runStatus.failedGoogle ?? 0) + (runStatus.failedBing ?? 0) > 0 && (
-                            <span className="text-red-400"> · {t("runStatusFailed", { count: (runStatus.failedGoogle ?? 0) + (runStatus.failedBing ?? 0) })}</span>
-                          )}
-                        </p>
-                      </div>
-                    )}
-                    {runStatus.phase === "error" && (
-                      <div className="flex items-start gap-2">
-                        <XCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                        <span>
-                          {t("runStatusError")}{" "}
-                          <span className="text-xs font-normal text-red-400/70">
-                            {formatTimestamp(runStatus.ranAt)}
-                          </span>
-                          {runStatus.errorMsg && (
-                            <span className="block text-xs mt-0.5 text-red-400/80">
-                              {runStatus.errorMsg}
-                            </span>
-                          )}
-                        </span>
-                      </div>
-                    )}
+                    <span className="text-xs text-gray-400">
+                      {t("nextRun")}
+                      {lastAutoIndex !== undefined && (
+                        <>
+                          {" · "}
+                          {lastAutoIndex === null
+                            ? t("lastRunLabel", { date: t("noRunsYet") })
+                            : t("lastRunLabel", {
+                                date: `${new Date(lastAutoIndex.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}, ${new Date(lastAutoIndex.createdAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`,
+                              })}
+                        </>
+                      )}
+                    </span>
                   </div>
                 )}
               </div>
