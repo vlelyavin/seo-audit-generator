@@ -654,20 +654,19 @@ export default function IndexingPage() {
         </div>
       )}
 
-      {/* HIDDEN: Breadcrumbs hidden for now */}
+      {/* HIDDEN: Breadcrumbs and page title hidden — indexator is the main dashboard home */}
       {/* <Breadcrumbs items={[
         { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
         { label: tBreadcrumbs("indexing") },
       ]} /> */}
-      <div>
+      {/* <div>
         <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-2xl font-bold text-white">{t("title")}</h1>
-
         </div>
-      </div>
+      </div> */}
 
       {/* GSC Connection Card */}
-      <div className="rounded-xl border border-gray-800 bg-black p-6">
+      <div className="rounded-xl border border-gray-800 bg-gray-950 p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold text-white">
@@ -758,7 +757,7 @@ export default function IndexingPage() {
           <h2 className="text-lg font-semibold text-white">{t("sites")}</h2>
 
           {sites.length === 0 ? (
-            <div className="rounded-xl border border-gray-800 bg-black p-10 text-center">
+            <div className="rounded-xl border border-gray-800 bg-gray-950 p-10 text-center">
               <Search className="mx-auto h-10 w-10 text-gray-600 mb-3" />
               <p className="text-gray-400 text-sm">{t("noSites")}</p>
               <p className="text-gray-600 text-xs mt-1">
@@ -1388,7 +1387,7 @@ function SiteCard({
   ];
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-gray-800 bg-black">
+    <div className="relative overflow-hidden rounded-xl border border-gray-800 bg-gray-950">
       {/* Header row */}
       <div className="flex w-full items-center justify-between px-3 sm:px-6 py-4">
         <div className="flex items-center gap-3">
@@ -1544,7 +1543,7 @@ function SiteCard({
                   <button
                     onClick={onRunNow}
                     disabled={running}
-                    className="mt-3 flex items-center gap-1.5 rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:opacity-50"
+                    className="mt-3 flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-900 disabled:opacity-50"
                   >
                     {running ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />

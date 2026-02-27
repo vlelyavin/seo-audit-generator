@@ -26,17 +26,15 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="relative h-dvh overflow-hidden">
+    <div className="relative min-h-dvh">
       {/* HIDDEN: Sidebar and overlay removed from render */}
       {/* <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} /> */}
 
       <Header />
 
-      <div className="relative z-30 h-[calc(100%-3.5rem)]">
-        <main className="mx-auto h-full max-w-6xl overflow-y-auto p-4 lg:px-6">
-          {children}
-        </main>
-      </div>
+      <main className="mx-auto max-w-6xl p-4 pt-2 lg:px-6">
+        {children}
+      </main>
     </div>
   );
 }

@@ -295,7 +295,7 @@ export default function AdminDashboardPage() {
       )}
 
       {/* User management */}
-      <div className="rounded-xl border border-gray-800 bg-black">
+      <div className="rounded-xl border border-gray-800 bg-gray-950">
         <div className="border-b border-gray-800 p-4">
           <h2 className="text-lg font-semibold text-white">
             {t("userManagement")} ({total})
@@ -653,7 +653,7 @@ function StatCard({
   };
 
   return (
-    <div className="rounded-xl border border-gray-800 bg-black p-4">
+    <div className="rounded-xl border border-gray-800 bg-gray-950 p-4">
       <div className="flex items-center gap-3">
         <div className={cn("rounded-lg p-2", colorClasses[color])}>
           <Icon className="h-5 w-5" />

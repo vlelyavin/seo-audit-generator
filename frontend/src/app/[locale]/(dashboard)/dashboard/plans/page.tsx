@@ -5,14 +5,13 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Check, X, Loader2, Zap, Rocket, Building2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-// {/* HIDDEN: Breadcrumbs hidden for now */}
-// import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import type { Plan } from "@/types/plan";
 
 export default function PlansPage() {
   const t = useTranslations("plans");
   const ut = useTranslations("marketing.unifiedPricing");
-  // const tBreadcrumbs = useTranslations("breadcrumbs");
+  const tBreadcrumbs = useTranslations("breadcrumbs");
   const { data: session, update } = useSession();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,11 +68,10 @@ export default function PlansPage() {
   return (
     <div className="space-y-6">
       <div>
-        {/* HIDDEN: Breadcrumbs hidden for now */}
-        {/* <Breadcrumbs items={[
+        <Breadcrumbs items={[
           { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
           { label: tBreadcrumbs("plans") },
-        ]} /> */}
+        ]} />
         <h1 className="text-2xl font-bold text-white">
           {t("title")}
         </h1>
@@ -267,7 +265,7 @@ export default function PlansPage() {
         })}
       </div>
 
-      <div className="rounded-lg border border-gray-800 bg-black p-4">
+      <div className="rounded-lg border border-gray-800 bg-gray-950 p-4">
         <p className="text-sm text-gray-400">
           {t("noBilling")}
         </p>

@@ -43,13 +43,13 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       {message && (
-        <div className="rounded-lg border border-gray-800 bg-black px-4 py-2 text-sm text-gray-300">
+        <div className="rounded-lg border border-gray-800 bg-gray-950 px-4 py-2 text-sm text-gray-300">
           {message}
         </div>
       )}
 
       {/* Profile */}
-      <form onSubmit={handleSaveProfile} className="rounded-xl border border-gray-800 bg-black p-6">
+      <form onSubmit={handleSaveProfile} className="rounded-xl border border-gray-800 bg-gray-950 p-6">
         <h2 className="mb-4 text-lg font-semibold text-white">
           {t("profile")}
         </h2>
