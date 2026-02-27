@@ -24,7 +24,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter,
   session: { strategy: "jwt" },
   pages: {
-    signIn: "/en/login",
+    signIn: "/login",
   },
   providers: [
     Google({

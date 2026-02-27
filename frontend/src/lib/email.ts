@@ -82,7 +82,7 @@ function baseLayout(title: string, body: string): string {
             <td style="background:#f9fafb;padding:20px 32px;border-top:1px solid #e5e7eb;">
               <p style="margin:0;color:#6b7280;font-size:13px;">
                 You're receiving this because you have auto-indexing enabled.
-                <a href="${APP_URL}/dashboard/settings" style="color:#111827;">Manage email preferences</a>
+                <a href="${APP_URL}/app/settings" style="color:#111827;">Manage email preferences</a>
               </p>
             </td>
           </tr>
@@ -134,7 +134,7 @@ export async function sendDailyReportEmail(
       ? `${data.totalIndexed}/${data.totalUrls} (${Math.round((data.totalIndexed / data.totalUrls) * 100)}%)`
       : "N/A";
 
-  const dashboardUrl = `${APP_URL}/dashboard/indexator`;
+  const dashboardUrl = `${APP_URL}/app`;
 
   const body = `
     <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Indexing Report</h2>
@@ -169,7 +169,7 @@ export async function send404AlertEmail(
 ): Promise<boolean> {
   const displayUrls = urls404.slice(0, 20);
   const remaining = urls404.length - displayUrls.length;
-  const dashboardUrl = `${APP_URL}/dashboard/indexator`;
+  const dashboardUrl = `${APP_URL}/app`;
 
   const urlList = displayUrls
     .map((url) => `<li style="padding:4px 0;color:#374151;font-size:13px;word-break:break-all;">${url}</li>`)
@@ -205,7 +205,7 @@ export async function sendTokenExpiredEmail(
   userEmail: string,
   domain: string
 ): Promise<boolean> {
-  const reconnectUrl = `${APP_URL}/dashboard/indexator`;
+  const reconnectUrl = `${APP_URL}/app`;
 
   const body = `
     <h2 style="margin:0 0 8px;font-size:20px;color:#111827;">Google Search Console Disconnected</h2>

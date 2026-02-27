@@ -68,7 +68,7 @@ export default function PlansPage() {
     <div className="space-y-6">
       <div>
         <Breadcrumbs items={[
-          { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
+          { label: tBreadcrumbs("dashboard"), href: "/app" },
           { label: tBreadcrumbs("plans") },
         ]} />
         <h1 className="text-2xl font-bold text-white">

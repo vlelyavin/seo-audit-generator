@@ -86,7 +86,7 @@ export default function AuditPage({
         if (audit.fastApiId && isInProgress) {
           // Audit is in progress - add fastApiId to URL
           console.log('[Audit] Redirecting to progress view');
-          router.push(`/dashboard/auditor/${auditId}?fastApiId=${audit.fastApiId}`);
+          router.push(`/app/auditor/${auditId}?fastApiId=${audit.fastApiId}`);
         } else if (audit.status === 'completed') {
           // Audit completed - load cached results (handled by loadCached effect)
           setLoading(true);
@@ -214,7 +214,7 @@ export default function AuditPage({
     : tBreadcrumbs("audit");
 
   const breadcrumbItems = [
-    { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
+    { label: tBreadcrumbs("dashboard"), href: "/app" },
     { label: breadcrumbLabel },
   ];
 
@@ -289,7 +289,7 @@ export default function AuditPage({
           {pageError}
         </p>
         <Link
-          href={"/dashboard"}
+          href={"/app"}
           className="mt-4 inline-block text-gray-400 hover:text-white transition-colors"
         >
           {tAudit("backToDashboard")}

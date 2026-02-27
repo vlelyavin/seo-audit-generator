@@ -27,22 +27,22 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   const isAdmin = session?.user?.role === "admin";
 
   const navItems = [
-    // HIDDEN: Dashboard (auditor list) — /dashboard now redirects to /dashboard/indexator
-    // { href: "/dashboard", label: t("dashboard"), icon: LayoutDashboard },
+    // HIDDEN: Dashboard (auditor list) — /app now redirects to /app/indexator
+    // { href: "/app", label: t("dashboard"), icon: LayoutDashboard },
     // HIDDEN: Auditor feature hidden from nav (route still works)
-    // { href: "/dashboard/auditor/new", label: t("newAudit"), icon: Plus },
+    // { href: "/app/auditor/new", label: t("newAudit"), icon: Plus },
     {
-      href: "/dashboard/indexator",
+      href: "/app/indexator",
       label: t("indexing"),
       icon: Search,
     },
     {
-      href: "/dashboard/plans",
+      href: "/app/plans",
       label: t("plans"),
       icon: Zap,
     },
     {
-      href: "/dashboard/settings",
+      href: "/app/settings",
       label: t("settings"),
       icon: Settings,
     },
@@ -51,7 +51,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   const adminItems = isAdmin
     ? [
         {
-          href: "/dashboard/admin",
+          href: "/app/admin",
           label: t("admin"),
           icon: Users,
         },
@@ -145,7 +145,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       {session?.user && (
         <div className="border-t border-gray-800 p-3">
           <Link
-            href="/dashboard/plans"
+            href="/app/plans"
             onClick={closeOnMobile}
             className="block rounded-lg bg-black p-3 transition-colors hover:bg-gray-900"
           >

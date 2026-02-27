@@ -67,7 +67,7 @@ export function MarketingHeader() {
             </div>
           ) : (
             <button
-              onClick={() => signIn("google", { callbackUrl: localePath(locale, "/dashboard/indexator") })}
+              onClick={() => signIn("google", { callbackUrl: localePath(locale, "/app") })}
               className="flex items-center gap-2 rounded-md border border-gray-700 px-3 py-1.5 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-900"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24">

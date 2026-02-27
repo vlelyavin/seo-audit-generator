@@ -35,13 +35,11 @@ export function Header() {
     : emailLocal?.[0]?.toUpperCase() || "?";
 
   const navItems = [
-    // HIDDEN: Dashboard (auditor list) — /dashboard now redirects to /dashboard/indexator
-    // { href: "/dashboard", label: t("dashboard") },
-    { href: "/dashboard/indexator", label: t("dashboard") },
-    { href: "/dashboard/plans", label: t("plans") },
+    { href: "/app", label: t("dashboard") },
+    { href: "/app/plans", label: t("plans") },
     // HIDDEN: Settings page temporarily disabled
-    // { href: "/dashboard/settings", label: t("settings") },
-    ...(isAdmin ? [{ href: "/dashboard/admin", label: t("admin") }] : []),
+    // { href: "/app/settings", label: t("settings") },
+    ...(isAdmin ? [{ href: "/app/admin", label: t("admin") }] : []),
   ];
 
   const isActive = (href: string) => {
@@ -61,7 +59,7 @@ export function Header() {
         <div className="mx-auto flex h-14 max-w-6xl items-center px-4 lg:px-6">
           {/* Logo - left */}
           <Link
-            href="/dashboard/indexator"
+            href="/app"
             className="flex shrink-0 items-center gap-2 font-semibold"
           >
             <Image src="/images/Indexator-logo.png" alt="Indexator" width={200} height={50} className="h-4 w-auto -mt-[2px] md:h-5 md:-mt-[6px]" />
@@ -119,7 +117,7 @@ export function Header() {
               <button
                 onClick={() =>
                   signIn("google", {
-                    callbackUrl: localePath(locale, "/dashboard/indexator"),
+                    callbackUrl: localePath(locale, "/app"),
                   })
                 }
                 className="rounded-md bg-gradient-to-r from-copper to-copper-light px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
@@ -131,7 +129,7 @@ export function Header() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              className="flex h-10 items-center justify-center rounded-md px-2 text-white transition-colors hover:bg-gray-900 md:hidden"
+              className="flex items-center justify-center rounded-md px-2 py-2 text-white transition-colors hover:bg-gray-900 md:hidden"
               aria-label={mobileMenuOpen ? t("closeSidebar") : t("openSidebar")}
               type="button"
             >

@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 
   const baseUrl = process.env.AUTH_URL ?? "http://localhost:3000";
   const prefix = locale === "en" ? "" : `/${locale}`;
-  const dashboardUrl = new URL(`${prefix}/dashboard/indexator`, baseUrl);
+  const dashboardUrl = new URL(`${prefix}/app`, baseUrl);
 
   // Handle errors from Google
   if (error) {

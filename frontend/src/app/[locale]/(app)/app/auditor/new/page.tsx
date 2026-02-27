@@ -98,7 +98,7 @@ export default function NewAuditPage() {
       }
 
       // Navigate to progress page
-      router.push(`/dashboard/auditor/${data.id}?fastApiId=${data.fastApiId}`);
+      router.push(`/app/auditor/${data.id}?fastApiId=${data.fastApiId}`);
     } catch {
       setError(t("connectionError"));
     } finally {
@@ -109,7 +109,7 @@ export default function NewAuditPage() {
   return (
     <div className="mx-auto max-w-[50rem]">
       <Breadcrumbs items={[
-        { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
+        { label: tBreadcrumbs("dashboard"), href: "/app" },
         { label: tBreadcrumbs("newAudit") },
       ]} />
       <h1 className="mb-6 text-2xl font-bold text-white">

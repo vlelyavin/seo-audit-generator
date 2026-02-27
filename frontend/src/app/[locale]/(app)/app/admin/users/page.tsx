@@ -79,8 +79,8 @@ export default function AdminUsersPage() {
   return (
     <div>
       <Breadcrumbs items={[
-        { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
-        { label: tBreadcrumbs("admin"), href: "/dashboard/admin" },
+        { label: tBreadcrumbs("dashboard"), href: "/app" },
+        { label: tBreadcrumbs("admin"), href: "/app/admin" },
         { label: tBreadcrumbs("users") },
       ]} />
       <h1 className="mb-6 text-2xl font-bold text-white">

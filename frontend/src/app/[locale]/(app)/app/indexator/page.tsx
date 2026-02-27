@@ -667,7 +667,7 @@ export default function IndexingPage() {
     <div className="space-y-6">
       {/* HIDDEN: Breadcrumbs and page title hidden — indexator is the main dashboard home */}
       {/* <Breadcrumbs items={[
-        { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
+        { label: tBreadcrumbs("dashboard"), href: "/app" },
         { label: tBreadcrumbs("indexing") },
       ]} /> */}
       {/* <div>

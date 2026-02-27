@@ -29,17 +29,17 @@ export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const path = stripLocale(pathname);
 
-  // Dashboard routes: require authentication
-  if (path.startsWith("/dashboard")) {
+  // App routes: require authentication
+  if (path.startsWith("/app")) {
     if (!hasSessionCookie(req)) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
   }
 
-  // Auth pages: redirect authenticated users to indexator
+  // Auth pages: redirect authenticated users to app
   if (path === "/login" || path === "/register") {
     if (hasSessionCookie(req)) {
-      return NextResponse.redirect(new URL("/dashboard/indexator", req.url));
+      return NextResponse.redirect(new URL("/app", req.url));
     }
   }
 

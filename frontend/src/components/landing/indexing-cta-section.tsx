@@ -24,7 +24,7 @@ export function IndexingCtaSection() {
           </h2>
           <p className="mt-4 text-base text-gray-400">{t("subheading")}</p>
           <Link
-            href="/dashboard/indexator"
+            href="/app"
             className="landing-btn mt-8 inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-10 py-4 text-sm font-semibold text-white"
           >
             <ArrowRight className="h-4 w-4" />

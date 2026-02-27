@@ -23,7 +23,7 @@ export function HeroSection() {
           </h1>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/dashboard/auditor/new"
+              href="/app/auditor/new"
               className="inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-8 py-3.5 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               <ScanSearch className="h-4 w-4" />

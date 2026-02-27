@@ -14,7 +14,7 @@ export default function SettingsLayout({
   const tBreadcrumbs = useTranslations("breadcrumbs");
   const pathname = usePathname();
 
-  const basePath = "/dashboard/settings";
+  const basePath = "/app/settings";
 
   const tabs = [
     { href: basePath, label: t("tabGeneral") },
@@ -25,7 +25,7 @@ export default function SettingsLayout({
     <div className="mx-auto max-w-[50rem] space-y-6 overflow-hidden">
       <div>
         <Breadcrumbs items={[
-          { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
+          { label: tBreadcrumbs("dashboard"), href: "/app" },
           { label: tBreadcrumbs("settings") },
         ]} />
         <h1 className="text-2xl font-bold text-white">

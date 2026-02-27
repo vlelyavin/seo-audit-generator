@@ -23,7 +23,7 @@ export function PricingSection() {
   const pt = useTranslations("plans");
   const { data: session } = useSession();
 
-  const ctaHref = session?.user ? "/dashboard/plans" : "/login";
+  const ctaHref = session?.user ? "/app/plans" : "/login";
 
   return (
     <section id="pricing" className="bg-black py-24">
