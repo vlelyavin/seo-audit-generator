@@ -20,6 +20,9 @@ export function Footer() {
           <Link href="/privacy" className="text-sm text-gray-400 transition-colors hover:text-white">
             {t("privacy")}
           </Link>
+          <Link href="/terms#refund-policy" className="text-sm text-gray-400 transition-colors hover:text-white">
+            {t("refund")}
+          </Link>
         </div>
       </div>
     </footer>

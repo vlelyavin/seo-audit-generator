@@ -1,25 +1,29 @@
 import { useTranslations } from "next-intl";
 
+const sections = [
+  "introduction",
+  "serviceDescription",
+  "accounts",
+  "billing",
+  "freeTier",
+  "noWarranty",
+  "liability",
+  "acceptableUse",
+  "dataPrivacy",
+  "intellectualProperty",
+  "refundPolicy",
+  "changesToTerms",
+  "termination",
+  "governingLaw",
+  "contact",
+] as const;
+
+const sectionIds: Partial<Record<(typeof sections)[number], string>> = {
+  refundPolicy: "refund-policy",
+};
+
 export default function TermsPage() {
   const t = useTranslations("marketing.terms");
-
-  const sections = [
-    "introduction",
-    "serviceDescription",
-    "accounts",
-    "billing",
-    "freeTier",
-    "noWarranty",
-    "liability",
-    "acceptableUse",
-    "dataPrivacy",
-    "intellectualProperty",
-    "refundPolicy",
-    "changesToTerms",
-    "termination",
-    "governingLaw",
-    "contact",
-  ] as const;
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
@@ -28,7 +32,7 @@ export default function TermsPage() {
 
       <div className="mt-10 space-y-8">
         {sections.map((section, i) => (
-          <div key={section}>
+          <div key={section} id={sectionIds[section]}>
             <h2 className="text-xl font-semibold text-white">
               {i + 1}. {t(`sections.${section}.heading`)}
             </h2>
