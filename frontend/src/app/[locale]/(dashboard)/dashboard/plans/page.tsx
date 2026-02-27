@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Check, X, Loader2, Zap, Rocket, Building2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { toast } from "sonner";
 import type { Plan } from "@/types/plan";
 
 export default function PlansPage() {
@@ -16,7 +17,6 @@ export default function PlansPage() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [switching, setSwitching] = useState<string | null>(null);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
     async function loadPlans() {
@@ -35,7 +35,6 @@ export default function PlansPage() {
 
   async function handleSelectPlan(planId: string) {
     setSwitching(planId);
-    setMessage(null);
 
     try {
       const res = await fetch("/api/user/plan", {
@@ -45,14 +44,14 @@ export default function PlansPage() {
       });
 
       if (res.ok) {
-        setMessage({ type: "success", text: t("planUpdated") });
+        toast.success(t("planUpdated"));
         await update();
       } else {
         const data = await res.json();
-        setMessage({ type: "error", text: data.error || t("updateFailed") });
+        toast.error(data.error || t("updateFailed"));
       }
     } catch {
-      setMessage({ type: "error", text: t("updateFailed") });
+      toast.error(t("updateFailed"));
     }
     setSwitching(null);
   }
@@ -76,19 +75,6 @@ export default function PlansPage() {
           {t("title")}
         </h1>
       </div>
-
-      {message && (
-        <div
-          className={cn(
-            "rounded-lg px-4 py-2 text-sm",
-            message.type === "error"
-              ? "bg-red-900/20 text-red-300"
-              : "bg-green-900/20 text-green-300"
-          )}
-        >
-          {message.text}
-        </div>
-      )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         {plans.map((plan) => {

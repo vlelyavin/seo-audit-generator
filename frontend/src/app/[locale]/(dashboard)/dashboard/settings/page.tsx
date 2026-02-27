@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Save } from "lucide-react";
+import { toast } from "sonner";
 
 export default function SettingsPage() {
   const t = useTranslations("settings");
@@ -13,12 +14,10 @@ export default function SettingsPage() {
     if (session?.user?.name) setName(session.user.name);
   }, [session?.user?.name]);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
 
   async function handleSaveProfile(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    setMessage("");
 
     try {
       const res = await fetch("/api/settings", {
@@ -28,26 +27,20 @@ export default function SettingsPage() {
       });
 
       if (res.ok) {
-        setMessage(t("profileUpdated"));
+        toast.success(t("profileUpdated"));
         await update();
       } else {
         const data = await res.json();
-        setMessage(data.error || t("failedToUpdate"));
+        toast.error(data.error || t("failedToUpdate"));
       }
     } catch {
-      setMessage(t("errorSaving"));
+      toast.error(t("errorSaving"));
     }
     setSaving(false);
   }
 
   return (
     <div className="space-y-6">
-      {message && (
-        <div className="rounded-lg border border-gray-800 bg-gray-950 px-4 py-2 text-sm text-gray-300">
-          {message}
-        </div>
-      )}
-
       {/* Profile */}
       <form onSubmit={handleSaveProfile} className="rounded-xl border border-gray-800 bg-gray-950 p-6">
         <h2 className="mb-4 text-lg font-semibold text-white">

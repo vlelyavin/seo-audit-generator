@@ -424,7 +424,20 @@
     "deleteSiteDescription": "Удалить {domain}? Все проиндексированные URL, журналы и отчёты для этого сайта будут навсегда удалены. Это действие нельзя отменить.",
     "siteDeleted": "Сайт удалён.",
     "errorDeleteSite": "Не удалось удалить сайт.",
-    "upgradeToEnableAutoIndex": "Обновите до Pro, чтобы включить авто-индексацию."
+    "upgradeToEnableAutoIndex": "Обновите до Pro, чтобы включить авто-индексацию.",
+    "autoIndexStatus": "Статус",
+    "autoIndexActive": "Активен",
+    "autoIndexPaused": "Приостановлен",
+    "nextRun": "Следующий запуск",
+    "nextRunDaily": "~9:00 ежедневно",
+    "lastRun": "Последний запуск",
+    "noRunsYet": "Запусков ещё не было",
+    "viewFullLog": "Полный лог",
+    "noNewUrls": "Новых или изменённых URL не найдено. Чтобы повторно отправить существующие неиндексированные страницы, используйте 'Отправить все неиндексированные'.",
+    "newCount": "{count} новых",
+    "googleCount": "{count} → Google",
+    "bingCount": "{count} → Bing",
+    "failedCount": "{count} ошибок"
   },
   "marketing": {
     "nav": {

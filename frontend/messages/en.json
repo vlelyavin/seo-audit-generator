@@ -424,7 +424,20 @@
     "deleteSiteDescription": "Delete {domain}? All indexed URLs, logs, and reports for this site will be permanently deleted. This cannot be undone.",
     "siteDeleted": "Site deleted.",
     "errorDeleteSite": "Failed to delete site.",
-    "upgradeToEnableAutoIndex": "Upgrade to Pro to enable auto-indexing."
+    "upgradeToEnableAutoIndex": "Upgrade to Pro to enable auto-indexing.",
+    "autoIndexStatus": "Status",
+    "autoIndexActive": "Active",
+    "autoIndexPaused": "Paused",
+    "nextRun": "Next run",
+    "nextRunDaily": "~9:00 AM daily",
+    "lastRun": "Last run",
+    "noRunsYet": "No runs yet",
+    "viewFullLog": "View full log",
+    "noNewUrls": "No new or changed URLs found. To re-submit existing unindexed pages, use 'Submit All Not Indexed'.",
+    "newCount": "{count} new",
+    "googleCount": "{count} → Google",
+    "bingCount": "{count} → Bing",
+    "failedCount": "{count} failed"
   },
   "marketing": {
     "nav": {

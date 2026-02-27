@@ -424,7 +424,20 @@
     "deleteSiteDescription": "Видалити {domain}? Усі проіндексовані URL, журнали та звіти для цього сайту будуть назавжди видалені. Цю дію не можна скасувати.",
     "siteDeleted": "Сайт видалено.",
     "errorDeleteSite": "Не вдалося видалити сайт.",
-    "upgradeToEnableAutoIndex": "Оновіть до Pro, щоб увімкнути авто-індексацію."
+    "upgradeToEnableAutoIndex": "Оновіть до Pro, щоб увімкнути авто-індексацію.",
+    "autoIndexStatus": "Статус",
+    "autoIndexActive": "Активний",
+    "autoIndexPaused": "Призупинено",
+    "nextRun": "Наступний запуск",
+    "nextRunDaily": "~9:00 щоденно",
+    "lastRun": "Останній запуск",
+    "noRunsYet": "Запусків ще не було",
+    "viewFullLog": "Повний лог",
+    "noNewUrls": "Нових або змінених URL не знайдено. Щоб повторно надіслати існуючі неіндексовані сторінки, скористайтеся 'Надіслати всі неіндексовані'.",
+    "newCount": "{count} нових",
+    "googleCount": "{count} → Google",
+    "bingCount": "{count} → Bing",
+    "failedCount": "{count} помилок"
   },
   "marketing": {
     "nav": {

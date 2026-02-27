@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Ubuntu, Geist_Mono } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { SessionProvider } from "@/providers/session-provider";
+import { Toaster } from "sonner";
 import "../globals.css";
 
 const ubuntu = Ubuntu({
@@ -46,6 +47,17 @@ export default async function LocaleLayout({
         <SessionProvider>
           <NextIntlClientProvider messages={messages}>
             {children}
+            <Toaster
+              theme="dark"
+              position="bottom-right"
+              toastOptions={{
+                style: {
+                  background: "#1a1a1a",
+                  border: "1px solid #333",
+                  color: "#fff",
+                },
+              }}
+            />
           </NextIntlClientProvider>
         </SessionProvider>
       </body>

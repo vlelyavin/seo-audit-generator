@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import {
   Search,
   RefreshCw,
@@ -137,6 +138,22 @@ interface RunStatus {
   ranAt?: string; // ISO string
 }
 
+interface LastAutoIndexReport {
+  reportDate: string;
+  newPagesFound: number;
+  changedPagesFound: number;
+  removedPagesFound: number;
+  submittedGoogle: number;
+  submittedBing: number;
+  submittedGoogleFailed: number;
+  submittedBingFailed: number;
+  pages404: number;
+  totalIndexed: number;
+  totalUrls: number;
+  details: string | null;
+  createdAt: string;
+}
+
 interface LogEntry {
   id: string;
   action: string;
@@ -260,7 +277,6 @@ export default function IndexingPage() {
   const [running, setRunning] = useState<Record<string, boolean>>({});
   const [runStatuses, setRunStatuses] = useState<Record<string, RunStatus>>({});
   const [copied, setCopied] = useState<string | null>(null);
-  const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
 
   // Submit confirmation state
   const [confirmState, setConfirmState] = useState<ConfirmState | null>(null);
@@ -289,8 +305,11 @@ export default function IndexingPage() {
   const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const showToast = useCallback((msg: string, ok = true) => {
-    setToast({ msg, ok });
-    setTimeout(() => setToast(null), 3500);
+    if (ok) {
+      toast.success(msg);
+    } else {
+      toast.error(msg);
+    }
   }, []);
 
   // ── Load GSC status ────────────────────────────────────────────────────────
@@ -563,15 +582,19 @@ export default function IndexingPage() {
       });
       if (res.ok) {
         const data = await res.json();
+        const newUrls = data.newUrls ?? 0;
+        const submittedGoogle = data.submittedGoogle ?? 0;
+        const submittedBing = data.submittedBing ?? 0;
+        const failed = (data.failedGoogle ?? 0) + (data.failedBing ?? 0);
         setRunStatuses((prev) => ({
           ...prev,
           [siteId]: {
             phase: "done",
-            newUrls: data.newUrls,
+            newUrls,
             changedUrls: data.changedUrls,
             removedUrls: data.removedUrls,
-            submittedGoogle: data.submittedGoogle,
-            submittedBing: data.submittedBing,
+            submittedGoogle,
+            submittedBing,
             failedGoogle: data.failedGoogle,
             failedBing: data.failedBing,
             ranAt: new Date().toISOString(),
@@ -579,6 +602,17 @@ export default function IndexingPage() {
         }));
         await loadSiteStats(siteId);
         await loadSiteQuota(siteId);
+        if (newUrls === 0 && submittedGoogle === 0 && submittedBing === 0) {
+          toast(t("noNewUrls"));
+        } else {
+          const parts = [
+            t("newCount", { count: newUrls }),
+            t("googleCount", { count: submittedGoogle }),
+            t("bingCount", { count: submittedBing }),
+          ];
+          if (failed > 0) parts.push(t("failedCount", { count: failed }));
+          toast.success(`Auto-index: ${parts.join(" · ")}`);
+        }
       } else {
         const data = await res.json().catch(() => ({}));
         setRunStatuses((prev) => ({
@@ -640,20 +674,6 @@ export default function IndexingPage() {
 
   return (
     <div className="space-y-6">
-      {/* Toast */}
-      {toast && (
-        <div
-          className={cn(
-            "fixed bottom-6 right-6 z-50 rounded-lg border px-5 py-3 text-sm font-medium shadow-xl",
-            toast.ok
-              ? "border-green-800 bg-green-900/35 text-green-300"
-              : "border-red-800 bg-red-900/35 text-red-300"
-          )}
-        >
-          {toast.msg}
-        </div>
-      )}
-
       {/* HIDDEN: Breadcrumbs and page title hidden — indexator is the main dashboard home */}
       {/* <Breadcrumbs items={[
         { label: tBreadcrumbs("dashboard"), href: "/dashboard" },
@@ -1073,6 +1093,28 @@ function SiteCard({
   const [activeTab, setActiveTab] = useState<"overview" | "urls" | "report" | "log">(
     "overview"
   );
+
+  // Last auto-index report
+  const [lastAutoIndex, setLastAutoIndex] = useState<LastAutoIndexReport | null | undefined>(undefined);
+
+  const loadLastAutoIndex = useCallback(async () => {
+    const res = await fetch(`/api/indexing/sites/${site.id}/last-auto-index`);
+    if (res.ok) {
+      const data = await res.json();
+      setLastAutoIndex(data); // null if no reports
+    }
+  }, [site.id]);
+
+  useEffect(() => {
+    void loadLastAutoIndex();
+  }, [loadLastAutoIndex]);
+
+  // Reload last auto-index report after a manual run completes
+  useEffect(() => {
+    if (runStatus?.phase === "done") {
+      void loadLastAutoIndex();
+    }
+  }, [runStatus?.phase]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // URL table state
   const [urlPage, setUrlPage] = useState<UrlPage | null>(null);
@@ -1552,6 +1594,64 @@ function SiteCard({
                     )}
                     {running ? t("running") : t("runNow")}
                   </button>
+                )}
+
+                {/* ── Auto-Index Status Block ───────────────────────────── */}
+                {autoIndexEnabled && (
+                  <div className="border-t border-gray-800 pt-3 mt-3 space-y-1">
+                    {/* Status line */}
+                    <div className="flex items-center gap-1.5">
+                      {site.autoIndexGoogle || site.autoIndexBing ? (
+                        <>
+                          <span className="inline-block w-2 h-2 rounded-full bg-green-500 shrink-0" />
+                          <span className="text-xs text-gray-300">
+                            {t("autoIndexActive")}
+                            {" · "}
+                            {t("nextRun")}: {t("nextRunDaily")}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-xs text-gray-500">
+                          ⏸ {t("autoIndexPaused")}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Last run info */}
+                    {lastAutoIndex === undefined ? null : lastAutoIndex === null ? (
+                      <p className="text-xs text-gray-500">
+                        {t("lastRun")}: {t("noRunsYet")}
+                      </p>
+                    ) : (
+                      <div className="space-y-0.5">
+                        <p className="text-xs text-gray-400">
+                          {t("lastRun")}:{" "}
+                          <span className="text-gray-300">
+                            {new Date(lastAutoIndex.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                            {", "}
+                            {new Date(lastAutoIndex.createdAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {t("newCount", { count: lastAutoIndex.newPagesFound })}
+                          {" · "}
+                          {t("googleCount", { count: lastAutoIndex.submittedGoogle })}
+                          {" · "}
+                          {t("bingCount", { count: lastAutoIndex.submittedBing })}
+                          {" · "}
+                          {t("failedCount", { count: lastAutoIndex.submittedGoogleFailed + lastAutoIndex.submittedBingFailed })}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* View full log link */}
+                    <button
+                      onClick={() => setActiveTab("log")}
+                      className="text-xs text-copper hover:underline cursor-pointer"
+                    >
+                      {t("viewFullLog")} →
+                    </button>
+                  </div>
                 )}
 
                 {/* IndexNow key status + Re-verify button */}
