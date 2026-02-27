@@ -829,7 +829,7 @@ export default function IndexingPage() {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => !submitting && setConfirmState(null)}
           />
-          <div className="relative z-10 w-full max-w-sm rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
+          <div className="relative z-10 w-full max-w-sm rounded-xl border border-gray-800 bg-gray-950 p-6 shadow-xl">
             {/* Close button */}
             <button
               onClick={() => !submitting && setConfirmState(null)}
@@ -888,7 +888,7 @@ export default function IndexingPage() {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => !disconnecting && setShowDisconnectModal(false)}
           />
-          <div className="relative z-10 w-full max-w-md rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
+          <div className="relative z-10 w-full max-w-md rounded-xl border border-gray-800 bg-gray-950 p-6 shadow-xl">
             <button
               onClick={() => !disconnecting && setShowDisconnectModal(false)}
               disabled={disconnecting}
@@ -935,7 +935,7 @@ export default function IndexingPage() {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => !addingSite && setShowAddSiteModal(false)}
           />
-          <div className="relative z-10 w-full max-w-sm rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
+          <div className="relative z-10 w-full max-w-sm rounded-xl border border-gray-800 bg-gray-950 p-6 shadow-xl">
             <button
               onClick={() => !addingSite && setShowAddSiteModal(false)}
               disabled={addingSite}
@@ -995,7 +995,7 @@ export default function IndexingPage() {
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => !deletingSiteLoading && setDeletingSiteId(null)}
           />
-          <div className="relative z-10 w-full max-w-sm rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
+          <div className="relative z-10 w-full max-w-sm rounded-xl border border-gray-800 bg-gray-950 p-6 shadow-xl">
             <button
               onClick={() => !deletingSiteLoading && setDeletingSiteId(null)}
               disabled={deletingSiteLoading}
@@ -1493,36 +1493,8 @@ function SiteCard({
           {/* ── Overview Tab ─────────────────────────────────────────────── */}
           {activeTab === "overview" && (
             <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-5">
-              {/* Thin progress bar — visual indicator only, no legend */}
-              {stats ? (() => {
-                const total = stats.total || 1;
-                const segments = [
-                  { pct: stats.indexed / total * 100, bg: "bg-green-500" },
-                  { pct: stats.notIndexed / total * 100, bg: "bg-red-500" },
-                  { pct: stats.pending / total * 100, bg: "bg-yellow-500" },
-                ];
-                return (
-                  <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-gray-800">
-                    {segments.map((seg, i) =>
-                      seg.pct > 0 ? (
-                        <div
-                          key={i}
-                          className={cn("h-full transition-all", seg.bg)}
-                          style={{ width: `${seg.pct}%` }}
-                        />
-                      ) : null
-                    )}
-                  </div>
-                );
-              })() : (
-                <div className="h-1.5 w-full rounded-full bg-gray-800 animate-pulse" />
-              )}
-
               {/* ── Manual Actions ───────────────────────────────────────── */}
               <div>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  {t("manualActions")}
-                </p>
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={onSyncUrls}
@@ -1557,9 +1529,6 @@ function SiteCard({
 
               {/* ── Automation ───────────────────────────────────────────── */}
               <div className="border-t border-gray-800 pt-4">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                  {t("automation")}
-                </p>
                 <div className="space-y-3">
                   <Toggle
                     label={t("autoIndexGoogle")}
@@ -1586,7 +1555,7 @@ function SiteCard({
                       onDisabledClick={autoIndexEnabled ? () => setIndexNowModal({ action: () => {} }) : undefined}
                     />
                     {site.indexnowKey && (
-                      <div className="flex items-center gap-2 ml-1">
+                      <div className="flex items-center gap-3 ml-1">
                         {site.indexnowKeyVerified ? (
                           <span className="inline-flex items-center gap-1 text-xs font-medium text-green-400">
                             <CheckCircle className="h-3 w-3" />
@@ -1601,7 +1570,7 @@ function SiteCard({
                         <button
                           onClick={reVerify}
                           disabled={reVerifying}
-                          className="flex items-center gap-1 text-xs text-gray-400 hover:text-white transition-colors disabled:opacity-50"
+                          className="flex items-center gap-1.5 rounded-md border border-gray-700 px-3 py-1.5 text-xs font-medium text-gray-300 transition-colors hover:bg-gray-900 disabled:opacity-50"
                         >
                           <RefreshCw className={cn("h-3 w-3", reVerifying && "animate-spin")} />
                           {reVerifying ? t("verifying") : t("reVerify")}
@@ -1613,7 +1582,7 @@ function SiteCard({
 
                 {/* Run button + inline Next/Last info */}
                 {(site.autoIndexGoogle || site.autoIndexBing) && (
-                  <div className="mt-3 flex items-center gap-3 flex-wrap">
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
                     <button
                       onClick={onRunNow}
                       disabled={running}
@@ -1626,11 +1595,12 @@ function SiteCard({
                       )}
                       {running ? t("running") : t("runNow")}
                     </button>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-500">
                       {t("nextRun")}
                       {lastAutoIndex !== undefined && (
                         <>
-                          {" · "}
+                          <span className="hidden sm:inline"> · </span>
+                          <br className="sm:hidden" />
                           {lastAutoIndex === null
                             ? t("lastRunLabel", { date: t("noRunsYet") })
                             : t("lastRunLabel", {
@@ -2713,7 +2683,7 @@ function IndexNowVerifyModal({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
+      <div className="relative z-10 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-gray-800 bg-gray-950 p-6 shadow-xl">
         {/* Close button */}
         <button
           onClick={onClose}
