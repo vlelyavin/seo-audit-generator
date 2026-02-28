@@ -1,17 +1,17 @@
 [Unit]
-Description=Indexator - Next.js Frontend
-After=network-online.target indexator.service
+Description=SEO App - Next.js Frontend
+After=network-online.target seoapp.service
 Wants=network-online.target
 
 [Service]
 Type=simple
-User=indexator
-Group=indexator
-WorkingDirectory=/var/www/indexator/frontend/.next/standalone
+User=seoapp
+Group=seoapp
+WorkingDirectory=/var/www/seoapp/frontend/.next/standalone
 Environment="NODE_ENV=production"
 Environment="PORT=3000"
 Environment="HOSTNAME=127.0.0.1"
-Environment="FRONTEND_ROOT=/var/www/indexator/frontend"
+Environment="FRONTEND_ROOT=/var/www/seoapp/frontend"
 ExecStart=/usr/bin/node server.js
 Restart=on-failure
 RestartSec=5

@@ -1307,7 +1307,7 @@ class ReportGenerator:
         if not logo_url:
             return None
         try:
-            req = Request(logo_url, headers={"User-Agent": "indexator-docx"})
+            req = Request(logo_url, headers={"User-Agent": "seoapp-docx"})
             with urlopen(req, timeout=6) as response:
                 content_type = (response.headers.get("Content-Type") or "").lower()
                 if not content_type.startswith("image/"):

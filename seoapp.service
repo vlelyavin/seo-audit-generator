@@ -1,0 +1,25 @@
+[Unit]
+Description=SEO App - FastAPI Backend
+After=network.target
+
+[Service]
+Type=simple
+User=seoapp
+Group=seoapp
+WorkingDirectory=/var/www/seoapp
+Environment="PATH=/var/www/seoapp/venv/bin:/usr/bin:/bin"
+Environment="PLAYWRIGHT_BROWSERS_PATH=/var/www/seoapp/.cache/ms-playwright"
+ExecStart=/var/www/seoapp/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Limits
+LimitNOFILE=65536
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
