@@ -111,7 +111,7 @@ export default function PlansPage() {
               present: plan.id !== "free",
             },
             {
-              text: plan.id === "free" ? t("noBrandedReports") : t("brandedReports"),
+              text: isAgency ? t("brandedReports") : t("noBrandedReports"),
               present: isAgency,
             },
           ];

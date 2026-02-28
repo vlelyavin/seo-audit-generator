@@ -67,7 +67,7 @@ export function PricingSection() {
                 present: true,
               },
               { text: pt("noWatermark"), present: plan.id !== "free" },
-              { text: plan.id === "free" ? pt("noBrandedReports") : pt("brandedReports"), present: isAgency },
+              { text: isAgency ? pt("brandedReports") : pt("noBrandedReports"), present: isAgency },
             ];
 
             const indexatorFeatures: { text: string; present: boolean }[] = [
