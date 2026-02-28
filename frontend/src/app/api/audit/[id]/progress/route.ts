@@ -45,6 +45,17 @@ export async function GET(
 
     if (!res.ok) {
       console.error('[Progress API] FastAPI returned:', res.status);
+
+      // If FastAPI returns 404, the audit no longer exists (expired or never started)
+      // Mark it as failed in the database so the UI can show the correct state
+      if (res.status === 404) {
+        await prisma.audit.updateMany({
+          where: { id, status: { notIn: ["completed", "failed"] } },
+          data: { status: "failed", errorMessage: "Audit expired or not found on server", completedAt: new Date() },
+        });
+        return NextResponse.json({ status: "failed", message: "Audit expired or not found on server" });
+      }
+
       return NextResponse.json({ error: "Failed to fetch status" }, { status: 500 });
     }
 

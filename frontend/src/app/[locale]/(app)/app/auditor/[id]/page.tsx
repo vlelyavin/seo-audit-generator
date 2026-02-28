@@ -58,29 +58,22 @@ export default function AuditPage({
         // Determine if audit is in progress
         const isInProgress = ['crawling', 'analyzing', 'generating_report', 'screenshots'].includes(audit.status);
 
-        // Check if audit is stale (started >15 min ago, still shows in-progress)
-        const auditAge = Date.now() - new Date(audit.startedAt).getTime();
-        const STALE_THRESHOLD = 15 * 60 * 1000; // 15 minutes
-
-        // If audit shows in-progress but started >15 min ago, verify with FastAPI
-        if (isInProgress && auditAge > STALE_THRESHOLD && audit.fastApiId) {
-          console.log('[Audit] Audit appears stale, verifying status...');
+        // For in-progress audits, verify with FastAPI before connecting SSE
+        // This catches audits that failed but DB wasn't updated yet
+        if (isInProgress && audit.fastApiId) {
           try {
-            // This will trigger progress endpoint to update DB if needed
             const progressRes = await fetch(`/api/audit/${auditId}/progress`);
             if (progressRes.ok) {
               const fastapiStatus = await progressRes.json();
 
-              // If FastAPI shows terminal state, reload to get updated DB status
               if (fastapiStatus.status === "completed" || fastapiStatus.status === "failed") {
-                console.log('[Audit] Status updated to', fastapiStatus.status);
+                console.log('[Audit] Status synced to', fastapiStatus.status);
                 window.location.reload();
                 return;
               }
             }
           } catch (error) {
-            console.error('[Audit] Failed to verify stale audit:', error);
-            // Continue with normal flow - don't block user
+            console.error('[Audit] Failed to verify audit status:', error);
           }
         }
 

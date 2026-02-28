@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const IN_PROGRESS_STATUSES = ["crawling", "analyzing", "generating_report", "screenshots", "pending"];
-const STALE_THRESHOLD_MS = 15 * 60 * 1000; // 15 minutes
+const STALE_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutes
 
 export async function GET(req: Request) {
   const session = await auth();
@@ -64,7 +64,18 @@ export async function GET(req: Request) {
           clearTimeout(timeout);
         }
 
-        if (!res.ok) return audit;
+        if (!res.ok) {
+          // If FastAPI returns 404, the audit no longer exists — mark as failed
+          if (res.status === 404) {
+            const failedData = { status: "failed" as const, errorMessage: "Audit expired or not found on server", completedAt: new Date() };
+            await prisma.audit.updateMany({
+              where: { id: audit.id, status: { notIn: ["completed", "failed"] } },
+              data: failedData,
+            });
+            return { ...audit, ...failedData };
+          }
+          return audit;
+        }
 
         const data = await res.json();
 
