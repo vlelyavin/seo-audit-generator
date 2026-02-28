@@ -130,26 +130,13 @@ export default function PlansPage() {
               key={plan.id}
               className={cn(
                 "relative flex flex-col rounded-xl border bg-gray-950 p-8",
-                isCurrent
-                  ? "border-copper/50"
-                  : isPro
-                  ? "border-copper/50"
-                  : "border-gray-800"
+                isCurrent ? "border-copper/50" : "border-gray-800"
               )}
             >
               {isCurrent && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="rounded-full bg-gradient-to-r from-copper to-copper-light px-3 py-1 text-xs font-medium text-white">
                     {t("current")}
-                  </span>
-                </div>
-              )}
-
-              {isPro && !isCurrent && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="flex items-center gap-1 rounded-full bg-copper px-3 py-1 text-xs font-semibold text-white">
-                    <Zap className="h-3 w-3" />
-                    {ut("mostPopular")}
                   </span>
                 </div>
               )}
@@ -217,9 +204,7 @@ export default function PlansPage() {
                   "mt-8 flex w-full items-center justify-center gap-2 rounded-md px-4 py-3.5 text-sm font-semibold transition-opacity",
                   isCurrent
                     ? "cursor-not-allowed bg-gray-900 text-gray-500"
-                    : isPro
-                    ? "bg-gradient-to-r from-copper to-copper-light text-white hover:opacity-90"
-                    : "border border-gray-700 text-white hover:border-copper-light transition-colors"
+                    : "border border-gray-700 text-white transition-colors hover:border-copper hover:bg-gray-900"
                 )}
               >
                 {isSwitching ? (

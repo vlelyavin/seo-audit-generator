@@ -83,22 +83,16 @@ export function PricingSection() {
 
             const PlanIcon = PLAN_ICONS[plan.id];
 
+            const isCurrentPlan = session?.user?.planId === plan.id;
+
             return (
               <div
                 key={plan.id}
                 className={cn(
                   "relative flex flex-col rounded-xl border bg-gray-950 p-8",
-                  isPro ? "border-copper/50" : "border-gray-800"
+                  isCurrentPlan ? "border-copper/50" : "border-gray-800"
                 )}
               >
-                {isPro && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="flex items-center gap-1 rounded-full bg-copper px-3 py-1 text-xs font-semibold text-white">
-                      <Zap className="h-3 w-3" />
-                      {t("mostPopular")}
-                    </span>
-                  </div>
-                )}
 
                 {PlanIcon && (
                   <PlanIcon className="h-6 w-6 text-copper" />
