@@ -47,7 +47,7 @@ export default function SettingsPage() {
           {t("profile")}
         </h2>
 
-        <div className="max-w-[50rem] space-y-4">
+        <div className="max-w-[30rem] space-y-4">
           <div>
             <label className="mb-0.5 block text-sm font-medium text-gray-300">
               Email

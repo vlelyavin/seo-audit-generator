@@ -194,7 +194,7 @@ export default function BrandingPage() {
       <form onSubmit={handleSave} className="rounded-xl border border-gray-800 bg-gray-950 p-6 space-y-5">
         <h2 className="mb-4 text-lg font-semibold text-white">{t("title")}</h2>
 
-        <div className="max-w-[50rem] space-y-5">
+        <div className="max-w-[30rem] space-y-5">
         <div>
           <label className="mb-0.5 block text-sm font-medium text-gray-300">
             {t("companyName")}
@@ -217,7 +217,7 @@ export default function BrandingPage() {
 
           {/* Drop zone */}
           <label
-            className={`group relative flex h-[180px] w-[250px] cursor-pointer flex-col items-center justify-center rounded-xl border bg-gray-950 transition-colors ${
+            className={`group relative flex h-[180px] w-[250px] cursor-pointer flex-col items-center justify-center rounded-xl border bg-gray-900 transition-colors ${
               isDragOver
                 ? "border-copper ring-2 ring-copper/20"
                 : "border-gray-700 hover:border-copper hover:ring-2 hover:ring-copper/20"
@@ -296,7 +296,7 @@ export default function BrandingPage() {
           className="flex items-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           <Save className="h-4 w-4" />
-          {saving ? "..." : tCommon("save")}
+          {saving ? "..." : t("saveSettings")}
         </button>
       </form>
     </div>

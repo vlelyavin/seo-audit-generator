@@ -179,7 +179,8 @@
     "uploading": "Uploading...",
     "uploadFailed": "Upload failed",
     "logoAlt": "Logo",
-    "removeLogo": "Remove logo"
+    "removeLogo": "Remove logo",
+    "saveSettings": "Save Settings"
   },
   "admin": {
     "title": "Admin Dashboard",
