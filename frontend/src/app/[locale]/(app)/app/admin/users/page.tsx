@@ -45,10 +45,10 @@ export default function AdminUsersPage() {
 
   async function updateUser(userId: string, data: { role?: string; planId?: string }) {
     try {
-      const res = await fetch("/api/admin/users", {
+      const res = await fetch(`/api/admin/users/${userId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, ...data }),
+        body: JSON.stringify(data),
       });
 
       if (res.ok) {

@@ -60,15 +60,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
       }
 
-      // Cache role/planId in JWT; refresh from DB every 5 minutes
-      const JWT_DB_REFRESH_MS = 5 * 60 * 1000;
+      // Force immediate DB refresh when session.update() is called (e.g. after plan change)
+      const forceRefresh = trigger === "update";
+
+      // Cache role/planId in JWT; refresh from DB every 30 seconds
+      const JWT_DB_REFRESH_MS = 30 * 1000;
       const lastCheck = (token.lastDbCheck as number) ?? 0;
-      const needsRefresh = Date.now() - lastCheck > JWT_DB_REFRESH_MS;
+      const needsRefresh = forceRefresh || Date.now() - lastCheck > JWT_DB_REFRESH_MS;
 
       if (token.email && (needsRefresh || !token.role)) {
         const dbUser = await prisma.user.findUnique({

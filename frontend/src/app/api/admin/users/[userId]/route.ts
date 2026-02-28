@@ -18,7 +18,7 @@ export async function PATCH(
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
-  const { planId } = body as { planId?: string };
+  const { planId, role } = body as { planId?: string; role?: string };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateData: Record<string, any> = {};
@@ -29,6 +29,10 @@ export async function PATCH(
       return NextResponse.json({ error: "Plan not found" }, { status: 400 });
     }
     updateData.planId = planId;
+  }
+
+  if (role !== undefined && (role === "user" || role === "admin")) {
+    updateData.role = role;
   }
 
   if (Object.keys(updateData).length === 0) {
