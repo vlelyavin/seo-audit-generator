@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { toast } from "sonner";
 import type { ProgressEvent } from "@/types/audit";
 
 const MAX_SSE_RETRIES = 2;
@@ -13,24 +14,29 @@ export function useAuditProgress(fastApiId: string | null, auditId: string | nul
   const [connected, setConnected] = useState(false);
   const [done, setDone] = useState(false);
   const [isPolling, setIsPolling] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isStalled, setIsStalled] = useState(false);
-  const connectionAttemptsRef = useRef(0); // Use ref instead of state to avoid re-renders
+  const connectionAttemptsRef = useRef(0);
   const esRef = useRef<EventSource | null>(null);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const lastEventTimeRef = useRef<number>(Date.now());
   const stallCheckIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const connectingToastRef = useRef<string | number | null>(null);
+
+  const dismissConnectingToast = useCallback(() => {
+    if (connectingToastRef.current !== null) {
+      toast.dismiss(connectingToastRef.current);
+      connectingToastRef.current = null;
+    }
+  }, []);
 
   const checkForStall = useCallback(() => {
     const now = Date.now();
     const timeSinceLastEvent = now - lastEventTimeRef.current;
 
-    // If no event for 2 minutes, consider stalled
     if (timeSinceLastEvent > STALL_TIMEOUT) {
-      setIsStalled(true);
-      setError("Connection lost - attempting to reconnect...");
+      dismissConnectingToast();
+      toast.error("Connection lost. The audit may still be running in the background.");
     }
-  }, []);
+  }, [dismissConnectingToast]);
 
   const startPolling = useCallback(() => {
     if (!auditId || isPolling) return;
@@ -45,8 +51,7 @@ export function useAuditProgress(fastApiId: string | null, auditId: string | nul
           const data: ProgressEvent = await res.json();
           setProgress(data);
           setConnected(true);
-          setError(null);
-          setIsStalled(false);
+          dismissConnectingToast();
           lastEventTimeRef.current = Date.now();
 
           if (data.status === "completed" || data.status === "failed") {
@@ -59,26 +64,25 @@ export function useAuditProgress(fastApiId: string | null, auditId: string | nul
         } else {
           console.error('[Polling] Failed to fetch progress:', res.status);
           setConnected(false);
-          setError(`Polling failed with status ${res.status}`);
+          toast.error(`Polling failed with status ${res.status}`);
         }
       } catch (error) {
         console.error('[Polling] Error:', error);
         setConnected(false);
-        setError("Failed to fetch progress");
+        toast.error("Failed to fetch progress");
       }
     };
 
-    // Poll immediately, then every 2 seconds
     poll();
     pollIntervalRef.current = setInterval(poll, POLL_INTERVAL);
-  }, [auditId, isPolling]);
+  }, [auditId, isPolling, dismissConnectingToast]);
 
   const connect = useCallback(() => {
     if (!fastApiId || isPolling) return;
 
-    // Check retry limit using ref (doesn't trigger re-render)
     if (connectionAttemptsRef.current >= MAX_SSE_RETRIES) {
       console.log('[SSE] Max retries reached, falling back to polling');
+      dismissConnectingToast();
       startPolling();
       return;
     }
@@ -91,9 +95,8 @@ export function useAuditProgress(fastApiId: string | null, auditId: string | nul
     es.onopen = () => {
       console.log('[SSE] Connection established');
       setConnected(true);
-      setError(null);
-      setIsStalled(false);
-      connectionAttemptsRef.current = 0; // Reset on successful connection
+      dismissConnectingToast();
+      connectionAttemptsRef.current = 0;
       lastEventTimeRef.current = Date.now();
     };
 
@@ -101,8 +104,7 @@ export function useAuditProgress(fastApiId: string | null, auditId: string | nul
       try {
         const data: ProgressEvent = JSON.parse(event.data);
         setProgress(data);
-        setError(null);
-        setIsStalled(false);
+        dismissConnectingToast();
         lastEventTimeRef.current = Date.now();
 
         if (data.status === "completed" || data.status === "failed") {
@@ -115,7 +117,6 @@ export function useAuditProgress(fastApiId: string | null, auditId: string | nul
     });
 
     es.addEventListener("ping", () => {
-      // Keepalive ping - reset stall timer
       lastEventTimeRef.current = Date.now();
     });
 
@@ -126,35 +127,31 @@ export function useAuditProgress(fastApiId: string | null, auditId: string | nul
       es.close();
       esRef.current = null;
 
-      // Don't call connect() here - let the retry happen via setTimeout
       if (connectionAttemptsRef.current >= MAX_SSE_RETRIES) {
         console.log('[SSE] Max retries reached, falling back to polling');
-        setError("Failed to connect via SSE, falling back to polling");
+        dismissConnectingToast();
         startPolling();
       } else {
-        setError(`Connection failed, retrying... (${connectionAttemptsRef.current}/${MAX_SSE_RETRIES})`);
-        // Schedule retry without recursive call
+        connectingToastRef.current = toast.loading(
+          `Connecting... (${connectionAttemptsRef.current}/${MAX_SSE_RETRIES})`
+        );
         setTimeout(() => {
-          // Only retry if we haven't started polling in the meantime
           if (!isPolling) {
             connect();
           }
         }, SSE_RETRY_DELAY);
       }
     };
-  }, [fastApiId, isPolling, startPolling]); // Removed connectionAttempts dependency
+  }, [fastApiId, isPolling, startPolling, dismissConnectingToast]);
 
   useEffect(() => {
     if (!fastApiId) return;
 
-    // Reset retry counter on new fastApiId
     connectionAttemptsRef.current = 0;
     lastEventTimeRef.current = Date.now();
-    setError(null);
-    setIsStalled(false);
+    dismissConnectingToast();
     connect();
 
-    // Start stall detection (check every 30 seconds)
     stallCheckIntervalRef.current = setInterval(checkForStall, 30000);
 
     return () => {
@@ -167,8 +164,9 @@ export function useAuditProgress(fastApiId: string | null, auditId: string | nul
         clearInterval(stallCheckIntervalRef.current);
         stallCheckIntervalRef.current = null;
       }
+      dismissConnectingToast();
     };
-  }, [fastApiId, connect, checkForStall]); // Depend on fastApiId to reset on changes
+  }, [fastApiId, connect, checkForStall, dismissConnectingToast]);
 
-  return { progress, connected, done, error, isStalled };
+  return { progress, connected, done };
 }

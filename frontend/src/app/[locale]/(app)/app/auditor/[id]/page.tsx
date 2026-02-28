@@ -36,7 +36,7 @@ export default function AuditPage({
     });
   }, [params, searchParams]);
 
-  const { progress, connected, done, error, isStalled } = useAuditProgress(fastApiId, auditId);
+  const { progress, done } = useAuditProgress(fastApiId, auditId);
   const tAudit = useTranslations("audit");
   const tBreadcrumbs = useTranslations("breadcrumbs");
 
@@ -225,24 +225,6 @@ export default function AuditPage({
       <div>
         <Breadcrumbs items={breadcrumbItems} />
         <h1 className="mb-6 text-2xl font-bold text-white">{breadcrumbLabel}</h1>
-        {error && (
-          <div className="mb-4 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-            <p className="text-yellow-500">{error}</p>
-          </div>
-        )}
-        {isStalled && (
-          <div className="mb-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
-            <p className="text-red-500">
-              {tAudit("connectionLost")}
-              <button
-                onClick={() => window.location.reload()}
-                className="ml-2 underline hover:text-red-600"
-              >
-                {tAudit("refreshToReconnect")}
-              </button>
-            </p>
-          </div>
-        )}
         <AuditProgressView progress={progress} />
       </div>
     );
