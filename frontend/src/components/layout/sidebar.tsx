@@ -11,6 +11,8 @@ import {
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePlanUsage } from "@/hooks/use-plan-usage";
+import { PlanBlock } from "./plan-block";
 
 interface SidebarProps {
   open: boolean;
@@ -19,11 +21,13 @@ interface SidebarProps {
 
 export function Sidebar({ open, onClose }: SidebarProps) {
   const t = useTranslations("nav");
-  const tPlans = useTranslations("plans");
   const pathname = usePathname();
   const { data: session } = useSession();
 
   const isAdmin = session?.user?.role === "admin";
+  const planId = (session?.user?.planId as string) ?? "free";
+
+  const { context, indexatorUsage, auditorUsage } = usePlanUsage(pathname);
 
   const navItems = [
     {
@@ -40,6 +44,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       href: "/app/plans",
       label: t("plans"),
       icon: Zap,
+      accentIcon: true,
     },
     {
       href: "/app/settings",
@@ -107,7 +112,12 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                   : "text-gray-300 hover:bg-gray-900"
               )}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon
+                className={cn(
+                  "h-4 w-4",
+                  "accentIcon" in item && item.accentIcon && "text-copper"
+                )}
+              />
               {item.label}
             </Link>
           );
@@ -143,20 +153,13 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       </nav>
 
       {session?.user && (
-        <div className="border-t border-gray-800 p-3">
-          <Link
-            href="/app/plans"
-            onClick={closeOnMobile}
-            className="block rounded-lg bg-black p-3 transition-colors hover:bg-gray-900"
-          >
-            <p className="text-xs font-medium text-gray-400">
-              {t("currentPlan")}
-            </p>
-            <p className="text-sm font-semibold capitalize text-white">
-              {tPlans(session.user.planId as "free" | "pro" | "agency")}
-            </p>
-          </Link>
-        </div>
+        <PlanBlock
+          planId={planId}
+          context={context}
+          indexatorUsage={indexatorUsage}
+          auditorUsage={auditorUsage}
+          onNavigate={closeOnMobile}
+        />
       )}
     </aside>
   );

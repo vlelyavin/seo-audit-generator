@@ -24,7 +24,15 @@
     "login": "Sign In",
     "currentPlan": "Current Plan",
     "openSidebar": "Open sidebar",
-    "closeSidebar": "Close sidebar"
+    "closeSidebar": "Close sidebar",
+    "auditsToday": "{count, plural, one {# audit} other {# audits}} today",
+    "pagesPerAudit": "{count} pages/audit",
+    "sites": "Sites",
+    "googleQuota": "Google",
+    "inspections": "Inspections",
+    "today": "today",
+    "managePlan": "Manage plan \u2192",
+    "upgradeToPro": "Upgrade to Pro \u2192"
   },
   "auth": {
     "signIn": "Sign In",

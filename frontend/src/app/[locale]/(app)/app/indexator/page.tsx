@@ -734,23 +734,6 @@ export default function IndexingPage() {
                   {t("disconnect")}
                 </button>
               </div>
-
-              {globalQuota && (
-                <div className="flex flex-col gap-2 w-full sm:flex-row sm:items-center sm:gap-5 sm:ml-auto sm:w-auto">
-                  <QuotaPill
-                    icon={<Search className="h-3 w-3" />}
-                    label={t("inspectionQuota")}
-                    used={globalQuota.inspections.used}
-                    limit={globalQuota.inspections.limit}
-                  />
-                  <QuotaPill
-                    icon={<Send className="h-3 w-3" />}
-                    label={t("googleQuota")}
-                    used={globalQuota.googleSubmissions.used}
-                    limit={globalQuota.googleSubmissions.limit}
-                  />
-                </div>
-              )}
             </>
           )}
         </div>
@@ -2195,36 +2178,6 @@ function ExpandableList({
             </a>
           </div>
         ))}
-      </div>
-    </div>
-  );
-}
-
-function QuotaPill({
-  icon,
-  label,
-  used,
-  limit,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  used: number;
-  limit: number;
-}) {
-  const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
-  return (
-    <div>
-      <div className="flex items-center gap-1.5 text-xs text-gray-400 justify-between sm:justify-start">
-        <span className="flex items-center gap-1.5">
-          {icon}
-          {label}
-        </span>
-        <span className="text-gray-200">
-          {used}/{limit}
-        </span>
-      </div>
-      <div className="mt-1 h-[2px] bg-gray-800">
-        <div className="h-full bg-copper transition-all" style={{ width: `${pct}%` }} />
       </div>
     </div>
   );
