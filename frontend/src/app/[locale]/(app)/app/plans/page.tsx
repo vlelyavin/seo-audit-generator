@@ -166,7 +166,7 @@ export default function PlansPage() {
 
               {/* Auditor features */}
               <div className="mt-8">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-copper">
+                <p className="mb-3 text-sm font-semibold tracking-wider text-copper">
                   {ut("auditorLabel")}
                 </p>
                 <ul className="space-y-3">
@@ -185,7 +185,7 @@ export default function PlansPage() {
 
               {/* Indexator features */}
               <div className="mt-8 flex-1">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-copper">
+                <p className="mb-3 text-sm font-semibold tracking-wider text-copper">
                   {ut("indexatorLabel")}
                 </p>
                 <ul className="space-y-3">

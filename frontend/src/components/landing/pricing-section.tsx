@@ -114,7 +114,7 @@ export function PricingSection() {
 
                 {/* Auditor features */}
                 <div className="mt-8">
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-copper">
+                  <p className="mb-3 text-sm font-semibold tracking-wider text-copper">
                     {t("auditorLabel")}
                   </p>
                   <ul className="space-y-3">
@@ -133,7 +133,7 @@ export function PricingSection() {
 
                 {/* Indexator features */}
                 <div className="mt-8">
-                  <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-copper">
+                  <p className="mb-3 text-sm font-semibold tracking-wider text-copper">
                     {t("indexatorLabel")}
                   </p>
                   <ul className="space-y-3">
