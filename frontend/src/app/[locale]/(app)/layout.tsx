@@ -32,6 +32,15 @@ export default function DashboardLayout({
 
   return (
     <div className="relative min-h-dvh">
+      {/* Mobile overlay — tap to close sidebar */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <Header onToggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />

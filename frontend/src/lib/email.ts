@@ -25,7 +25,7 @@ function createTransport() {
   });
 }
 
-const FROM = process.env.EMAIL_FROM ?? "noreply@indexator.lvdev.co";
+const FROM = process.env.EMAIL_FROM ?? "noreply@seo.lvdev.co";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
 const APP_URL = process.env.AUTH_URL ?? "http://localhost:3000";
 

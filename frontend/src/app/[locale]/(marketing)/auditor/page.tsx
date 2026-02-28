@@ -6,13 +6,14 @@ import { PricingSection } from "@/components/landing/pricing-section";
 import { AuditorFaqSection } from "@/components/landing/auditor-faq-section";
 
 export const metadata: Metadata = {
-  title: "Professional SEO Audits, Ready to Send — SEO Audit Online",
+  title: "Professional SEO Audits, Ready to Send — seo.lvdev.co",
   description:
     "Get a client-ready SEO report in one click. 21 analyzers, beautiful PDF export, white-label branding. Free plan available.",
   openGraph: {
-    title: "Professional SEO Audits, Ready to Send — SEO Audit Online",
+    title: "Professional SEO Audits, Ready to Send — seo.lvdev.co",
     description:
       "Get a client-ready SEO report in one click. 21 analyzers, beautiful PDF export, white-label branding. Free plan available.",
+    url: "https://seo.lvdev.co/auditor",
     type: "website",
   },
 };

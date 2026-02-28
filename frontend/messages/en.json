@@ -33,7 +33,9 @@
     "inspections": "Inspections",
     "today": "today",
     "managePlan": "Manage plan \u2192",
-    "upgradeToPro": "Upgrade to Pro \u2192"
+    "upgradeToPro": "Upgrade to Pro \u2192",
+    "planSuffix": "plan",
+    "pagesTotal": "{count} pages total"
   },
   "auth": {
     "signIn": "Sign In",
@@ -671,7 +673,7 @@
       "sections": {
         "introduction": {
           "heading": "Introduction",
-          "body": "Welcome to Indexator (indexator.lvdev.co), operated by lvdev (\"Company\", \"we\", \"us\"). By accessing or using our Service, you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree, do not use the Service."
+          "body": "Welcome to Indexator (seo.lvdev.co), operated by lvdev (\"Company\", \"we\", \"us\"). By accessing or using our Service, you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree, do not use the Service."
         },
         "serviceDescription": {
           "heading": "Service Description",
@@ -741,7 +743,7 @@
       "sections": {
         "operator": {
           "heading": "Operator",
-          "body": "This Privacy Policy applies to Indexator (indexator.lvdev.co), operated by lvdev. This policy explains what data we collect, how we use it, and your rights regarding your personal information."
+          "body": "This Privacy Policy applies to Indexator (seo.lvdev.co), operated by lvdev. This policy explains what data we collect, how we use it, and your rights regarding your personal information."
         },
         "dataCollected": {
           "heading": "Data We Collect",

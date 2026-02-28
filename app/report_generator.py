@@ -916,7 +916,7 @@ class ReportGenerator:
 
         watermark_css = """
                 @bottom-right {
-                    content: "indexator.lvdev.co";
+                    content: "seo.lvdev.co";
                     font-size: 8pt;
                     color: #D1D5DB;
                     font-family: Inter, sans-serif;
@@ -1943,7 +1943,7 @@ class ReportGenerator:
         run3._element.append(fld_char_end)
 
         if show_watermark:
-            run4 = footer_para.add_run("    |    indexator.lvdev.co")
+            run4 = footer_para.add_run("    |    seo.lvdev.co")
             self._docx_set_font(run4, size_pt=8, color_rgb=(209, 213, 219))
 
         # Save document

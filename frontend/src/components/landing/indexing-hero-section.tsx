@@ -22,7 +22,7 @@ export function IndexingHeroSection() {
 
       <div className="relative mx-auto max-w-6xl px-4 lg:px-6">
         <div className="flex flex-col items-center text-center">
-          <h1 className="mx-auto max-w-3xl text-4xl md:text-5xl font-bold tracking-tight text-white">
+          <h1 className="mx-auto max-w-3xl text-4xl md:text-6xl font-bold tracking-tight text-white">
             {t("title")}
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base text-gray-400">

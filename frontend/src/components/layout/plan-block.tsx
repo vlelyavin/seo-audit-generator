@@ -56,16 +56,15 @@ export function PlanBlock({
         <div className="flex items-center gap-1.5 mb-2">
           <Zap className="h-3.5 w-3.5 text-copper" />
           <span className="text-sm font-semibold text-copper">
-            {tPlans(planId as "free" | "pro" | "agency")}
+            {tPlans(planId as "free" | "pro" | "agency")} {tNav("planSuffix")}
           </span>
         </div>
 
         {/* Contextual metrics */}
         {context === "auditor" && auditorUsage && (
-          <div className="text-xs text-gray-400 mb-3 space-y-0.5">
-            <p>{tNav("auditsCount", { count: auditorUsage.auditsToday })}</p>
-            <p>{tNav("pagesPerAudit", { count: maxPages })}</p>
-          </div>
+          <p className="text-xs text-gray-400 mb-2">
+            {tNav("auditsCount", { count: auditorUsage.auditsToday })} · {tNav("pagesPerAudit", { count: maxPages })}
+          </p>
         )}
 
         {context === "indexator" && indexatorUsage && (
@@ -127,7 +126,7 @@ export function PlanBlock({
           <Link
             href="/app/plans"
             onClick={onNavigate}
-            className="mt-1 block text-xs text-gray-400 transition-colors hover:text-white"
+            className="mt-1 block text-xs text-gray-500 transition-colors hover:text-white"
           >
             {tNav("managePlan")}
           </Link>

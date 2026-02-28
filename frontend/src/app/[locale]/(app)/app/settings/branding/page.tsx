@@ -196,10 +196,10 @@ export default function BrandingPage() {
 
         <div className="max-w-[50rem] space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-300">
+          <label className="mb-0.5 block text-sm font-medium text-gray-300">
             {t("companyName")}
           </label>
-          <p className="mb-0.5 text-xs text-gray-500">{t("companyNameDescription")}</p>
+          <p className="mb-1.5 text-xs text-gray-500">{t("companyNameDescription")}</p>
           <input
             type="text"
             value={companyName}
@@ -210,10 +210,10 @@ export default function BrandingPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300">
+          <label className="mb-0.5 block text-sm font-medium text-gray-300">
             {t("logo")}
           </label>
-          <p className="mb-0.5 text-xs text-gray-500">{t("logoDescription")}</p>
+          <p className="mb-1.5 text-xs text-gray-500">{t("logoDescription")}</p>
 
           {/* Drop zone */}
           <label

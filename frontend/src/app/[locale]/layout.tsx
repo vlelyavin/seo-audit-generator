@@ -20,8 +20,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SEO Audit Tool",
-  description: "Professional SEO audit platform",
+  title: "SEO Audit & Indexing Tool — seo.lvdev.co",
+  description: "Professional SEO audit and indexing platform. Crawl websites, analyze 20+ SEO metrics, and submit pages for faster Google indexing.",
+  icons: {
+    icon: { url: "/favicon.svg", type: "image/svg+xml" },
+  },
+  openGraph: {
+    title: "SEO Audit & Indexing Tool — seo.lvdev.co",
+    description: "Professional SEO audit and indexing platform. Crawl websites, analyze 20+ SEO metrics, and submit pages for faster Google indexing.",
+    url: "https://seo.lvdev.co",
+    type: "website",
+  },
 };
 
 export default async function LocaleLayout({

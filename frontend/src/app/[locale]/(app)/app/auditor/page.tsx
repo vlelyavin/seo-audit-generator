@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -9,10 +9,14 @@ import {
   Trash2,
   ExternalLink,
   AlertCircle,
+  AlertTriangle,
   CheckCircle2,
   Clock,
   XCircle,
   Loader2,
+  BarChart3,
+  Globe,
+  FileWarning,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
@@ -110,6 +114,16 @@ export default function AuditorListPage() {
     }
   };
 
+  const stats = useMemo(() => {
+    const completed = audits.filter((a) => a.status === "completed");
+    return {
+      totalAudits: audits.length,
+      totalPages: completed.reduce((sum, a) => sum + a.pagesCrawled, 0),
+      totalErrors: completed.reduce((sum, a) => sum + a.criticalIssues, 0),
+      totalWarnings: completed.reduce((sum, a) => sum + a.warnings, 0),
+    };
+  }, [audits]);
+
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -119,7 +133,7 @@ export default function AuditorListPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 md:pb-0">
       <div className="flex items-center justify-between">
         <div>
           <Breadcrumbs
@@ -132,12 +146,46 @@ export default function AuditorListPage() {
         </div>
         <Link
           href="/app/auditor/new"
-          className="flex items-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          className="hidden md:flex items-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           <Plus className="h-4 w-4" />
           {t("startAudit")}
         </Link>
       </div>
+
+      {/* General stats */}
+      {audits.length > 0 && (
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="rounded-xl border border-gray-800 bg-gray-950 p-4">
+            <div className="flex items-center gap-2 text-gray-400 mb-1">
+              <BarChart3 className="h-4 w-4" />
+              <span className="text-xs">Total Audits</span>
+            </div>
+            <p className="text-xl font-bold text-white">{stats.totalAudits}</p>
+          </div>
+          <div className="rounded-xl border border-gray-800 bg-gray-950 p-4">
+            <div className="flex items-center gap-2 text-gray-400 mb-1">
+              <Globe className="h-4 w-4" />
+              <span className="text-xs">Pages Crawled</span>
+            </div>
+            <p className="text-xl font-bold text-white">{stats.totalPages}</p>
+          </div>
+          <div className="rounded-xl border border-gray-800 bg-gray-950 p-4">
+            <div className="flex items-center gap-2 text-red-400 mb-1">
+              <AlertCircle className="h-4 w-4" />
+              <span className="text-xs">Errors</span>
+            </div>
+            <p className="text-xl font-bold text-white">{stats.totalErrors}</p>
+          </div>
+          <div className="rounded-xl border border-gray-800 bg-gray-950 p-4">
+            <div className="flex items-center gap-2 text-yellow-400 mb-1">
+              <FileWarning className="h-4 w-4" />
+              <span className="text-xs">Warnings</span>
+            </div>
+            <p className="text-xl font-bold text-white">{stats.totalWarnings}</p>
+          </div>
+        </div>
+      )}
 
       {audits.length === 0 ? (
         <div className="rounded-xl border border-gray-800 bg-gray-950 p-12 text-center">
@@ -156,42 +204,44 @@ export default function AuditorListPage() {
           {audits.map((audit) => (
             <div
               key={audit.id}
-              className="group rounded-xl border border-gray-800 bg-gray-950 p-2 md:p-4 transition-colors hover:border-gray-700"
+              className="group rounded-xl border border-gray-800 bg-gray-950 p-3 md:p-4 transition-colors hover:border-gray-700"
             >
               <div className="flex items-center justify-between gap-4">
                 <Link
                   href={`/app/auditor/${audit.id}`}
                   className="min-w-0 flex-1"
                 >
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 md:gap-3">
                     {statusIcon(audit.status)}
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-white">
                         {shortenUrl(audit.url)}
                       </p>
-                      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
+                      <div className="mt-1 flex items-center gap-x-3 text-xs text-gray-500 whitespace-nowrap">
                         <span>{formatDate(audit.startedAt)}</span>
-                        <span>{statusLabel(audit.status)}</span>
                         {audit.status === "completed" && (
                           <>
-                            <span>
-                              {audit.pagesCrawled}{" "}
-                              {audit.pagesCrawled === 1 ? "page" : "pages"}
-                            </span>
-                            {audit.criticalIssues > 0 && (
-                              <span className="flex items-center gap-1 text-red-400">
-                                <AlertCircle className="h-3 w-3" />
-                                {audit.criticalIssues} {t("criticalLabel")}
-                              </span>
-                            )}
-                            {audit.warnings > 0 && (
-                              <span className="text-yellow-400">
-                                {audit.warnings} {t("warningsLabel")}
-                              </span>
-                            )}
+                            <span>·</span>
+                            <span>{audit.pagesCrawled} pages total</span>
                           </>
                         )}
                       </div>
+                      {audit.status === "completed" && (audit.criticalIssues > 0 || audit.warnings > 0) && (
+                        <div className="mt-1 flex items-center gap-x-3">
+                          {audit.criticalIssues > 0 && (
+                            <span className="flex items-center gap-1 text-xs font-medium text-red-400">
+                              <AlertCircle className="h-3 w-3" />
+                              {audit.criticalIssues} {t("criticalLabel")}
+                            </span>
+                          )}
+                          {audit.warnings > 0 && (
+                            <span className="flex items-center gap-1 text-xs font-medium text-yellow-400">
+                              <AlertTriangle className="h-3 w-3" />
+                              {audit.warnings} {t("warningsLabel")}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Link>
@@ -227,6 +277,15 @@ export default function AuditorListPage() {
           ))}
         </div>
       )}
+
+      {/* Floating "Start new audit" button — mobile only */}
+      <Link
+        href="/app/auditor/new"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-gradient-to-r from-copper to-copper-light px-5 py-3 text-sm font-semibold text-white shadow-lg transition-opacity hover:opacity-90 md:hidden"
+      >
+        <Plus className="h-4 w-4" />
+        {t("startAudit")}
+      </Link>
     </div>
   );
 }

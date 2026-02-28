@@ -78,7 +78,7 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-gray-800 bg-gray-950">
+      <header className={cn("sticky top-0 z-50", isApp ? "border-b border-gray-800 bg-gray-950" : "bg-gradient-to-b from-black to-transparent")}>
         <div className="flex h-14 items-center px-4 lg:px-6">
           {/* App context: sidebar toggle (mobile only) */}
           {isApp && onToggleSidebar && (
@@ -143,6 +143,9 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
                   </Link>
                 )}
                 {avatar}
+                {isApp && rawName && (
+                  <span className="text-sm font-medium text-gray-300">{rawName}</span>
+                )}
                 {logoutButton}
               </div>
             ) : (

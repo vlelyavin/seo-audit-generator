@@ -18,7 +18,7 @@ export function HeroSection() {
           <p className="mb-2 text-base md:text-2xl font-bold bg-gradient-to-r from-copper to-copper-light bg-clip-text text-transparent">
             {t("sectionLabel")}
           </p>
-          <h1 className="mx-auto max-w-3xl font-bold tracking-tight text-white" style={{ fontSize: "clamp(2rem, 4vw, 4rem)", lineHeight: 1.2 }}>
+          <h1 className="mx-auto max-w-3xl font-bold tracking-tight text-white" style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)", lineHeight: 1.1 }}>
             {t("title")}
           </h1>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
