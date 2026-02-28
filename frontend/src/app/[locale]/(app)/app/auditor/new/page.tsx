@@ -5,7 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
-import { Globe, Play, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { Globe, Play, ChevronDown, ChevronUp, Loader2, Image } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { ANALYZER_NAMES, ANALYZER_LABELS } from "@/types/audit";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,6 +28,7 @@ export default function NewAuditPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPagesCrawled, setShowPagesCrawled] = useState(false);
+  const [includeCompanyLogo, setIncludeCompanyLogo] = useState(false);
 
   // Custom page limit state
   const [maxPages, setMaxPages] = useState<number>(10); // Default to Free plan limit
@@ -87,6 +89,7 @@ export default function NewAuditPage() {
           maxPages,
           includeScreenshots,
           showPagesCrawled,
+          includeCompanyLogo,
         }),
       });
 
@@ -124,48 +127,46 @@ export default function NewAuditPage() {
             </div>
           )}
 
-          {/* URL input */}
-          <div className="mb-5">
-            <label className="mb-1.5 block text-sm font-medium text-gray-300">
-              {t("enterUrl")}
-            </label>
-            <div className="relative">
-              <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+          {/* URL + Max Pages — same line on desktop, stacked on mobile */}
+          <div className="mb-5 flex flex-col md:flex-row gap-4">
+            <div className="w-full md:w-[70%]">
+              <label className="mb-1.5 block text-sm font-medium text-gray-300">
+                {t("enterUrl")}
+              </label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <input
+                  type="url"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  required
+                  placeholder={t("urlPlaceholder")}
+                  className="w-full rounded-lg border border-gray-700 bg-gray-900 py-2.5 pl-10 pr-3 text-base md:text-sm text-white outline-none placeholder-gray-500 transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
+                />
+              </div>
+            </div>
+
+            <div className="w-full md:w-[30%]">
+              <label className="mb-1.5 block text-sm font-medium text-gray-300">
+                {t("maxPages")}
+                <span className="ml-1 text-xs text-gray-500">
+                  (1-{planLimit})
+                </span>
+              </label>
               <input
-                type="url"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                required
-                placeholder={t("urlPlaceholder")}
-                className="w-full rounded-lg border border-gray-700 bg-gray-900 py-2.5 pl-10 pr-3 text-base md:text-sm text-white outline-none placeholder-gray-500 transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
+                type="number"
+                min="1"
+                max={planLimit}
+                value={maxPages}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value);
+                  if (value >= 1 && value <= planLimit) {
+                    setMaxPages(value);
+                  }
+                }}
+                className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-base md:text-sm text-white outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
               />
             </div>
-          </div>
-
-          {/* Max Pages Input */}
-          <div className="mb-5">
-            <label className="mb-1.5 block text-sm font-medium text-gray-300">
-              {t("maxPages")}
-              <span className="ml-1 text-xs text-gray-500">
-                (1-{planLimit})
-              </span>
-            </label>
-            <input
-              type="number"
-              min="1"
-              max={planLimit}
-              value={maxPages}
-              onChange={(e) => {
-                const value = parseInt(e.target.value);
-                if (value >= 1 && value <= planLimit) {
-                  setMaxPages(value);
-                }
-              }}
-              className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-base md:text-sm text-white outline-none transition-colors focus:border-copper focus:ring-2 focus:ring-copper/20"
-            />
-            <p className="mt-1 text-xs text-gray-500">
-              {t("maxPagesHint", { limit: planLimit })}
-            </p>
           </div>
 
           {/* Analyzers */}
@@ -209,7 +210,7 @@ export default function NewAuditPage() {
                     {t("deselectAll")}
                   </button>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
                   {REAL_ANALYZER_NAMES.map((name) => (
                     <label
                       key={name}
@@ -226,27 +227,27 @@ export default function NewAuditPage() {
                   ))}
                 </div>
 
-                {/* PageSpeed Screenshots option */}
-                <div className="mt-3 border-t border-gray-700 pt-3">
-                  <label className="flex cursor-pointer items-center gap-2 text-sm">
-                    <Checkbox
-                      checked={includeScreenshots}
-                      onChange={() => toggleAnalyzer("speed_screenshots")}
-                    />
-                    <span className="text-gray-300">
-                      {ANALYZER_LABELS["speed_screenshots"]}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {t("screenshotsHint")}
-                    </span>
-                  </label>
-                </div>
               </div>
             )}
           </div>
 
-          {/* Show pages crawled option */}
-          <div className="mt-4">
+          {/* Toggles */}
+          <div className="mt-4 space-y-3">
+            {/* 1. PageSpeed Screenshots */}
+            <label className="flex cursor-pointer items-center gap-2 text-sm">
+              <Checkbox
+                checked={includeScreenshots}
+                onChange={() => toggleAnalyzer("speed_screenshots")}
+              />
+              <span className="text-gray-300">
+                {ANALYZER_LABELS["speed_screenshots"]}
+              </span>
+              <span className="text-xs text-gray-500">
+                {t("screenshotsHint")}
+              </span>
+            </label>
+
+            {/* 2. Show scanned pages count */}
             <label className="flex cursor-pointer items-center gap-2 text-sm">
               <Checkbox
                 checked={showPagesCrawled}
@@ -254,6 +255,27 @@ export default function NewAuditPage() {
               />
               <span className="text-gray-300">
                 {t("showPagesCrawled")}
+              </span>
+            </label>
+
+            {/* 3. Include company logo */}
+            <label className="flex cursor-pointer items-center gap-2 text-sm">
+              <Checkbox
+                checked={includeCompanyLogo}
+                onChange={() => setIncludeCompanyLogo((prev) => !prev)}
+              />
+              <span className="text-gray-300">
+                {t.rich("includeCompanyLogo", {
+                  link: (chunks) => (
+                    <Link
+                      href="/app/settings?tab=branding"
+                      className="text-copper hover:underline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {chunks}
+                    </Link>
+                  ),
+                })}
               </span>
             </label>
           </div>
