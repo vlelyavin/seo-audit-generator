@@ -230,7 +230,7 @@ export default function AuditPage({
         <Breadcrumbs items={breadcrumbItems} />
         {displayUrl && (
           <h1 className="mb-6 text-2xl font-bold text-white">
-            Website: {displayUrl}
+            Website audit: {displayUrl}
           </h1>
         )}
         <div className="rounded-xl border border-gray-800 bg-gray-950 p-4 sm:p-8 text-center">
@@ -277,7 +277,7 @@ export default function AuditPage({
         <Breadcrumbs items={breadcrumbItems} />
         {displayUrl && (
           <h1 className="mb-6 text-2xl font-bold text-white">
-            Website: {displayUrl}
+            Website audit: {displayUrl}
           </h1>
         )}
         <div className="rounded-xl border border-gray-800 bg-gray-950 p-4 sm:p-8 text-center">
