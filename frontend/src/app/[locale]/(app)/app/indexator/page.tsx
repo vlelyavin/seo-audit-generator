@@ -664,10 +664,13 @@ export default function IndexingPage() {
 
   return (
     <div className="space-y-6">
-      <Breadcrumbs items={[
-        { label: tBreadcrumbs("dashboard"), href: "/app" },
-        { label: tBreadcrumbs("indexing") },
-      ]} />
+      <div>
+        <Breadcrumbs items={[
+          { label: tBreadcrumbs("dashboard"), href: "/app" },
+          { label: tBreadcrumbs("indexing") },
+        ]} />
+        <h1 className="text-2xl font-bold text-white">Indexator</h1>
+      </div>
 
       {/* GSC Connection Card */}
       <div className="rounded-xl border border-gray-800 bg-gray-950 p-6">

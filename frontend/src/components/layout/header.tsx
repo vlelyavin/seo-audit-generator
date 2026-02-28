@@ -80,26 +80,11 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
     <>
       <header className="sticky top-0 z-50 border-b border-gray-800 bg-gray-950">
         <div className="flex h-14 items-center px-4 lg:px-6">
-          {/* Logo */}
-          <Link
-            href={isApp ? "/app" : "/"}
-            className="flex shrink-0 items-center gap-2 font-semibold"
-          >
-            <Image
-              src="/images/Indexator-logo.png"
-              alt="Indexator"
-              width={200}
-              height={50}
-              className="h-4 w-auto -mt-[2px] md:h-5 md:-mt-[6px]"
-              priority={!isApp}
-            />
-          </Link>
-
           {/* App context: sidebar toggle (mobile only) */}
           {isApp && onToggleSidebar && (
             <button
               onClick={onToggleSidebar}
-              className="ml-2 flex items-center justify-center rounded-md px-2 py-2 text-white transition-colors hover:bg-gray-900 lg:hidden"
+              className="-ml-2 mr-2 flex items-center justify-center rounded-md px-2 py-2 text-white transition-colors hover:bg-gray-900 lg:hidden"
               aria-label={sidebarOpen ? t("closeSidebar") : t("openSidebar")}
               type="button"
             >
@@ -110,6 +95,21 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
               )}
             </button>
           )}
+
+          {/* Logo */}
+          <Link
+            href={isApp ? "/app" : "/"}
+            className="flex shrink-0 items-center gap-2 font-semibold"
+          >
+            <Image
+              src="/images/Indexator-logo.png"
+              alt="Indexator"
+              width={200}
+              height={50}
+              className="h-4 w-auto md:h-5"
+              priority={!isApp}
+            />
+          </Link>
 
           {/* Centered nav — marketing pages only, desktop */}
           {!isApp && (

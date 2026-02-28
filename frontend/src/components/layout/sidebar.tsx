@@ -116,7 +116,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               <item.icon
                 className={cn(
                   "h-4 w-4",
-                  "accentIcon" in item && item.accentIcon && isActive && "text-copper"
+                  isActive && "text-copper"
                 )}
               />
               {item.label}
@@ -140,7 +140,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                       : "text-gray-300 hover:bg-gray-900"
                   )}
                 >
-                  <item.icon className="h-4 w-4" />
+                  <item.icon className={cn("h-4 w-4", isActive && "text-copper")} />
                   {item.label}
                 </Link>
               );

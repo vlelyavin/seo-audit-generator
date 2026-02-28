@@ -60,13 +60,13 @@ export default function AuditorListPage() {
   const statusIcon = (status: string) => {
     switch (status) {
       case "completed":
-        return <CheckCircle2 className="h-8 w-8 text-emerald-400" />;
+        return <CheckCircle2 className="h-6 w-6 shrink-0 text-emerald-400" />;
       case "failed":
-        return <XCircle className="h-8 w-8 text-red-400" />;
+        return <XCircle className="h-6 w-6 shrink-0 text-red-400" />;
       case "pending":
-        return <Clock className="h-8 w-8 text-gray-400" />;
+        return <Clock className="h-6 w-6 shrink-0 text-gray-400" />;
       default:
-        return <Loader2 className="h-8 w-8 animate-spin text-copper" />;
+        return <Loader2 className="h-6 w-6 shrink-0 animate-spin text-copper" />;
     }
   };
 
@@ -132,7 +132,7 @@ export default function AuditorListPage() {
         </div>
         <Link
           href="/app/auditor/new"
-          className="flex items-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          className="flex items-center gap-2 rounded-md bg-gradient-to-r from-copper to-copper-light px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           <Plus className="h-4 w-4" />
           {t("startAudit")}
@@ -156,14 +156,14 @@ export default function AuditorListPage() {
           {audits.map((audit) => (
             <div
               key={audit.id}
-              className="group rounded-xl border border-gray-800 bg-gray-950 p-4 transition-colors hover:border-gray-700"
+              className="group rounded-xl border border-gray-800 bg-gray-950 p-2 md:p-4 transition-colors hover:border-gray-700"
             >
               <div className="flex items-center justify-between gap-4">
                 <Link
                   href={`/app/auditor/${audit.id}`}
                   className="min-w-0 flex-1"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     {statusIcon(audit.status)}
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-white">
@@ -196,7 +196,7 @@ export default function AuditorListPage() {
                   </div>
                 </Link>
 
-                <div className="flex shrink-0 items-center gap-1">
+                <div className="flex shrink-0 items-center gap-0">
                   {audit.status === "completed" && (
                     <Link
                       href={`/app/auditor/${audit.id}`}
