@@ -106,6 +106,25 @@ body {
   box-shadow: 0 0 0 3px #e38748;
 }
 
+/* Sonner toast overrides — force neutral dark theme on all toast types */
+[data-sonner-toaster] {
+  --normal-bg: #0a0a0a;
+  --normal-border: #404040;
+  --normal-text: #fafafa;
+  --success-bg: #0a0a0a;
+  --success-border: #404040;
+  --success-text: #fafafa;
+  --error-bg: #0a0a0a;
+  --error-border: #404040;
+  --error-text: #fafafa;
+  --info-bg: #0a0a0a;
+  --info-border: #404040;
+  --info-text: #fafafa;
+  --warning-bg: #0a0a0a;
+  --warning-border: #404040;
+  --warning-text: #fafafa;
+}
+
 /* Sonner toast icon colors */
 [data-sonner-toast][data-type="success"] [data-icon] {
   color: #10b981;
