@@ -2086,7 +2086,7 @@ function GscStatusBadge({
       >
         <Info className="h-3.5 w-3.5" />
         {showTip && (
-          <div className="absolute bottom-full left-0 mb-2 w-56 rounded-lg border border-gray-800 bg-black p-2.5 text-xs text-gray-300 shadow-xl z-10 text-left">
+          <div className="absolute bottom-full left-0 mb-2 w-56 rounded-lg border border-gray-800 bg-gray-950 p-2.5 text-xs text-gray-300 shadow-xl z-10 text-left">
             {tip}
           </div>
         )}
@@ -2325,7 +2325,7 @@ function Toggle({
             <Info className="h-3.5 w-3.5" />
           </button>
           {showTooltip && (
-            <div className="absolute bottom-full left-0 mb-2 w-64 rounded-lg border border-gray-800 bg-black p-2.5 text-xs text-gray-300 shadow-xl z-10">
+            <div className="absolute bottom-full left-0 mb-2 w-64 rounded-lg border border-gray-800 bg-gray-950 p-2.5 text-xs text-gray-300 shadow-xl z-10">
               {tooltip}
             </div>
           )}

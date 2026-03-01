@@ -67,7 +67,7 @@ export function ExportDialog({
       />
 
       {/* Dialog */}
-      <div className="relative z-10 mx-5 w-full max-w-md rounded-xl border border-gray-800 bg-black p-6 shadow-xl">
+      <div className="relative z-10 mx-5 w-full max-w-md rounded-xl border border-gray-800 bg-gray-950 p-6 shadow-xl">
         {/* Close button */}
         <button
           onClick={onClose}
