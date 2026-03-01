@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Check, X, Loader2, Zap, Rocket, Building2, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,6 +15,7 @@ export default function PlansPage() {
   const ut = useTranslations("marketing.unifiedPricing");
   const tBreadcrumbs = useTranslations("breadcrumbs");
   const { data: session, update } = useSession();
+  const router = useRouter();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
   const [switching, setSwitching] = useState<string | null>(null);
@@ -44,8 +46,9 @@ export default function PlansPage() {
       });
 
       if (res.ok) {
-        toast.success(t("planUpdated"));
         await update();
+        router.refresh();
+        toast.success(t("planUpdated"));
       } else {
         const data = await res.json();
         toast.error(data.error || t("updateFailed"));

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Shield, ChevronDown } from "lucide-react";
 import { cn, formatDate } from "@/lib/utils";
@@ -19,7 +20,8 @@ interface UserRow {
 }
 
 export default function AdminUsersPage() {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
+  const router = useRouter();
   const t = useTranslations("admin");
   const tPlans = useTranslations("plans");
   const tBreadcrumbs = useTranslations("breadcrumbs");
@@ -56,6 +58,11 @@ export default function AdminUsersPage() {
         setUsers((prev) =>
           prev.map((u) => (u.id === userId ? { ...u, ...data } : u))
         );
+        // If the admin changed their own plan/role, refresh the session
+        if (userId === session?.user?.id) {
+          await update();
+          router.refresh();
+        }
         toast.success(t("userUpdated"));
       } else {
         toast.error(t("actionFailed"));
