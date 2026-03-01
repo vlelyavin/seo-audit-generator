@@ -89,7 +89,7 @@ export default function AdminUsersPage() {
         { label: tBreadcrumbs("admin"), href: "/app/admin" },
         { label: tBreadcrumbs("users") },
       ]} />
-      <h1 className="mb-6 text-2xl font-bold text-white">
+      <h1 className="mb-4 md:mb-6 text-2xl font-bold text-white">
         {t("title")} ({users.length})
       </h1>
 

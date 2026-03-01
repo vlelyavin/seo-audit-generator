@@ -217,7 +217,7 @@ export default function AuditPage({
     return (
       <div>
         <Breadcrumbs items={breadcrumbItems} />
-        <h1 className="mb-6 text-2xl font-bold text-white">{breadcrumbLabel}</h1>
+        <h1 className="mb-4 md:mb-6 text-2xl font-bold text-white">{breadcrumbLabel}</h1>
         <AuditProgressView progress={progress} />
       </div>
     );
@@ -229,7 +229,7 @@ export default function AuditPage({
       <div>
         <Breadcrumbs items={breadcrumbItems} />
         {displayUrl && (
-          <h1 className="mb-6 text-2xl font-bold text-white">
+          <h1 className="mb-4 md:mb-6 text-2xl font-bold text-white">
             Website audit: {displayUrl}
           </h1>
         )}
@@ -260,7 +260,7 @@ export default function AuditPage({
     return (
       <div>
         <Breadcrumbs items={breadcrumbItems} />
-        <h1 className="mb-6 text-2xl font-bold text-white">{breadcrumbLabel}</h1>
+        <h1 className="mb-4 md:mb-6 text-2xl font-bold text-white">{breadcrumbLabel}</h1>
         <AuditResultsView
           results={results}
           meta={auditMeta}
@@ -276,7 +276,7 @@ export default function AuditPage({
       <div>
         <Breadcrumbs items={breadcrumbItems} />
         {displayUrl && (
-          <h1 className="mb-6 text-2xl font-bold text-white">
+          <h1 className="mb-4 md:mb-6 text-2xl font-bold text-white">
             Website audit: {displayUrl}
           </h1>
         )}
