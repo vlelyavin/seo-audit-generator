@@ -99,7 +99,7 @@ export function Header({ onToggleSidebar, sidebarOpen }: HeaderProps) {
               alt="seoapp"
               width={200}
               height={50}
-              className="h-4 w-auto md:h-5"
+              className="h-6 w-auto -mt-0.5"
               priority={!isApp}
             />
           </Link>
